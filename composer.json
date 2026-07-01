@@ -1,0 +1,14 @@
+{
+  "name": "shieldlabs/shieldlabs",
+  "description": "ShieldLabs server SDK for PHP: API client, webhook verification, and types.",
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://shieldlabs.ai",
+  "keywords": ["shieldlabs", "server-sdk", "webhook-verification", "risk-score", "fraud-prevention"],
+  "require": { "php": ">=8.1" },
+  "autoload": { "psr-4": { "ShieldLabs\\": "src/" } },
+  "support": {
+    "issues": "https://github.com/ShieldLabs-ai/shieldlabs-php/issues",
+    "source": "https://github.com/ShieldLabs-ai/shieldlabs-php"
+  }
+}
