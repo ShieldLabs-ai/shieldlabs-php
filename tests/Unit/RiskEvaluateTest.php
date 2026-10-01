@@ -22,16 +22,16 @@ final class RiskEvaluateTest extends TestCase
 
     private static function identification(
         int $score = 10,
-        string $deviceId = 'ac7c303d-971b-41d1-8e25-cd5b46b46aed',
+        string $deviceId = 'd8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a',
         ?DetectionFlags $flags = null,
         ?string $observedAt = self::OBSERVED,
     ): Identification {
         return new Identification(
             request_id: '3b241101-e2bb-4255-8caf-4136c566a962',
-            visitor_id: 'bde0e249-20d8-4544-838c-ed9a0b6d7a36',
+            visitor_id: 'e9f1a3b5-c7d9-4e1f-8a3b-5c7d9e1f3a5b',
             device_id: $deviceId,
-            session_id: 'bde78778-efd2-4c49-952f-1f11b9c05f35',
-            cookie_id: '4449bb58-590c-444c-ae1f-d1ddc768dbdd',
+            session_id: 'b6c8d0e2-f4a6-4b8c-8d0e-2f4a6b8c0d2e',
+            cookie_id: 'c7d9e1f3-a5b7-4c9d-ae1f-3a5b7c9d1e3f',
             user_hid: '9f86d081884c7d659a2feaa0c55ad015',
             domain: 'example.com',
             public_ip: new IpInfo('203.0.113.24', 'Netherlands'),

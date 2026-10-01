@@ -21,13 +21,13 @@ final class HistorySearchTest extends TestCase
     {
         $http = (new MockHttpClient())->always(MockHttpClient::json(200, Fixtures::json('history-page.json')));
 
-        $page = Clients::history($http)->history->search(LookupType::DeviceId, 'AC7C303D-971B-41D1-8E25-CD5B46B46AED', ['limit' => 50]);
+        $page = Clients::history($http)->history->search(LookupType::DeviceId, 'D8E0F2A4-B6C8-4D0E-BF2A-4B6C8D0E2F4A', ['limit' => 50]);
 
         self::assertSame(37, $page->total);
         $request = $http->lastRequest();
         self::assertSame('GET', $request->getMethod());
         self::assertSame(
-            'https://account.shieldlabs.ai/api/v1/history/device_id/ac7c303d-971b-41d1-8e25-cd5b46b46aed?limit=50&offset=0',
+            'https://account.shieldlabs.ai/api/v1/history/device_id/d8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a?limit=50&offset=0',
             (string) $request->getUri(),
         );
         self::assertSame('Bearer ' . Clients::API_KEY, $request->getHeaderLine('Authorization'));
@@ -134,8 +134,8 @@ final class HistorySearchTest extends TestCase
         $client = Clients::history($http);
 
         $client->history->search(LookupType::VisitorId, '00000000-0000-0000-0000-000000000000');
-        $client->history->search(LookupType::SessionId, 'bde0e249-20d8-5544-838c-ed9a0b6d7a36');
-        $client->history->search(LookupType::CookieId, '4449bb58-590c-144c-ae1f-d1ddc768dbdd');
+        $client->history->search(LookupType::SessionId, 'e9f1a3b5-c7d9-5e1f-8a3b-5c7d9e1f3a5b');
+        $client->history->search(LookupType::CookieId, 'c7d9e1f3-a5b7-1c9d-ae1f-3a5b7c9d1e3f');
 
         self::assertCount(3, $http->requests);
     }
@@ -147,11 +147,11 @@ final class HistorySearchTest extends TestCase
     {
         yield 'unknown type' => ['auto', '203.0.113.24', [], 'Unknown lookup type "auto"'];
         yield 'empty type' => ['', '203.0.113.24', [], 'Unknown lookup type'];
-        yield 'uppercase type' => ['DEVICE_ID', 'ac7c303d-971b-41d1-8e25-cd5b46b46aed', [], 'Unknown lookup type'];
+        yield 'uppercase type' => ['DEVICE_ID', 'd8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a', [], 'Unknown lookup type'];
         yield 'bad UUID' => [LookupType::DeviceId, 'abc', [], 'must be a UUID'];
-        yield 'UUID without dashes' => [LookupType::RequestId, 'ac7c303d971b41d18e25cd5b46b46aed', [], 'must be a UUID'];
-        yield 'UUID in braces' => [LookupType::VisitorId, '{ac7c303d-971b-41d1-8e25-cd5b46b46aed}', [], 'must be a UUID'];
-        yield 'UUID with newline' => [LookupType::RequestId, "ac7c303d-971b-41d1-8e25-cd5b46b46aed\n", [], 'must be a UUID'];
+        yield 'UUID without dashes' => [LookupType::RequestId, 'd8e0f2a4b6c84d0ebf2a4b6c8d0e2f4a', [], 'must be a UUID'];
+        yield 'UUID in braces' => [LookupType::VisitorId, '{d8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a}', [], 'must be a UUID'];
+        yield 'UUID with newline' => [LookupType::RequestId, "d8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a\n", [], 'must be a UUID'];
         yield 'IPv6' => [LookupType::Ip, '2001:db8::1', [], 'IPv6'];
         yield 'IPv4 out of range' => [LookupType::Ip, '203.0.113.256', [], 'IPv4'];
         yield 'IPv4 with spaces' => [LookupType::Ip, ' 203.0.113.5', [], 'IPv4'];
@@ -364,7 +364,7 @@ final class HistorySearchTest extends TestCase
         }
 
         self::assertCount(5, $ids);
-        self::assertSame('02f1d973-84db-4156-a7f7-e799e6bf389b', $ids[0]);
+        self::assertSame('a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d', $ids[0]);
     }
 
     public function testVersionConstantMatchesTheChangelog(): void

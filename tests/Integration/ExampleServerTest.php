@@ -136,8 +136,8 @@ final class ExampleServerTest extends TestCase
         self::assertSame([200, ['received' => true]], \array_slice(self::post('/webhooks/shieldlabs', $body, $headers), 0, 2));
 
         $log = self::log();
-        self::assertStringContainsString('identification.scored request_id=02f1d973-84db-4156-a7f7-e799e6bf389b risk_score=80 band=dangerous', $log);
-        self::assertStringContainsString('Duplicate delivery ignored for request_id=02f1d973-84db-4156-a7f7-e799e6bf389b', $log);
+        self::assertStringContainsString('identification.scored request_id=a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d risk_score=80 band=dangerous', $log);
+        self::assertStringContainsString('Duplicate delivery ignored for request_id=a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d', $log);
     }
 
     public function testAcknowledgesTheVerifyPing(): void

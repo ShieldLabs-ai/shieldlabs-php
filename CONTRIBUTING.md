@@ -25,7 +25,10 @@ docker run --rm -v "$PWD":/app -w /app composer:2 sh -c "composer install && com
   in `tests/Support/`; integration tests start `php -S` servers.
 - `tests/data/` holds the shared test fixtures that every ShieldLabs server SDK passes. Do
   not edit them in this repository: when the API changes, they change in every SDK
-  together.
+  together. They are synced from `contract/` in shieldlabs-openapi: `contract-sync.json`
+  maps each file, `.shieldlabs-contract.lock` records the release, CI runs
+  `python3 scripts/sync_contract.py --check`, and the `contract-sync.yml` workflow opens a
+  pull request when a new release changes them.
 - Keep the public API small and typed. PHPStan runs at the max level and php-cs-fixer
   applies the PER coding style (`composer cs:fix`).
 - The SDK must not log keys, secrets or request bodies, and must not make network calls

@@ -29,7 +29,7 @@ final class ModelTest extends TestCase
     {
         $identification = self::first();
 
-        self::assertSame('02f1d973-84db-4156-a7f7-e799e6bf389b', $identification->request_id);
+        self::assertSame('a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d', $identification->request_id);
         self::assertSame('9f86d081884c7d659a2feaa0c55ad015', $identification->user_hid);
         self::assertSame('example.com', $identification->domain);
         self::assertSame('Netherlands', $identification->public_ip->country);

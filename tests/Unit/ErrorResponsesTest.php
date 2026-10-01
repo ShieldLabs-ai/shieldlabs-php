@@ -76,7 +76,7 @@ final class ErrorResponsesTest extends TestCase
         $http = (new MockHttpClient())->always(MockHttpClient::text(401, "{\"error\":\"invalid api key\"}\n", 'text/plain; charset=utf-8'));
 
         try {
-            Clients::history($http)->history->search(LookupType::DeviceId, 'ac7c303d-971b-41d1-8e25-cd5b46b46aed');
+            Clients::history($http)->history->search(LookupType::DeviceId, 'd8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a');
             self::fail('Expected an exception');
         } catch (ApiException $exception) {
             self::assertSame('invalid api key', $exception->getErrorMessage());

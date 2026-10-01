@@ -23,7 +23,7 @@ final class HistoryIterateTest extends TestCase
     {
         $rows = array_map(static fn(string $id): array => [
             'request_id' => $id,
-            'device_id' => 'ac7c303d-971b-41d1-8e25-cd5b46b46aed',
+            'device_id' => 'd8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a',
             'score' => 10,
             'created_at' => '2026-09-30 12:00:00.000',
         ], $requestIds);
@@ -71,7 +71,7 @@ final class HistoryIterateTest extends TestCase
             self::page([self::id(5)], 5),
         );
 
-        $ids = self::ids(Clients::history($http)->history->iterate(LookupType::DeviceId, 'ac7c303d-971b-41d1-8e25-cd5b46b46aed', ['page_size' => 2]));
+        $ids = self::ids(Clients::history($http)->history->iterate(LookupType::DeviceId, 'd8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a', ['page_size' => 2]));
 
         self::assertSame([self::id(1), self::id(2), self::id(3), self::id(4), self::id(5)], $ids);
         self::assertSame([['2', '0'], ['2', '2'], ['2', '4']], self::paging($http));

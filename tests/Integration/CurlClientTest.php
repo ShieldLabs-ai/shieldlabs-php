@@ -178,11 +178,11 @@ final class CurlClientTest extends TestCase
         \assert(self::$server !== null);
         $client = new ShieldLabs(['api_key' => Clients::API_KEY, 'base_url' => self::$server->url . '/api/']);
 
-        $page = $client->history->search(LookupType::DeviceId, 'ac7c303d-971b-41d1-8e25-cd5b46b46aed');
+        $page = $client->history->search(LookupType::DeviceId, 'd8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a');
 
         self::assertSame(37, $page->total);
         self::assertCount(5, $page->data);
-        self::assertSame('02f1d973-84db-4156-a7f7-e799e6bf389b', $page->data[0]->request_id);
+        self::assertSame('a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d', $page->data[0]->request_id);
     }
 
     public function testTheSdkMapsARealAuthenticationError(): void
