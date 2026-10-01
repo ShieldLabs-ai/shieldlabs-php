@@ -429,6 +429,14 @@ Enums: `LookupType`, `RiskBand` (`Trusted`, `Suspicious`, `Dangerous`, `RateLimi
 
 ## Development
 
+Refresh the generated client when the API description changes. This does not replace the supported library in this repository.
+
+```bash
+./sync.sh      # download the current OpenAPI description into resources/
+./generate.sh  # rebuild generated/ from that file
+```
+
+
 ```bash
 composer install
 composer test      # PHPUnit: unit, shared fixture and integration tests
