@@ -62,3 +62,15 @@ jobs:
         run: vendor/bin/php-cs-fixer check --diff
       - name: Coverage
         run: vendor/bin/phpunit --coverage-text --only-summary-for-coverage-text
+
+  generated:
+    name: Generated API types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Rebuild generated files
+        run: ./generate.sh
+      - name: Fail if generated files drifted
+        run: git diff --exit-code

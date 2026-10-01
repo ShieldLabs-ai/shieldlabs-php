@@ -1,0 +1,9 @@
+{
+  "invokerPackage": "ShieldLabs\\Generated",
+  "packageName": "ShieldLabsGenerated",
+  "composerPackageName": "shieldlabs/shieldlabs-php-generated",
+  "gitUserId": "ShieldLabs-ai",
+  "gitRepoId": "shieldlabs-php",
+  "developerOrganization": "ShieldLabs Inc.",
+  "hideGenerationTimestamp": true
+}
