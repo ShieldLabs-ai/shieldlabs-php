@@ -1,19 +1,73 @@
 {
-  "name": "shieldlabs/shieldlabs",
-  "description": "ShieldLabs server SDK for PHP: API client, webhook verification, and types.",
-  "type": "library",
-  "license": "MIT",
-  "homepage": "https://shieldlabs.ai",
-  "keywords": ["shieldlabs", "server-sdk", "webhook-verification", "risk-score", "fraud-prevention"],
-  "require": { "php": ">=8.1", "ext-curl": "*", "ext-json": "*" },
-  "require-dev": { "phpunit/phpunit": "^10.0" },
-  "autoload": { "psr-4": { "ShieldLabs\\": "src/" } },
-  "autoload-dev": { "psr-4": { "ShieldLabs\\Tests\\": "tests/" } },
-  "scripts": {
-    "test": "phpunit"
-  },
-  "support": {
-    "issues": "https://github.com/ShieldLabs-ai/shieldlabs-php/issues",
-    "source": "https://github.com/ShieldLabs-ai/shieldlabs-php"
-  }
+    "name": "shieldlabs/shieldlabs-php",
+    "description": "ShieldLabs server SDK for PHP: read identification verdicts from the History API, verify webhooks and turn Risk Scores into decisions.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "shieldlabs",
+        "device intelligence",
+        "fraud detection",
+        "risk score",
+        "webhooks",
+        "psr-18"
+    ],
+    "homepage": "https://docs.shieldlabs.ai",
+    "authors": [
+        {
+            "name": "ShieldLabs Inc.",
+            "email": "contact@shieldlabs.ai",
+            "homepage": "https://shieldlabs.ai"
+        }
+    ],
+    "support": {
+        "email": "contact@shieldlabs.ai",
+        "docs": "https://docs.shieldlabs.ai",
+        "issues": "https://github.com/ShieldLabs-ai/shieldlabs-php/issues",
+        "source": "https://github.com/ShieldLabs-ai/shieldlabs-php"
+    },
+    "require": {
+        "php": "^8.1",
+        "ext-json": "*",
+        "nyholm/psr7": "^1.8",
+        "php-http/discovery": "^1.19",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/http-message": "^1.1 || ^2.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0"
+    },
+    "suggest": {
+        "ext-curl": "Used by the built-in HTTP client, the default unless your project has Guzzle 7 or Symfony HttpClient",
+        "ext-mbstring": "Unicode lowercasing when signal names are derived from unfamiliar History descriptions"
+    },
+    "autoload": {
+        "psr-4": {
+            "ShieldLabs\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShieldLabs\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit",
+        "analyse": "phpstan analyse --no-progress",
+        "cs": "php-cs-fixer check --diff",
+        "cs:fix": "php-cs-fixer fix",
+        "check": [
+            "@test",
+            "@analyse",
+            "@cs"
+        ]
+    }
 }

@@ -1,0 +1,8 @@
+parameters:
+    level: max
+    paths:
+        - src
+        - examples
+    tmpDir: .phpstan.cache
+    # Option arrays come from callers: validate them at runtime even when PHPDoc says the type.
+    treatPhpDocTypesAsCertain: false
