@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+# Exact request bodies used by the signature tests: never touch their bytes.
+/tests/data/*.raw.txt -text
+
+# Keep the Packagist archive small.
+/.github export-ignore
+/examples export-ignore
+/tests export-ignore
+/.editorconfig export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/phpstan.neon.dist export-ignore
+/phpunit.xml.dist export-ignore
+/CONTRIBUTING.md export-ignore

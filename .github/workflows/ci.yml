@@ -5,18 +5,60 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  tests:
+    name: Tests (PHP ${{ matrix.php }}, ${{ matrix.dependencies }} dependencies)
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        php-version: ["8.1", "8.2", "8.3"]
+        php: ['8.1', '8.2', '8.3', '8.4', '8.5']
+        dependencies: [highest]
+        include:
+          - php: '8.1'
+            dependencies: lowest
     steps:
-      - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          php-version: ${{ matrix.php-version }}
-          extensions: curl, json
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, json, mbstring
           coverage: none
-      - run: composer install --no-interaction --prefer-dist
-      - run: vendor/bin/phpunit
+          tools: composer:v2
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress --prefer-dist ${{ matrix.dependencies == 'lowest' && '--prefer-lowest --prefer-stable' || '' }}
+      - name: Run the test suite
+        run: vendor/bin/phpunit
+
+  quality:
+    name: Static analysis, code style and coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.4'
+          extensions: curl, json, mbstring
+          coverage: pcov
+          tools: composer:v2
+      - name: Validate composer.json
+        run: composer validate --strict
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress --prefer-dist
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse --no-progress
+      - name: php-cs-fixer
+        run: vendor/bin/php-cs-fixer check --diff
+      - name: Coverage
+        run: vendor/bin/phpunit --coverage-text --only-summary-for-coverage-text

@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Test ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.4'
+          extensions: curl, json, mbstring
+          coverage: none
+          tools: composer:v2
+      - name: Check that the tag matches ShieldLabs::VERSION
+        run: |
+          version="$(sed -n "s/.*public const VERSION = '\(.*\)';/\1/p" src/ShieldLabs.php)"
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match ShieldLabs::VERSION (${version})."
+            exit 1
+          fi
+      - name: Validate composer.json
+        run: composer validate --strict
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress --prefer-dist
+      - name: Run the test suite
+        run: vendor/bin/phpunit
+
+  # Runs no Composer and no PHP code: only this job can write to the repository.
+  publish:
+    name: Publish ${{ github.ref_name }}
+    needs: test
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - name: Create or update the GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="$version" 'index($0, "## [" v "]") == 1 {found = 1; next} found && /^## \[/ {exit} found {print}' CHANGELOG.md > release-notes.md
+          # Safe to re-run: when a later step failed, the release already exists and only its notes are refreshed.
+          if gh release view "${GITHUB_REF_NAME}" > /dev/null 2>&1; then
+            gh release edit "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --notes-file release-notes.md
+          else
+            gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --notes-file release-notes.md --verify-tag
+          fi
+      - name: Update the package on Packagist
+        env:
+          PACKAGIST_USERNAME: ${{ secrets.PACKAGIST_USERNAME }}
+          PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
+        run: |
+          if [ -z "${PACKAGIST_USERNAME}" ] || [ -z "${PACKAGIST_TOKEN}" ]; then
+            echo "::error::Set the PACKAGIST_USERNAME and PACKAGIST_TOKEN secrets, then re-run this job."
+            exit 1
+          fi
+          # The token goes in a header, never in the URL.
+          curl --fail --silent --show-error -X POST \
+            -H 'Content-Type: application/json' \
+            -H "Authorization: Bearer ${PACKAGIST_USERNAME}:${PACKAGIST_TOKEN}" \
+            https://packagist.org/api/update-package \
+            -d '{"repository":{"url":"https://github.com/ShieldLabs-ai/shieldlabs-php"}}'
