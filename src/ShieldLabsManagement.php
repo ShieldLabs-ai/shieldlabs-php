@@ -15,6 +15,8 @@ use ShieldLabs\Internal\Options;
 use ShieldLabs\Internal\Transport;
 use ShieldLabs\Internal\UserAgent;
 use ShieldLabs\Internal\Validate;
+use ShieldLabs\Internal\Wire\Generated\ProfileParameters;
+use ShieldLabs\Internal\Wire\Read;
 use ShieldLabs\Model\DomainProfile;
 
 /**
@@ -86,7 +88,7 @@ final class ShieldLabsManagement
             $baseUrl,
             [
                 'Authorization' => 'Bearer ' . $secretKey,
-                'X-Shield-Domain' => $this->domain,
+                ...Read::textParameter(ProfileParameters::X_Shield_Domain(), $this->domain),
                 'Accept' => 'application/json',
                 'User-Agent' => UserAgent::value(),
             ],
@@ -111,7 +113,7 @@ final class ShieldLabsManagement
      */
     public function getProfile(): DomainProfile
     {
-        $body = $this->transport->getJson('/v1/profile');
+        $body = $this->transport->getJson(ProfileParameters::path());
         if (!\is_array($body)) {
             throw new ApiException('The Management API returned an unexpected response body.', 200, $body);
         }

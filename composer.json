@@ -37,7 +37,8 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.64",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0"
+        "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0",
+        "symfony/yaml": "^6.4"
     },
     "suggest": {
         "ext-curl": "Used by the built-in HTTP client, the default unless your project has Guzzle 7 or Symfony HttpClient",
@@ -53,6 +54,9 @@
             "ShieldLabs\\Tests\\": "tests/"
         }
     },
+    "archive": {
+        "exclude": ["/.git", "/vendor", "/build", "/tests", "/.github", "/.phpstan.cache", "/.phpunit.cache", "/.php-cs-fixer.cache", "/composer.lock"]
+    },
     "config": {
         "allow-plugins": {
             "php-http/discovery": false
@@ -60,11 +64,17 @@
         "sort-packages": true
     },
     "scripts": {
+        "generate:wire": "php scripts/generate-wire.php",
+        "check:wire": "php scripts/generate-wire.php --check",
+        "check:contract": "php scripts/check-contract-drift.php",
+        "check:package": "php scripts/check-package.php",
         "test": "phpunit",
         "analyse": "phpstan analyse --no-progress",
         "cs": "php-cs-fixer check --diff",
         "cs:fix": "php-cs-fixer fix",
         "check": [
+            "@check:wire",
+            "@check:contract",
             "@test",
             "@analyse",
             "@cs"

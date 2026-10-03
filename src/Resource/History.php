@@ -10,6 +10,8 @@ use ShieldLabs\Exception\ValidationException;
 use ShieldLabs\Internal\Options;
 use ShieldLabs\Internal\Transport;
 use ShieldLabs\Internal\Validate;
+use ShieldLabs\Internal\Wire\Generated\HistoryParameters;
+use ShieldLabs\Internal\Wire\Read;
 use ShieldLabs\LookupType;
 use ShieldLabs\Model\HistoryPage;
 use ShieldLabs\Model\Identification;
@@ -84,8 +86,10 @@ final class History
      */
     public function fetch(LookupType $type, string $value, int $limit, int $offset, ?int $maxRetries = null, ?float $attemptTimeout = null): HistoryPage
     {
-        $path = '/api/v1/history/' . $type->value . '/' . Validate::pathSegment($value);
-        $body = $this->transport->getJson($path, ['limit' => $limit, 'offset' => $offset], $maxRetries, $attemptTimeout);
+        $path = HistoryParameters::path(search_type: $type->value, value: Validate::pathSegment($value));
+        $query = Read::integerParameter(HistoryParameters::limit(), $limit)
+            + Read::integerParameter(HistoryParameters::offset(), $offset);
+        $body = $this->transport->getJson($path, $query, $maxRetries, $attemptTimeout);
         if (!\is_array($body)) {
             throw new ApiException('The History API returned an unexpected response body.', 200, $body);
         }

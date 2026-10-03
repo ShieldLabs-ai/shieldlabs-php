@@ -13,6 +13,20 @@ composer install
 composer check   # tests, static analysis and code style
 ```
 
+After updating `resources/shieldlabs-api.yaml`, run `composer generate:wire`.
+The supported client consumes these typed fields, not the standalone transport in
+`generated/`. `composer check:wire` checks reproducibility. `composer check:contract`
+copies the actual supported source into a disposable build directory and verifies
+that renamed fields and incompatible types fail PHPStan, while an optional extra
+field passes. Neither check calls a live API or modifies the input schema.
+The checks also reject HTTP-method changes on supported GET operations,
+unsupported required parameters and parameter-location
+changes, guard the shared ping/scored envelope, and execute the supported client
+against a changed profile path and an optional extra History query parameter.
+`composer check:package` creates an archive and installs it into a fresh runtime-only
+consumer under `build/`. It downloads only public dependencies and tests History,
+profiles and signed webhooks against synthetic responses. It does not call a live API.
+
 Without a local PHP, run the same inside Docker:
 
 ```bash

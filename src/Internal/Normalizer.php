@@ -4,6 +4,17 @@ declare(strict_types=1);
 
 namespace ShieldLabs\Internal;
 
+use ShieldLabs\Internal\Wire\Field;
+use ShieldLabs\Internal\Wire\Generated\DetectionFlags;
+use ShieldLabs\Internal\Wire\Generated\HistoryRow;
+use ShieldLabs\Internal\Wire\Generated\IpInfo;
+use ShieldLabs\Internal\Wire\Generated\LocalIpInfo;
+use ShieldLabs\Internal\Wire\Generated\ScoredData;
+use ShieldLabs\Internal\Wire\Generated\ScoreDetail;
+use ShieldLabs\Internal\Wire\Generated\Signal;
+use ShieldLabs\Internal\Wire\Generated\TrafficSource;
+use ShieldLabs\Internal\Wire\Read;
+
 /**
  * Turns a History API row or webhook `data` object into the shared Identification
  * shape. Every ShieldLabs server SDK applies these exact rules, and the shared
@@ -29,26 +40,33 @@ final class Normalizer
         'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
     ];
 
-    /** Normalized flag name to History row column. */
-    private const HISTORY_FLAG_MAP = [
-        'vpn' => 'is_vpn',
-        'privacy_relay' => 'is_privacy_relay',
-        'tor' => 'is_tor',
-        'proxy' => 'is_proxy',
-        'datacenter_ip' => 'is_datacenter',
-        'abuser' => 'is_abuser',
-        'os_mismatch' => 'is_os_mismatch',
-        'os_not_detected' => 'is_os_not_detected',
-        'timezone_mismatch' => 'is_timezone_mismatch',
-        'anti_detect_browser' => 'is_antidetect',
-        'browser_automation' => 'is_browser_automation',
-        'incognito' => 'is_incognito',
-        'search_bot' => 'is_search_bot',
-        'suspicious_paid_click' => 'is_suspicious_paid_click',
-        'javascript_disabled' => 'is_js_disabled',
-        'stun_not_checked' => 'is_stun_not_checked',
-        'check_incomplete' => 'check_incomplete',
-    ];
+    /**
+     * Normalized flag name to History row column.
+     *
+     * @return array<string, Field<bool>>
+     */
+    private static function historyFlagMap(): array
+    {
+        return [
+            'vpn' => HistoryRow::is_vpn(),
+            'privacy_relay' => HistoryRow::is_privacy_relay(),
+            'tor' => HistoryRow::is_tor(),
+            'proxy' => HistoryRow::is_proxy(),
+            'datacenter_ip' => HistoryRow::is_datacenter(),
+            'abuser' => HistoryRow::is_abuser(),
+            'os_mismatch' => HistoryRow::is_os_mismatch(),
+            'os_not_detected' => HistoryRow::is_os_not_detected(),
+            'timezone_mismatch' => HistoryRow::is_timezone_mismatch(),
+            'anti_detect_browser' => HistoryRow::is_antidetect(),
+            'browser_automation' => HistoryRow::is_browser_automation(),
+            'incognito' => HistoryRow::is_incognito(),
+            'search_bot' => HistoryRow::is_search_bot(),
+            'suspicious_paid_click' => HistoryRow::is_suspicious_paid_click(),
+            'javascript_disabled' => HistoryRow::is_js_disabled(),
+            'stun_not_checked' => HistoryRow::is_stun_not_checked(),
+            'check_incomplete' => HistoryRow::check_incomplete(),
+        ];
+    }
 
     private const EXACT_SLUGS = [
         'Is tor' => 'tor',
@@ -193,27 +211,27 @@ final class Normalizer
      */
     public static function fromHistoryRow(array $row): array
     {
-        $leakSource = self::strip(self::orEmpty($row['webrtc_leak_source'] ?? null));
+        $leakSource = self::strip(self::orEmpty(Read::text(HistoryRow::webrtc_leak_source(), $row)));
         if ($leakSource !== '' && $leakSource !== 'none') {
-            $localIp = self::ip($row['webrtc_leak_ip'] ?? null);
-            $localCountry = self::orEmpty($row['webrtc_leak_country'] ?? null);
+            $localIp = self::ip(Read::text(HistoryRow::webrtc_leak_ip(), $row));
+            $localCountry = self::orEmpty(Read::text(HistoryRow::webrtc_leak_country(), $row));
         } else {
-            $localIp = self::ip($row['web_rtc_ip'] ?? null);
-            $localCountry = self::orEmpty($row['web_rtc_country'] ?? null);
+            $localIp = self::ip(Read::text(HistoryRow::web_rtc_ip(), $row));
+            $localCountry = self::orEmpty(Read::text(HistoryRow::web_rtc_country(), $row));
         }
-        $publicIp = self::ip($row['ip'] ?? null);
+        $publicIp = self::ip(Read::text(HistoryRow::ip(), $row));
 
         $signals = [];
         $ipLeakDetail = false;
-        foreach (self::scoreDetails($row['score_details'] ?? null) as $detail) {
+        foreach (self::scoreDetails(Read::text(HistoryRow::score_details(), $row)) as $detail) {
             if (!self::isObject($detail)) {
                 continue;
             }
-            $description = self::orEmpty($detail['Description'] ?? null);
+            $description = self::orEmpty(Read::text(ScoreDetail::Description(), $detail));
             if (str_starts_with($description, self::IP_LEAK_PREFIX)) {
                 $ipLeakDetail = true;
             }
-            $weight = $detail['Value'] ?? 0;
+            $weight = Read::integer(ScoreDetail::Value(), $detail) ?? 0;
             if (!\is_int($weight) || $weight === 0) {
                 continue;
             }
@@ -224,50 +242,51 @@ final class Normalizer
             ];
         }
 
-        $searchBot = self::truthy($row['is_search_bot'] ?? null);
+        $historyFlagMap = self::historyFlagMap();
+        $searchBot = self::truthy(Read::boolean(HistoryRow::is_search_bot(), $row));
         $flags = [];
         foreach (self::FLAG_KEYS as $key) {
             if ($key === 'browser_vpn_proxy') {
-                $flags[$key] = ($row['connection_type'] ?? null) === 'browser_vpn_proxy';
+                $flags[$key] = Read::text(HistoryRow::connection_type(), $row) === 'browser_vpn_proxy';
             } elseif ($key === 'ip_mismatch') {
                 $flags[$key] = !$searchBot
                     && ($ipLeakDetail || ($publicIp !== '' && $localIp !== '' && $publicIp !== $localIp));
             } else {
-                $flags[$key] = self::truthy($row[self::HISTORY_FLAG_MAP[$key]] ?? null);
+                $flags[$key] = self::truthy(Read::boolean($historyFlagMap[$key], $row));
             }
         }
 
-        $siteDomain = $row['site_domain'] ?? null;
+        $siteDomain = Read::text(HistoryRow::site_domain(), $row);
 
         return [
-            'request_id' => self::str($row['request_id'] ?? null),
-            'visitor_id' => self::str($row['visitor_id'] ?? null),
-            'device_id' => self::str($row['device_id'] ?? null),
-            'session_id' => self::str($row['session_id'] ?? null),
-            'cookie_id' => self::str($row['cookie_id'] ?? null),
-            'user_hid' => self::userHid($row['user_hid'] ?? null),
-            'domain' => self::truthy($siteDomain) ? self::str($siteDomain) : self::str($row['domain'] ?? null),
-            'public_ip' => ['ip' => $publicIp, 'country' => self::orEmpty($row['country'] ?? null)],
+            'request_id' => self::str(Read::text(HistoryRow::request_id(), $row)),
+            'visitor_id' => self::str(Read::text(HistoryRow::visitor_id(), $row)),
+            'device_id' => self::str(Read::text(HistoryRow::device_id(), $row)),
+            'session_id' => self::str(Read::text(HistoryRow::session_id(), $row)),
+            'cookie_id' => self::str(Read::text(HistoryRow::cookie_id(), $row)),
+            'user_hid' => self::userHid(Read::text(HistoryRow::user_hid(), $row)),
+            'domain' => self::truthy($siteDomain) ? self::str($siteDomain) : self::str(Read::text(HistoryRow::domain(), $row)),
+            'public_ip' => ['ip' => $publicIp, 'country' => self::orEmpty(Read::text(HistoryRow::country(), $row))],
             'local_ip' => ['ip' => $localIp, 'country' => $localCountry],
-            'connection_type' => self::str($row['connection_type'] ?? null),
-            'os' => self::str($row['os'] ?? null),
-            'browser' => self::str($row['browser'] ?? null),
-            'device_type' => self::str($row['device_type'] ?? null),
+            'connection_type' => self::str(Read::text(HistoryRow::connection_type(), $row)),
+            'os' => self::str(Read::text(HistoryRow::os(), $row)),
+            'browser' => self::str(Read::text(HistoryRow::browser(), $row)),
+            'device_type' => self::str(Read::text(HistoryRow::device_type(), $row)),
             'traffic_source' => [
-                'channel' => self::orEmpty($row['traffic_channel'] ?? null),
-                'referrer_domain' => self::orEmpty($row['referrer_domain'] ?? null),
-                'landing_url' => self::orEmpty($row['entry_url'] ?? null),
-                'click_id_type' => self::orEmpty($row['click_id_type'] ?? null),
-                'utm_source' => self::orEmpty($row['utm_source'] ?? null),
-                'utm_medium' => self::orEmpty($row['utm_medium'] ?? null),
-                'utm_campaign' => self::orEmpty($row['utm_campaign'] ?? null),
-                'utm_content' => self::orEmpty($row['utm_content'] ?? null),
-                'utm_term' => self::orEmpty($row['utm_term'] ?? null),
+                'channel' => self::orEmpty(Read::text(HistoryRow::traffic_channel(), $row)),
+                'referrer_domain' => self::orEmpty(Read::text(HistoryRow::referrer_domain(), $row)),
+                'landing_url' => self::orEmpty(Read::text(HistoryRow::entry_url(), $row)),
+                'click_id_type' => self::orEmpty(Read::text(HistoryRow::click_id_type(), $row)),
+                'utm_source' => self::orEmpty(Read::text(HistoryRow::utm_source(), $row)),
+                'utm_medium' => self::orEmpty(Read::text(HistoryRow::utm_medium(), $row)),
+                'utm_campaign' => self::orEmpty(Read::text(HistoryRow::utm_campaign(), $row)),
+                'utm_content' => self::orEmpty(Read::text(HistoryRow::utm_content(), $row)),
+                'utm_term' => self::orEmpty(Read::text(HistoryRow::utm_term(), $row)),
             ],
-            'risk_score' => self::int($row['score'] ?? null),
+            'risk_score' => self::int(Read::integer(HistoryRow::score(), $row)),
             'signals' => $signals,
             'detection_flags' => $flags,
-            'observed_at' => self::parseHistoryTime($row['created_at'] ?? null),
+            'observed_at' => self::parseHistoryTime(Read::text(HistoryRow::created_at(), $row)),
             'source' => 'history',
         ];
     }
@@ -287,54 +306,84 @@ final class Normalizer
      */
     public static function fromWebhookData(array $data): array
     {
-        $rawFlags = $data['detection_flags'] ?? null;
+        $rawFlags = Read::collection(ScoredData::detection_flags(), $data);
         $rawFlags = \is_array($rawFlags) ? $rawFlags : [];
         $flags = [];
-        foreach (self::FLAG_KEYS as $key) {
-            $flags[$key] = self::truthy($rawFlags[$key] ?? null);
+        foreach ([
+            'vpn' => DetectionFlags::vpn(),
+            'privacy_relay' => DetectionFlags::privacy_relay(),
+            'browser_vpn_proxy' => DetectionFlags::browser_vpn_proxy(),
+            'tor' => DetectionFlags::tor(),
+            'proxy' => DetectionFlags::proxy(),
+            'datacenter_ip' => DetectionFlags::datacenter_ip(),
+            'abuser' => DetectionFlags::abuser(),
+            'os_mismatch' => DetectionFlags::os_mismatch(),
+            'os_not_detected' => DetectionFlags::os_not_detected(),
+            'timezone_mismatch' => DetectionFlags::timezone_mismatch(),
+            'anti_detect_browser' => DetectionFlags::anti_detect_browser(),
+            'browser_automation' => DetectionFlags::browser_automation(),
+            'ip_mismatch' => DetectionFlags::ip_mismatch(),
+            'incognito' => DetectionFlags::incognito(),
+            'search_bot' => DetectionFlags::search_bot(),
+            'suspicious_paid_click' => DetectionFlags::suspicious_paid_click(),
+            'javascript_disabled' => DetectionFlags::javascript_disabled(),
+            'stun_not_checked' => DetectionFlags::stun_not_checked(),
+            'check_incomplete' => DetectionFlags::check_incomplete(),
+        ] as $key => $field) {
+            $flags[$key] = self::truthy(Read::boolean($field, $rawFlags));
         }
 
-        $traffic = $data['traffic_source'] ?? null;
+        $traffic = Read::collection(ScoredData::traffic_source(), $data);
         $traffic = \is_array($traffic) ? $traffic : [];
         $trafficSource = [];
-        foreach (self::TRAFFIC_KEYS as $key) {
-            $trafficSource[$key] = self::orEmpty($traffic[$key] ?? null);
+        foreach ([
+            'channel' => TrafficSource::channel(),
+            'referrer_domain' => TrafficSource::referrer_domain(),
+            'landing_url' => TrafficSource::landing_url(),
+            'click_id_type' => TrafficSource::click_id_type(),
+            'utm_source' => TrafficSource::utm_source(),
+            'utm_medium' => TrafficSource::utm_medium(),
+            'utm_campaign' => TrafficSource::utm_campaign(),
+            'utm_content' => TrafficSource::utm_content(),
+            'utm_term' => TrafficSource::utm_term(),
+        ] as $key => $field) {
+            $trafficSource[$key] = self::orEmpty(Read::text($field, $traffic));
         }
 
         $signals = [];
-        $rawSignals = $data['signals'] ?? null;
+        $rawSignals = Read::collection(ScoredData::signals(), $data);
         if (\is_array($rawSignals) && array_is_list($rawSignals)) {
             foreach ($rawSignals as $signal) {
                 if (!self::isObject($signal)) {
                     continue;
                 }
                 $signals[] = [
-                    'name' => self::str($signal['name'] ?? null),
-                    'weight' => self::int($signal['weight'] ?? null),
+                    'name' => self::str(Read::text(Signal::name(), $signal)),
+                    'weight' => self::int(Read::integer(Signal::weight(), $signal)),
                     'description' => null,
                 ];
             }
         }
 
         return [
-            'request_id' => self::str($data['request_id'] ?? null),
-            'visitor_id' => self::str($data['visitor_id'] ?? null),
-            'device_id' => self::str($data['device_id'] ?? null),
-            'session_id' => self::str($data['session_id'] ?? null),
-            'cookie_id' => self::str($data['cookie_id'] ?? null),
-            'user_hid' => self::userHid($data['user_hid'] ?? null),
-            'domain' => self::str($data['domain'] ?? null),
-            'public_ip' => self::ipObject($data['public_ip'] ?? null),
-            'local_ip' => self::ipObject($data['local_ip'] ?? null),
-            'connection_type' => self::str($data['connection_type'] ?? null),
-            'os' => self::str($data['os'] ?? null),
-            'browser' => self::str($data['browser'] ?? null),
-            'device_type' => self::str($data['device_type'] ?? null),
+            'request_id' => self::str(Read::text(ScoredData::request_id(), $data)),
+            'visitor_id' => self::str(Read::text(ScoredData::visitor_id(), $data)),
+            'device_id' => self::str(Read::text(ScoredData::device_id(), $data)),
+            'session_id' => self::str(Read::text(ScoredData::session_id(), $data)),
+            'cookie_id' => self::str(Read::text(ScoredData::cookie_id(), $data)),
+            'user_hid' => self::userHid(Read::text(ScoredData::user_hid(), $data)),
+            'domain' => self::str(Read::text(ScoredData::domain(), $data)),
+            'public_ip' => self::ipObject(Read::collection(ScoredData::public_ip(), $data), IpInfo::ip(), IpInfo::country()),
+            'local_ip' => self::ipObject(Read::collection(ScoredData::local_ip(), $data), LocalIpInfo::ip(), LocalIpInfo::country()),
+            'connection_type' => self::str(Read::text(ScoredData::connection_type(), $data)),
+            'os' => self::str(Read::text(ScoredData::os(), $data)),
+            'browser' => self::str(Read::text(ScoredData::browser(), $data)),
+            'device_type' => self::str(Read::text(ScoredData::device_type(), $data)),
             'traffic_source' => $trafficSource,
-            'risk_score' => self::int($data['risk_score'] ?? null),
+            'risk_score' => self::int(Read::integer(ScoredData::risk_score(), $data)),
             'signals' => $signals,
             'detection_flags' => $flags,
-            'observed_at' => self::parseRfc3339($data['observed_at'] ?? null),
+            'observed_at' => self::parseRfc3339(Read::text(ScoredData::observed_at(), $data)),
             'source' => 'webhook',
         ];
     }
@@ -350,15 +399,18 @@ final class Normalizer
     }
 
     /**
+     * @param Field<string> $ipField
+     * @param Field<string> $countryField
+     *
      * @return array{ip: string, country: string}
      */
-    private static function ipObject(mixed $value): array
+    private static function ipObject(mixed $value, Field $ipField, Field $countryField): array
     {
         $object = \is_array($value) ? $value : [];
 
         return [
-            'ip' => self::ip($object['ip'] ?? null),
-            'country' => self::orEmpty($object['country'] ?? null),
+            'ip' => self::ip(Read::text($ipField, $object)),
+            'country' => self::orEmpty(Read::text($countryField, $object)),
         ];
     }
 
