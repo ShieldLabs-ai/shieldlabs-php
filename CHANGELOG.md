@@ -8,7 +8,13 @@ follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- `sync.sh` downloads the OpenAPI description and `generate.sh` rebuilds `generated/` from it. The supported client is unchanged.
+- The supported client consumes generated OpenAPI wire fields for History, profiles,
+  webhooks and request parameters, with compile-time contract drift checks and
+  unchanged tolerant normalization and raw payload access.
+- `composer generate:wire`, `composer check:wire` and `composer check:contract`
+  reproduce the wire layer and test incompatible and additive schema changes.
+- `sync.sh` downloads the OpenAPI description and `generate.sh` rebuilds the
+  optional standalone reference client in `generated/`.
 
 ## [1.0.0] - 2026-09-30
 

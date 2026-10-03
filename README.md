@@ -429,13 +429,27 @@ Enums: `LookupType`, `RiskBand` (`Trusted`, `Suspicious`, `Dangerous`, `RateLimi
 
 ## Development
 
-Refresh the generated client when the API description changes. This does not replace the supported library in this repository.
+The supported client reads History, profile and webhook data through the generated
+wire fields in `src/Internal/Wire/Generated/`. Their declared types are checked by
+PHPStan at every normalization boundary. History/profile paths, History query
+parameters and the Management domain header also use the generated contract. Raw input remains
+unvalidated here: the existing normalizers preserve unknown fields, future strings,
+missing/null defaults and the original payload.
 
 ```bash
 ./sync.sh      # download the current OpenAPI description into resources/
-./generate.sh  # rebuild generated/ from that file
+composer generate:wire # rebuild the fields used by the supported client
+composer check:wire    # byte-for-byte freshness check
+composer check:contract # incompatible schema mutations fail in real client code
 ```
 
+The optional `./generate.sh` still builds the standalone reference client in
+`generated/`; that transport is not used by this library. YAML parsing is a development
+dependency only. The installed SDK uses the checked-in generated PHP files.
+HTTP-method changes on supported GET operations, unsupported new required request
+parameters, changes to a consumed parameter's location, and incompatible ping/scored
+envelope fields stop generation. Optional
+new request parameters are ignored until explicitly supported by the client.
 
 ```bash
 composer install

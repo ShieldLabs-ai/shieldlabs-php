@@ -10,6 +10,8 @@ use ShieldLabs\Event\WebhookPingEvent;
 use ShieldLabs\Exception\SignatureVerificationException;
 use ShieldLabs\Exception\WebhookParseException;
 use ShieldLabs\Internal\Normalizer;
+use ShieldLabs\Internal\Wire\Generated\WebhookEnvelope;
+use ShieldLabs\Internal\Wire\Read;
 use ShieldLabs\Model\Identification;
 
 /**
@@ -109,16 +111,17 @@ final class Webhook
         if (!\is_array($body) || ($body !== [] && array_is_list($body))) {
             throw new WebhookParseException('The webhook body is not a JSON object.');
         }
-        $eventType = $body['event_type'] ?? null;
+        $eventType = Read::text(WebhookEnvelope::event_type(), $body);
         if (!\is_string($eventType) || $eventType === '') {
             throw new WebhookParseException('The webhook body has no event_type.');
         }
-        $schemaVersion = \is_string($body['schema_version'] ?? null) ? $body['schema_version'] : '';
-        $createdAt = Normalizer::parseRfc3339($body['created_at'] ?? null);
+        $version = Read::text(WebhookEnvelope::schema_version(), $body);
+        $schemaVersion = \is_string($version) ? $version : '';
+        $createdAt = Normalizer::parseRfc3339(Read::text(WebhookEnvelope::created_at(), $body));
 
         switch ($eventType) {
             case IdentificationScoredEvent::TYPE:
-                $data = $body['data'] ?? null;
+                $data = Read::collection(WebhookEnvelope::data(), $body);
                 if (!\is_array($data) || ($data !== [] && array_is_list($data))) {
                     throw new WebhookParseException('The identification.scored event has no data object.');
                 }

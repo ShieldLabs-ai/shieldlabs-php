@@ -6,6 +6,8 @@ namespace ShieldLabs\Model;
 
 use ShieldLabs\Internal\Normalizer;
 use ShieldLabs\Internal\Time;
+use ShieldLabs\Internal\Wire\Generated\DomainProfile as WireProfile;
+use ShieldLabs\Internal\Wire\Read;
 
 /**
  * Domain profile from the Management API.
@@ -36,18 +38,18 @@ final class DomainProfile implements \JsonSerializable
      */
     public static function fromArray(array $body): self
     {
-        $string = static fn(string $key): string => \is_string($body[$key] ?? null) ? $body[$key] : '';
-        $weight = $body['Weight'] ?? null;
+        $string = static fn(mixed $value): string => \is_string($value) ? $value : '';
+        $weight = Read::integer(WireProfile::Weight(), $body);
         if (\is_float($weight) && is_finite($weight)) {
             $weight = (int) $weight;
         }
 
         return new self(
-            domain: $string('Domain'),
+            domain: $string(Read::text(WireProfile::Domain(), $body)),
             remaining_identifications: \is_int($weight) ? $weight : 0,
-            public_key_masked: $string('PublicKey'),
-            secret_key_masked: $string('Secret'),
-            created_at: Normalizer::parseRfc3339($body['CreatedAt'] ?? null),
+            public_key_masked: $string(Read::text(WireProfile::PublicKey(), $body)),
+            secret_key_masked: $string(Read::text(WireProfile::Secret(), $body)),
+            created_at: Normalizer::parseRfc3339(Read::text(WireProfile::CreatedAt(), $body)),
             raw: $body,
         );
     }
