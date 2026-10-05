@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace ShieldLabs\Model;
 
+use ShieldLabs\Internal\Wire\Generated\HistoryPage as WirePage;
+use ShieldLabs\Internal\Wire\Read;
+
 /**
  * One page of History API results, newest first.
  *
@@ -27,7 +30,7 @@ final class HistoryPage implements \IteratorAggregate, \Countable
      */
     public static function fromArray(array $body): self
     {
-        $rows = $body['data'] ?? null;
+        $rows = Read::collection(WirePage::data(), $body);
         $data = [];
         if (\is_array($rows)) {
             foreach ($rows as $row) {
@@ -36,7 +39,7 @@ final class HistoryPage implements \IteratorAggregate, \Countable
                 }
             }
         }
-        $total = $body['total'] ?? null;
+        $total = Read::integer(WirePage::total(), $body);
         if (\is_float($total) && is_finite($total)) {
             $total = (int) $total;
         }

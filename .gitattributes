@@ -15,6 +15,7 @@
 /phpunit.xml.dist export-ignore
 /CONTRIBUTING.md export-ignore
 generated/** linguist-generated
+src/Internal/Wire/Generated/** linguist-generated
 resources/shieldlabs-api.yaml linguist-generated
 sync.sh text eol=lf
 generate.sh text eol=lf

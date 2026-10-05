@@ -32,7 +32,7 @@ final class HistorySearchTest extends TestCase
         );
         self::assertSame('Bearer ' . Clients::API_KEY, $request->getHeaderLine('Authorization'));
         self::assertSame('application/json', $request->getHeaderLine('Accept'));
-        self::assertMatchesRegularExpression('#^shieldlabs-php/1\.0\.0 \(PHP \d+\.\d+\.\d+.*; \w+\)$#', $request->getHeaderLine('User-Agent'));
+        self::assertMatchesRegularExpression('#^shieldlabs-php/1\.0\.1 \(PHP \d+\.\d+\.\d+.*; \w+\)$#', $request->getHeaderLine('User-Agent'));
         self::assertSame('', (string) $request->getBody());
     }
 
@@ -371,6 +371,6 @@ final class HistorySearchTest extends TestCase
     {
         $changelog = (string) file_get_contents(\dirname(__DIR__, 2) . '/CHANGELOG.md');
 
-        self::assertStringContainsString('## [' . ShieldLabs::VERSION . '] - 2026-09-30', $changelog);
+        self::assertStringContainsString('## [' . ShieldLabs::VERSION . '] - 2026-10-05', $changelog);
     }
 }
