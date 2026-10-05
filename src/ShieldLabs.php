@@ -31,7 +31,7 @@ use ShieldLabs\Resource\Identifications;
  */
 final class ShieldLabs
 {
-    public const VERSION = '1.0.0';
+    public const VERSION = '1.0.1';
     public const DEFAULT_BASE_URL = 'https://account.shieldlabs.ai';
     public const DEFAULT_TIMEOUT = 10.0;
     public const DEFAULT_MAX_RETRIES = 2;

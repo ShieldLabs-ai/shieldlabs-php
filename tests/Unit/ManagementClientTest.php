@@ -39,7 +39,7 @@ final class ManagementClientTest extends TestCase
         self::assertSame('example.com', $request->getHeaderLine('X-Shield-Domain'));
         self::assertSame('Bearer ' . Clients::SECRET_KEY, $request->getHeaderLine('Authorization'));
         self::assertSame('application/json', $request->getHeaderLine('Accept'));
-        self::assertStringStartsWith('shieldlabs-php/1.0.0 ', $request->getHeaderLine('User-Agent'));
+        self::assertStringStartsWith('shieldlabs-php/1.0.1 ', $request->getHeaderLine('User-Agent'));
         self::assertSame('example.com', $client->getDomain());
     }
 
