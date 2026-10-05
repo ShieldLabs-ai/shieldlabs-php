@@ -61,7 +61,8 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $openAPITypes = [
         'event_type' => 'string',
         'schema_version' => 'string',
-        'created_at' => '\DateTime'
+        'created_at' => '\DateTime',
+        'event_id' => 'string'
     ];
 
     /**
@@ -74,7 +75,8 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $openAPIFormats = [
         'event_type' => null,
         'schema_version' => null,
-        'created_at' => 'date-time'
+        'created_at' => 'date-time',
+        'event_id' => null
     ];
 
     /**
@@ -85,7 +87,8 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static array $openAPINullables = [
         'event_type' => false,
         'schema_version' => false,
-        'created_at' => false
+        'created_at' => false,
+        'event_id' => false
     ];
 
     /**
@@ -176,7 +179,8 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $attributeMap = [
         'event_type' => 'event_type',
         'schema_version' => 'schema_version',
-        'created_at' => 'created_at'
+        'created_at' => 'created_at',
+        'event_id' => 'event_id'
     ];
 
     /**
@@ -187,7 +191,8 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $setters = [
         'event_type' => 'setEventType',
         'schema_version' => 'setSchemaVersion',
-        'created_at' => 'setCreatedAt'
+        'created_at' => 'setCreatedAt',
+        'event_id' => 'setEventId'
     ];
 
     /**
@@ -198,7 +203,8 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $getters = [
         'event_type' => 'getEventType',
         'schema_version' => 'getSchemaVersion',
-        'created_at' => 'getCreatedAt'
+        'created_at' => 'getCreatedAt',
+        'event_id' => 'getEventId'
     ];
 
     /**
@@ -274,6 +280,7 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('event_type', $data ?? [], null);
         $this->setIfExists('schema_version', $data ?? [], null);
         $this->setIfExists('created_at', $data ?? [], null);
+        $this->setIfExists('event_id', $data ?? [], null);
     }
 
     /**
@@ -327,6 +334,10 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
         }
         if (!preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/", $this->container['created_at'])) {
             $invalidProperties[] = "invalid value for 'created_at', must be conform to the pattern /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/.";
+        }
+
+        if (!is_null($this->container['event_id']) && (mb_strlen($this->container['event_id']) < 1)) {
+            $invalidProperties[] = "invalid value for 'event_id', the character length must be bigger than or equal to 1.";
         }
 
         return $invalidProperties;
@@ -394,7 +405,7 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets schema_version
      *
-     * @param string $schema_version Version of the webhook payload contract. Every event sent today carries `2026-06-01`. Accept other values, so that a future version does not break your handler.
+     * @param string $schema_version Webhook contract version. Current release 2026-10-06; parsers also accept legacy 2026-06-01.
      *
      * @return self
      */
@@ -441,6 +452,38 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
         }
 
         $this->container['created_at'] = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * Gets event_id
+     *
+     * @return string|null
+     */
+    public function getEventId()
+    {
+        return $this->container['event_id'];
+    }
+
+    /**
+     * Sets event_id
+     *
+     * @param string|null $event_id event_id
+     *
+     * @return self
+     */
+    public function setEventId($event_id)
+    {
+        if (is_null($event_id)) {
+            throw new \InvalidArgumentException('non-nullable event_id cannot be null');
+        }
+
+        if ((mb_strlen($event_id) < 1)) {
+            throw new \InvalidArgumentException('invalid length for $event_id when calling WebhookPingEvent., must be bigger than or equal to 1.');
+        }
+
+        $this->container['event_id'] = $event_id;
 
         return $this;
     }

@@ -10,6 +10,9 @@ lib/HeaderSelector.php
 lib/Model/DetectionFlags.php
 lib/Model/DomainProfile.php
 lib/Model/ErrorBody.php
+lib/Model/Fingerprint.php
+lib/Model/HRE.php
+lib/Model/HREResult.php
 lib/Model/HealthStatus.php
 lib/Model/HistoryPage.php
 lib/Model/HistoryRow.php
@@ -18,6 +21,7 @@ lib/Model/IdentificationScoredEvent.php
 lib/Model/IpInfo.php
 lib/Model/LegacySnapshot.php
 lib/Model/ModelInterface.php
+lib/Model/RiskEvent.php
 lib/Model/ScoreDetail.php
 lib/Model/Signal.php
 lib/Model/TrafficSource.php

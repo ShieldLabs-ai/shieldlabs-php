@@ -36,7 +36,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * DetectionFlags Class Doc Comment
  *
  * @category Class
- * @description Stable yes/no verdicts for the identification. Always all 19 keys. Branch on these flags and on the Risk Score; signal names are for display and logging.  When &#x60;search_bot&#x60; is &#x60;true&#x60;, &#x60;incognito&#x60;, &#x60;check_incomplete&#x60;, &#x60;ip_mismatch&#x60; and &#x60;javascript_disabled&#x60; are always &#x60;false&#x60;.
+ * @description Stable yes/no verdicts for the identification. Legacy 19 keys are always present; the four extension flags are present in schema 2026-10-06. Branch on these flags and on the Risk Score; signal names are for display and logging.  When &#x60;search_bot&#x60; is &#x60;true&#x60;, &#x60;incognito&#x60;, &#x60;check_incomplete&#x60;, &#x60;ip_mismatch&#x60; and &#x60;javascript_disabled&#x60; are always &#x60;false&#x60;.
  * @package  ShieldLabs\Generated
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -77,7 +77,11 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => 'bool',
         'javascript_disabled' => 'bool',
         'stun_not_checked' => 'bool',
-        'check_incomplete' => 'bool'
+        'check_incomplete' => 'bool',
+        'os_mismatch2' => 'bool',
+        'device_spoofing' => 'bool',
+        'latency_test' => 'bool',
+        'banned_ip' => 'bool'
     ];
 
     /**
@@ -106,7 +110,11 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => null,
         'javascript_disabled' => null,
         'stun_not_checked' => null,
-        'check_incomplete' => null
+        'check_incomplete' => null,
+        'os_mismatch2' => null,
+        'device_spoofing' => null,
+        'latency_test' => null,
+        'banned_ip' => null
     ];
 
     /**
@@ -133,7 +141,11 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => false,
         'javascript_disabled' => false,
         'stun_not_checked' => false,
-        'check_incomplete' => false
+        'check_incomplete' => false,
+        'os_mismatch2' => false,
+        'device_spoofing' => false,
+        'latency_test' => false,
+        'banned_ip' => false
     ];
 
     /**
@@ -240,7 +252,11 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => 'suspicious_paid_click',
         'javascript_disabled' => 'javascript_disabled',
         'stun_not_checked' => 'stun_not_checked',
-        'check_incomplete' => 'check_incomplete'
+        'check_incomplete' => 'check_incomplete',
+        'os_mismatch2' => 'os_mismatch2',
+        'device_spoofing' => 'device_spoofing',
+        'latency_test' => 'latency_test',
+        'banned_ip' => 'banned_ip'
     ];
 
     /**
@@ -267,7 +283,11 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => 'setSuspiciousPaidClick',
         'javascript_disabled' => 'setJavascriptDisabled',
         'stun_not_checked' => 'setStunNotChecked',
-        'check_incomplete' => 'setCheckIncomplete'
+        'check_incomplete' => 'setCheckIncomplete',
+        'os_mismatch2' => 'setOsMismatch2',
+        'device_spoofing' => 'setDeviceSpoofing',
+        'latency_test' => 'setLatencyTest',
+        'banned_ip' => 'setBannedIp'
     ];
 
     /**
@@ -294,7 +314,11 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => 'getSuspiciousPaidClick',
         'javascript_disabled' => 'getJavascriptDisabled',
         'stun_not_checked' => 'getStunNotChecked',
-        'check_incomplete' => 'getCheckIncomplete'
+        'check_incomplete' => 'getCheckIncomplete',
+        'os_mismatch2' => 'getOsMismatch2',
+        'device_spoofing' => 'getDeviceSpoofing',
+        'latency_test' => 'getLatencyTest',
+        'banned_ip' => 'getBannedIp'
     ];
 
     /**
@@ -373,6 +397,10 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('javascript_disabled', $data ?? [], null);
         $this->setIfExists('stun_not_checked', $data ?? [], null);
         $this->setIfExists('check_incomplete', $data ?? [], null);
+        $this->setIfExists('os_mismatch2', $data ?? [], null);
+        $this->setIfExists('device_spoofing', $data ?? [], null);
+        $this->setIfExists('latency_test', $data ?? [], null);
+        $this->setIfExists('banned_ip', $data ?? [], null);
     }
 
     /**
@@ -983,6 +1011,114 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable check_incomplete cannot be null');
         }
         $this->container['check_incomplete'] = $check_incomplete;
+
+        return $this;
+    }
+
+    /**
+     * Gets os_mismatch2
+     *
+     * @return bool|null
+     */
+    public function getOsMismatch2()
+    {
+        return $this->container['os_mismatch2'];
+    }
+
+    /**
+     * Sets os_mismatch2
+     *
+     * @param bool|null $os_mismatch2 os_mismatch2
+     *
+     * @return self
+     */
+    public function setOsMismatch2($os_mismatch2)
+    {
+        if (is_null($os_mismatch2)) {
+            throw new \InvalidArgumentException('non-nullable os_mismatch2 cannot be null');
+        }
+        $this->container['os_mismatch2'] = $os_mismatch2;
+
+        return $this;
+    }
+
+    /**
+     * Gets device_spoofing
+     *
+     * @return bool|null
+     */
+    public function getDeviceSpoofing()
+    {
+        return $this->container['device_spoofing'];
+    }
+
+    /**
+     * Sets device_spoofing
+     *
+     * @param bool|null $device_spoofing device_spoofing
+     *
+     * @return self
+     */
+    public function setDeviceSpoofing($device_spoofing)
+    {
+        if (is_null($device_spoofing)) {
+            throw new \InvalidArgumentException('non-nullable device_spoofing cannot be null');
+        }
+        $this->container['device_spoofing'] = $device_spoofing;
+
+        return $this;
+    }
+
+    /**
+     * Gets latency_test
+     *
+     * @return bool|null
+     */
+    public function getLatencyTest()
+    {
+        return $this->container['latency_test'];
+    }
+
+    /**
+     * Sets latency_test
+     *
+     * @param bool|null $latency_test latency_test
+     *
+     * @return self
+     */
+    public function setLatencyTest($latency_test)
+    {
+        if (is_null($latency_test)) {
+            throw new \InvalidArgumentException('non-nullable latency_test cannot be null');
+        }
+        $this->container['latency_test'] = $latency_test;
+
+        return $this;
+    }
+
+    /**
+     * Gets banned_ip
+     *
+     * @return bool|null
+     */
+    public function getBannedIp()
+    {
+        return $this->container['banned_ip'];
+    }
+
+    /**
+     * Sets banned_ip
+     *
+     * @param bool|null $banned_ip banned_ip
+     *
+     * @return self
+     */
+    public function setBannedIp($banned_ip)
+    {
+        if (is_null($banned_ip)) {
+            throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');
+        }
+        $this->container['banned_ip'] = $banned_ip;
 
         return $this;
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * IdentificationScoredEvent
+ * RiskEvent
  *
  * PHP version 8.1
  *
@@ -33,16 +33,15 @@ use \ArrayAccess;
 use \ShieldLabs\Generated\ObjectSerializer;
 
 /**
- * IdentificationScoredEvent Class Doc Comment
+ * RiskEvent Class Doc Comment
  *
  * @category Class
- * @description Body of an &#x60;identification.scored&#x60; delivery. The signature is not part of the body: it arrives in the &#x60;X-Shield-Signature&#x60; header.
  * @package  ShieldLabs\Generated
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSerializable
+class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -51,7 +50,7 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
      *
      * @var string
      */
-    protected static $openAPIModelName = 'IdentificationScoredEvent';
+    protected static $openAPIModelName = 'RiskEvent';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -59,12 +58,11 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
      * @var string[]
      */
     protected static $openAPITypes = [
-        'event_type' => 'string',
-        'schema_version' => 'string',
-        'created_at' => '\DateTime',
-        'data' => '\ShieldLabs\Generated\Model\IdentificationScoredData',
-        'event_id' => 'string',
-        'site_id' => 'int'
+        'code' => 'string',
+        'detected' => 'bool',
+        'weight' => 'int',
+        'contribution' => 'int',
+        'status' => 'string'
     ];
 
     /**
@@ -75,12 +73,11 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'event_type' => null,
-        'schema_version' => null,
-        'created_at' => 'date-time',
-        'data' => null,
-        'event_id' => null,
-        'site_id' => null
+        'code' => null,
+        'detected' => null,
+        'weight' => null,
+        'contribution' => null,
+        'status' => null
     ];
 
     /**
@@ -89,12 +86,11 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'event_type' => false,
-        'schema_version' => false,
-        'created_at' => false,
-        'data' => false,
-        'event_id' => false,
-        'site_id' => false
+        'code' => false,
+        'detected' => false,
+        'weight' => false,
+        'contribution' => false,
+        'status' => false
     ];
 
     /**
@@ -183,12 +179,11 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
      * @var string[]
      */
     protected static $attributeMap = [
-        'event_type' => 'event_type',
-        'schema_version' => 'schema_version',
-        'created_at' => 'created_at',
-        'data' => 'data',
-        'event_id' => 'event_id',
-        'site_id' => 'site_id'
+        'code' => 'code',
+        'detected' => 'detected',
+        'weight' => 'weight',
+        'contribution' => 'contribution',
+        'status' => 'status'
     ];
 
     /**
@@ -197,12 +192,11 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
      * @var string[]
      */
     protected static $setters = [
-        'event_type' => 'setEventType',
-        'schema_version' => 'setSchemaVersion',
-        'created_at' => 'setCreatedAt',
-        'data' => 'setData',
-        'event_id' => 'setEventId',
-        'site_id' => 'setSiteId'
+        'code' => 'setCode',
+        'detected' => 'setDetected',
+        'weight' => 'setWeight',
+        'contribution' => 'setContribution',
+        'status' => 'setStatus'
     ];
 
     /**
@@ -211,12 +205,11 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
      * @var string[]
      */
     protected static $getters = [
-        'event_type' => 'getEventType',
-        'schema_version' => 'getSchemaVersion',
-        'created_at' => 'getCreatedAt',
-        'data' => 'getData',
-        'event_id' => 'getEventId',
-        'site_id' => 'getSiteId'
+        'code' => 'getCode',
+        'detected' => 'getDetected',
+        'weight' => 'getWeight',
+        'contribution' => 'getContribution',
+        'status' => 'getStatus'
     ];
 
     /**
@@ -276,12 +269,11 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('event_type', $data ?? [], null);
-        $this->setIfExists('schema_version', $data ?? [], null);
-        $this->setIfExists('created_at', $data ?? [], null);
-        $this->setIfExists('data', $data ?? [], null);
-        $this->setIfExists('event_id', $data ?? [], null);
-        $this->setIfExists('site_id', $data ?? [], null);
+        $this->setIfExists('code', $data ?? [], null);
+        $this->setIfExists('detected', $data ?? [], null);
+        $this->setIfExists('weight', $data ?? [], null);
+        $this->setIfExists('contribution', $data ?? [], null);
+        $this->setIfExists('status', $data ?? [], null);
     }
 
     /**
@@ -311,34 +303,21 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
     {
         $invalidProperties = [];
 
-        if ($this->container['event_type'] === null) {
-            $invalidProperties[] = "'event_type' can't be null";
+        if ($this->container['code'] === null) {
+            $invalidProperties[] = "'code' can't be null";
         }
-        if ($this->container['schema_version'] === null) {
-            $invalidProperties[] = "'schema_version' can't be null";
+        if ($this->container['detected'] === null) {
+            $invalidProperties[] = "'detected' can't be null";
         }
-        if ((mb_strlen($this->container['schema_version']) < 1)) {
-            $invalidProperties[] = "invalid value for 'schema_version', the character length must be bigger than or equal to 1.";
+        if ($this->container['weight'] === null) {
+            $invalidProperties[] = "'weight' can't be null";
         }
-
-        if ($this->container['created_at'] === null) {
-            $invalidProperties[] = "'created_at' can't be null";
+        if ($this->container['contribution'] === null) {
+            $invalidProperties[] = "'contribution' can't be null";
         }
-        if (!preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/", $this->container['created_at'])) {
-            $invalidProperties[] = "invalid value for 'created_at', must be conform to the pattern /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/.";
+        if ($this->container['status'] === null) {
+            $invalidProperties[] = "'status' can't be null";
         }
-
-        if ($this->container['data'] === null) {
-            $invalidProperties[] = "'data' can't be null";
-        }
-        if (!is_null($this->container['event_id']) && (mb_strlen($this->container['event_id']) < 1)) {
-            $invalidProperties[] = "invalid value for 'event_id', the character length must be bigger than or equal to 1.";
-        }
-
-        if (!is_null($this->container['site_id']) && ($this->container['site_id'] < 1)) {
-            $invalidProperties[] = "invalid value for 'site_id', must be bigger than or equal to 1.";
-        }
-
         return $invalidProperties;
     }
 
@@ -355,183 +334,136 @@ class IdentificationScoredEvent implements ModelInterface, ArrayAccess, \JsonSer
 
 
     /**
-     * Gets event_type
+     * Gets code
      *
      * @return string
      */
-    public function getEventType()
+    public function getCode()
     {
-        return $this->container['event_type'];
+        return $this->container['code'];
     }
 
     /**
-     * Sets event_type
+     * Sets code
      *
-     * @param string $event_type Event type. Ignore events whose type you do not know instead of failing.
+     * @param string $code code
      *
      * @return self
      */
-    public function setEventType($event_type)
+    public function setCode($code)
     {
-        if (is_null($event_type)) {
-            throw new \InvalidArgumentException('non-nullable event_type cannot be null');
+        if (is_null($code)) {
+            throw new \InvalidArgumentException('non-nullable code cannot be null');
         }
-        $this->container['event_type'] = $event_type;
+        $this->container['code'] = $code;
 
         return $this;
     }
 
     /**
-     * Gets schema_version
+     * Gets detected
+     *
+     * @return bool
+     */
+    public function getDetected()
+    {
+        return $this->container['detected'];
+    }
+
+    /**
+     * Sets detected
+     *
+     * @param bool $detected Final scoring flag. false does not assert that every underlying probe completed.
+     *
+     * @return self
+     */
+    public function setDetected($detected)
+    {
+        if (is_null($detected)) {
+            throw new \InvalidArgumentException('non-nullable detected cannot be null');
+        }
+        $this->container['detected'] = $detected;
+
+        return $this;
+    }
+
+    /**
+     * Gets weight
+     *
+     * @return int
+     */
+    public function getWeight()
+    {
+        return $this->container['weight'];
+    }
+
+    /**
+     * Sets weight
+     *
+     * @param int $weight Catalogue weight, not an additive score. Banned IP 999 is a marker.
+     *
+     * @return self
+     */
+    public function setWeight($weight)
+    {
+        if (is_null($weight)) {
+            throw new \InvalidArgumentException('non-nullable weight cannot be null');
+        }
+        $this->container['weight'] = $weight;
+
+        return $this;
+    }
+
+    /**
+     * Gets contribution
+     *
+     * @return int
+     */
+    public function getContribution()
+    {
+        return $this->container['contribution'];
+    }
+
+    /**
+     * Sets contribution
+     *
+     * @param int $contribution Matching score details, may contain corrections. Never recompute risk_score by summing.
+     *
+     * @return self
+     */
+    public function setContribution($contribution)
+    {
+        if (is_null($contribution)) {
+            throw new \InvalidArgumentException('non-nullable contribution cannot be null');
+        }
+        $this->container['contribution'] = $contribution;
+
+        return $this;
+    }
+
+    /**
+     * Gets status
      *
      * @return string
      */
-    public function getSchemaVersion()
+    public function getStatus()
     {
-        return $this->container['schema_version'];
+        return $this->container['status'];
     }
 
     /**
-     * Sets schema_version
+     * Sets status
      *
-     * @param string $schema_version Webhook contract version. Current release 2026-10-06; parsers also accept legacy 2026-06-01.
+     * @param string $status The final scoring flag has been evaluated. Probe incompleteness is reported by dedicated risk events.
      *
      * @return self
      */
-    public function setSchemaVersion($schema_version)
+    public function setStatus($status)
     {
-        if (is_null($schema_version)) {
-            throw new \InvalidArgumentException('non-nullable schema_version cannot be null');
+        if (is_null($status)) {
+            throw new \InvalidArgumentException('non-nullable status cannot be null');
         }
-
-        if ((mb_strlen($schema_version) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $schema_version when calling IdentificationScoredEvent., must be bigger than or equal to 1.');
-        }
-
-        $this->container['schema_version'] = $schema_version;
-
-        return $this;
-    }
-
-    /**
-     * Gets created_at
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->container['created_at'];
-    }
-
-    /**
-     * Sets created_at
-     *
-     * @param \DateTime $created_at RFC 3339 timestamp in UTC with up to 9 fractional digits (trailing zeros trimmed), for example `2026-09-30T12:34:57.482913041Z`. Parse it with a parser that accepts nanoseconds.
-     *
-     * @return self
-     */
-    public function setCreatedAt($created_at)
-    {
-        if (is_null($created_at)) {
-            throw new \InvalidArgumentException('non-nullable created_at cannot be null');
-        }
-
-        if ((!preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/", ObjectSerializer::toString($created_at)))) {
-            throw new \InvalidArgumentException("invalid value for \$created_at when calling IdentificationScoredEvent., must conform to the pattern /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/.");
-        }
-
-        $this->container['created_at'] = $created_at;
-
-        return $this;
-    }
-
-    /**
-     * Gets data
-     *
-     * @return \ShieldLabs\Generated\Model\IdentificationScoredData
-     */
-    public function getData()
-    {
-        return $this->container['data'];
-    }
-
-    /**
-     * Sets data
-     *
-     * @param \ShieldLabs\Generated\Model\IdentificationScoredData $data data
-     *
-     * @return self
-     */
-    public function setData($data)
-    {
-        if (is_null($data)) {
-            throw new \InvalidArgumentException('non-nullable data cannot be null');
-        }
-        $this->container['data'] = $data;
-
-        return $this;
-    }
-
-    /**
-     * Gets event_id
-     *
-     * @return string|null
-     */
-    public function getEventId()
-    {
-        return $this->container['event_id'];
-    }
-
-    /**
-     * Sets event_id
-     *
-     * @param string|null $event_id Logical site/request/final-result-version/type identity. Stable across retries and endpoints.
-     *
-     * @return self
-     */
-    public function setEventId($event_id)
-    {
-        if (is_null($event_id)) {
-            throw new \InvalidArgumentException('non-nullable event_id cannot be null');
-        }
-
-        if ((mb_strlen($event_id) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $event_id when calling IdentificationScoredEvent., must be bigger than or equal to 1.');
-        }
-
-        $this->container['event_id'] = $event_id;
-
-        return $this;
-    }
-
-    /**
-     * Gets site_id
-     *
-     * @return int|null
-     */
-    public function getSiteId()
-    {
-        return $this->container['site_id'];
-    }
-
-    /**
-     * Sets site_id
-     *
-     * @param int|null $site_id Site scope when available; legacy domain-only accounts omit it.
-     *
-     * @return self
-     */
-    public function setSiteId($site_id)
-    {
-        if (is_null($site_id)) {
-            throw new \InvalidArgumentException('non-nullable site_id cannot be null');
-        }
-
-        if (($site_id < 1)) {
-            throw new \InvalidArgumentException('invalid value for $site_id when calling IdentificationScoredEvent., must be bigger than or equal to 1.');
-        }
-
-        $this->container['site_id'] = $site_id;
+        $this->container['status'] = $status;
 
         return $this;
     }
