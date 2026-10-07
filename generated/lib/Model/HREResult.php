@@ -62,7 +62,8 @@ class HREResult implements ModelInterface, ArrayAccess, \JsonSerializable
         'level' => 'string',
         'reason' => 'string',
         'devices' => 'int',
-        'min_devices' => 'int'
+        'min_devices' => 'int',
+        'cluster_id' => 'string'
     ];
 
     /**
@@ -77,7 +78,8 @@ class HREResult implements ModelInterface, ArrayAccess, \JsonSerializable
         'level' => null,
         'reason' => null,
         'devices' => null,
-        'min_devices' => null
+        'min_devices' => null,
+        'cluster_id' => null
     ];
 
     /**
@@ -90,7 +92,8 @@ class HREResult implements ModelInterface, ArrayAccess, \JsonSerializable
         'level' => true,
         'reason' => false,
         'devices' => false,
-        'min_devices' => false
+        'min_devices' => false,
+        'cluster_id' => true
     ];
 
     /**
@@ -183,7 +186,8 @@ class HREResult implements ModelInterface, ArrayAccess, \JsonSerializable
         'level' => 'level',
         'reason' => 'reason',
         'devices' => 'devices',
-        'min_devices' => 'min_devices'
+        'min_devices' => 'min_devices',
+        'cluster_id' => 'cluster_id'
     ];
 
     /**
@@ -196,7 +200,8 @@ class HREResult implements ModelInterface, ArrayAccess, \JsonSerializable
         'level' => 'setLevel',
         'reason' => 'setReason',
         'devices' => 'setDevices',
-        'min_devices' => 'setMinDevices'
+        'min_devices' => 'setMinDevices',
+        'cluster_id' => 'setClusterId'
     ];
 
     /**
@@ -209,7 +214,8 @@ class HREResult implements ModelInterface, ArrayAccess, \JsonSerializable
         'level' => 'getLevel',
         'reason' => 'getReason',
         'devices' => 'getDevices',
-        'min_devices' => 'getMinDevices'
+        'min_devices' => 'getMinDevices',
+        'cluster_id' => 'getClusterId'
     ];
 
     /**
@@ -274,6 +280,7 @@ class HREResult implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('reason', $data ?? [], null);
         $this->setIfExists('devices', $data ?? [], null);
         $this->setIfExists('min_devices', $data ?? [], null);
+        $this->setIfExists('cluster_id', $data ?? [], null);
     }
 
     /**
@@ -483,6 +490,40 @@ class HREResult implements ModelInterface, ArrayAccess, \JsonSerializable
         }
 
         $this->container['min_devices'] = $min_devices;
+
+        return $this;
+    }
+
+    /**
+     * Gets cluster_id
+     *
+     * @return string|null
+     */
+    public function getClusterId()
+    {
+        return $this->container['cluster_id'];
+    }
+
+    /**
+     * Sets cluster_id
+     *
+     * @param string|null $cluster_id Authoritative cluster ID for this HRE result. Null when no cluster was published for the result, including old stored verdicts; never a device ID. Reused on retries.
+     *
+     * @return self
+     */
+    public function setClusterId($cluster_id)
+    {
+        if (is_null($cluster_id)) {
+            array_push($this->openAPINullablesSetToNull, 'cluster_id');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('cluster_id', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
+        $this->container['cluster_id'] = $cluster_id;
 
         return $this;
     }

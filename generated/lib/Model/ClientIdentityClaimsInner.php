@@ -1,6 +1,6 @@
 <?php
 /**
- * RiskEvent
+ * ClientIdentityClaimsInner
  *
  * PHP version 8.1
  *
@@ -33,7 +33,7 @@ use \ArrayAccess;
 use \ShieldLabs\Generated\ObjectSerializer;
 
 /**
- * RiskEvent Class Doc Comment
+ * ClientIdentityClaimsInner Class Doc Comment
  *
  * @category Class
  * @package  ShieldLabs\Generated
@@ -41,7 +41,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
+class ClientIdentityClaimsInner implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -50,7 +50,7 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @var string
      */
-    protected static $openAPIModelName = 'RiskEvent';
+    protected static $openAPIModelName = 'ClientIdentity_claims_inner';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -58,11 +58,13 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
-        'code' => 'string',
-        'detected' => 'bool',
-        'weight' => 'int',
-        'contribution' => 'int',
-        'status' => 'string'
+        'profile_id' => 'string',
+        'provider_id' => 'string',
+        'provider_name' => 'string',
+        'agent_name' => 'string',
+        'client_kind' => 'string',
+        'purpose' => 'string',
+        'source' => 'string'
     ];
 
     /**
@@ -73,11 +75,13 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'code' => null,
-        'detected' => null,
-        'weight' => null,
-        'contribution' => null,
-        'status' => null
+        'profile_id' => null,
+        'provider_id' => null,
+        'provider_name' => null,
+        'agent_name' => null,
+        'client_kind' => null,
+        'purpose' => null,
+        'source' => null
     ];
 
     /**
@@ -86,11 +90,13 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'code' => false,
-        'detected' => false,
-        'weight' => false,
-        'contribution' => false,
-        'status' => false
+        'profile_id' => false,
+        'provider_id' => false,
+        'provider_name' => false,
+        'agent_name' => false,
+        'client_kind' => false,
+        'purpose' => false,
+        'source' => false
     ];
 
     /**
@@ -179,11 +185,13 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'code' => 'code',
-        'detected' => 'detected',
-        'weight' => 'weight',
-        'contribution' => 'contribution',
-        'status' => 'status'
+        'profile_id' => 'profile_id',
+        'provider_id' => 'provider_id',
+        'provider_name' => 'provider_name',
+        'agent_name' => 'agent_name',
+        'client_kind' => 'client_kind',
+        'purpose' => 'purpose',
+        'source' => 'source'
     ];
 
     /**
@@ -192,11 +200,13 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'code' => 'setCode',
-        'detected' => 'setDetected',
-        'weight' => 'setWeight',
-        'contribution' => 'setContribution',
-        'status' => 'setStatus'
+        'profile_id' => 'setProfileId',
+        'provider_id' => 'setProviderId',
+        'provider_name' => 'setProviderName',
+        'agent_name' => 'setAgentName',
+        'client_kind' => 'setClientKind',
+        'purpose' => 'setPurpose',
+        'source' => 'setSource'
     ];
 
     /**
@@ -205,11 +215,13 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'code' => 'getCode',
-        'detected' => 'getDetected',
-        'weight' => 'getWeight',
-        'contribution' => 'getContribution',
-        'status' => 'getStatus'
+        'profile_id' => 'getProfileId',
+        'provider_id' => 'getProviderId',
+        'provider_name' => 'getProviderName',
+        'agent_name' => 'getAgentName',
+        'client_kind' => 'getClientKind',
+        'purpose' => 'getPurpose',
+        'source' => 'getSource'
     ];
 
     /**
@@ -269,11 +281,13 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('code', $data ?? [], null);
-        $this->setIfExists('detected', $data ?? [], null);
-        $this->setIfExists('weight', $data ?? [], null);
-        $this->setIfExists('contribution', $data ?? [], null);
-        $this->setIfExists('status', $data ?? [], null);
+        $this->setIfExists('profile_id', $data ?? [], null);
+        $this->setIfExists('provider_id', $data ?? [], null);
+        $this->setIfExists('provider_name', $data ?? [], null);
+        $this->setIfExists('agent_name', $data ?? [], null);
+        $this->setIfExists('client_kind', $data ?? [], null);
+        $this->setIfExists('purpose', $data ?? [], null);
+        $this->setIfExists('source', $data ?? [], null);
     }
 
     /**
@@ -303,20 +317,26 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['code'] === null) {
-            $invalidProperties[] = "'code' can't be null";
+        if ($this->container['profile_id'] === null) {
+            $invalidProperties[] = "'profile_id' can't be null";
         }
-        if ($this->container['detected'] === null) {
-            $invalidProperties[] = "'detected' can't be null";
+        if ($this->container['provider_id'] === null) {
+            $invalidProperties[] = "'provider_id' can't be null";
         }
-        if ($this->container['weight'] === null) {
-            $invalidProperties[] = "'weight' can't be null";
+        if ($this->container['provider_name'] === null) {
+            $invalidProperties[] = "'provider_name' can't be null";
         }
-        if ($this->container['contribution'] === null) {
-            $invalidProperties[] = "'contribution' can't be null";
+        if ($this->container['agent_name'] === null) {
+            $invalidProperties[] = "'agent_name' can't be null";
         }
-        if ($this->container['status'] === null) {
-            $invalidProperties[] = "'status' can't be null";
+        if ($this->container['client_kind'] === null) {
+            $invalidProperties[] = "'client_kind' can't be null";
+        }
+        if ($this->container['purpose'] === null) {
+            $invalidProperties[] = "'purpose' can't be null";
+        }
+        if ($this->container['source'] === null) {
+            $invalidProperties[] = "'source' can't be null";
         }
         return $invalidProperties;
     }
@@ -334,136 +354,190 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets code
+     * Gets profile_id
      *
      * @return string
      */
-    public function getCode()
+    public function getProfileId()
     {
-        return $this->container['code'];
+        return $this->container['profile_id'];
     }
 
     /**
-     * Sets code
+     * Sets profile_id
      *
-     * @param string $code Open catalogue of independent source signals. ai_bot and ai_browser carry weight 0; search_bot remains separate. browser_automation carries weight 90 in task 204 releases. UI Good bot and Bad bot groups are not risk event codes. Keep unknown codes and use the payload scoring_version/result_version for historical interpretation.
+     * @param string $profile_id profile_id
      *
      * @return self
      */
-    public function setCode($code)
+    public function setProfileId($profile_id)
     {
-        if (is_null($code)) {
-            throw new \InvalidArgumentException('non-nullable code cannot be null');
+        if (is_null($profile_id)) {
+            throw new \InvalidArgumentException('non-nullable profile_id cannot be null');
         }
-        $this->container['code'] = $code;
+        $this->container['profile_id'] = $profile_id;
 
         return $this;
     }
 
     /**
-     * Gets detected
-     *
-     * @return bool
-     */
-    public function getDetected()
-    {
-        return $this->container['detected'];
-    }
-
-    /**
-     * Sets detected
-     *
-     * @param bool $detected Final scoring flag. false does not assert that every underlying probe completed.
-     *
-     * @return self
-     */
-    public function setDetected($detected)
-    {
-        if (is_null($detected)) {
-            throw new \InvalidArgumentException('non-nullable detected cannot be null');
-        }
-        $this->container['detected'] = $detected;
-
-        return $this;
-    }
-
-    /**
-     * Gets weight
-     *
-     * @return int
-     */
-    public function getWeight()
-    {
-        return $this->container['weight'];
-    }
-
-    /**
-     * Sets weight
-     *
-     * @param int $weight Catalogue weight, not an additive score. Banned IP 999 is a marker.
-     *
-     * @return self
-     */
-    public function setWeight($weight)
-    {
-        if (is_null($weight)) {
-            throw new \InvalidArgumentException('non-nullable weight cannot be null');
-        }
-        $this->container['weight'] = $weight;
-
-        return $this;
-    }
-
-    /**
-     * Gets contribution
-     *
-     * @return int
-     */
-    public function getContribution()
-    {
-        return $this->container['contribution'];
-    }
-
-    /**
-     * Sets contribution
-     *
-     * @param int $contribution Matching score details, may contain corrections. Never recompute risk_score by summing.
-     *
-     * @return self
-     */
-    public function setContribution($contribution)
-    {
-        if (is_null($contribution)) {
-            throw new \InvalidArgumentException('non-nullable contribution cannot be null');
-        }
-        $this->container['contribution'] = $contribution;
-
-        return $this;
-    }
-
-    /**
-     * Gets status
+     * Gets provider_id
      *
      * @return string
      */
-    public function getStatus()
+    public function getProviderId()
     {
-        return $this->container['status'];
+        return $this->container['provider_id'];
     }
 
     /**
-     * Sets status
+     * Sets provider_id
      *
-     * @param string $status The final scoring flag has been evaluated. Probe incompleteness is reported by dedicated risk events.
+     * @param string $provider_id provider_id
      *
      * @return self
      */
-    public function setStatus($status)
+    public function setProviderId($provider_id)
     {
-        if (is_null($status)) {
-            throw new \InvalidArgumentException('non-nullable status cannot be null');
+        if (is_null($provider_id)) {
+            throw new \InvalidArgumentException('non-nullable provider_id cannot be null');
         }
-        $this->container['status'] = $status;
+        $this->container['provider_id'] = $provider_id;
+
+        return $this;
+    }
+
+    /**
+     * Gets provider_name
+     *
+     * @return string
+     */
+    public function getProviderName()
+    {
+        return $this->container['provider_name'];
+    }
+
+    /**
+     * Sets provider_name
+     *
+     * @param string $provider_name provider_name
+     *
+     * @return self
+     */
+    public function setProviderName($provider_name)
+    {
+        if (is_null($provider_name)) {
+            throw new \InvalidArgumentException('non-nullable provider_name cannot be null');
+        }
+        $this->container['provider_name'] = $provider_name;
+
+        return $this;
+    }
+
+    /**
+     * Gets agent_name
+     *
+     * @return string
+     */
+    public function getAgentName()
+    {
+        return $this->container['agent_name'];
+    }
+
+    /**
+     * Sets agent_name
+     *
+     * @param string $agent_name agent_name
+     *
+     * @return self
+     */
+    public function setAgentName($agent_name)
+    {
+        if (is_null($agent_name)) {
+            throw new \InvalidArgumentException('non-nullable agent_name cannot be null');
+        }
+        $this->container['agent_name'] = $agent_name;
+
+        return $this;
+    }
+
+    /**
+     * Gets client_kind
+     *
+     * @return string
+     */
+    public function getClientKind()
+    {
+        return $this->container['client_kind'];
+    }
+
+    /**
+     * Sets client_kind
+     *
+     * @param string $client_kind client_kind
+     *
+     * @return self
+     */
+    public function setClientKind($client_kind)
+    {
+        if (is_null($client_kind)) {
+            throw new \InvalidArgumentException('non-nullable client_kind cannot be null');
+        }
+        $this->container['client_kind'] = $client_kind;
+
+        return $this;
+    }
+
+    /**
+     * Gets purpose
+     *
+     * @return string
+     */
+    public function getPurpose()
+    {
+        return $this->container['purpose'];
+    }
+
+    /**
+     * Sets purpose
+     *
+     * @param string $purpose purpose
+     *
+     * @return self
+     */
+    public function setPurpose($purpose)
+    {
+        if (is_null($purpose)) {
+            throw new \InvalidArgumentException('non-nullable purpose cannot be null');
+        }
+        $this->container['purpose'] = $purpose;
+
+        return $this;
+    }
+
+    /**
+     * Gets source
+     *
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->container['source'];
+    }
+
+    /**
+     * Sets source
+     *
+     * @param string $source source
+     *
+     * @return self
+     */
+    public function setSource($source)
+    {
+        if (is_null($source)) {
+            throw new \InvalidArgumentException('non-nullable source cannot be null');
+        }
+        $this->container['source'] = $source;
 
         return $this;
     }

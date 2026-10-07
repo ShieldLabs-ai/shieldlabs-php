@@ -1,6 +1,6 @@
 <?php
 /**
- * RiskEvent
+ * ClientIdentityEvidenceInner
  *
  * PHP version 8.1
  *
@@ -33,7 +33,7 @@ use \ArrayAccess;
 use \ShieldLabs\Generated\ObjectSerializer;
 
 /**
- * RiskEvent Class Doc Comment
+ * ClientIdentityEvidenceInner Class Doc Comment
  *
  * @category Class
  * @package  ShieldLabs\Generated
@@ -41,7 +41,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
+class ClientIdentityEvidenceInner implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -50,7 +50,7 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @var string
      */
-    protected static $openAPIModelName = 'RiskEvent';
+    protected static $openAPIModelName = 'ClientIdentity_evidence_inner';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -58,11 +58,16 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
-        'code' => 'string',
-        'detected' => 'bool',
-        'weight' => 'int',
-        'contribution' => 'int',
-        'status' => 'string'
+        'id' => 'string',
+        'method' => 'string',
+        'source_id' => 'string',
+        'source_revision' => 'string',
+        'checked_at' => '\DateTime',
+        'evaluated_at' => '\DateTime',
+        'covered_attributes' => 'string[]',
+        'covered_components' => 'string[]',
+        'request_binding' => 'string',
+        'replay_policy' => 'string'
     ];
 
     /**
@@ -73,11 +78,16 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'code' => null,
-        'detected' => null,
-        'weight' => null,
-        'contribution' => null,
-        'status' => null
+        'id' => null,
+        'method' => null,
+        'source_id' => null,
+        'source_revision' => null,
+        'checked_at' => 'date-time',
+        'evaluated_at' => 'date-time',
+        'covered_attributes' => null,
+        'covered_components' => null,
+        'request_binding' => null,
+        'replay_policy' => null
     ];
 
     /**
@@ -86,11 +96,16 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'code' => false,
-        'detected' => false,
-        'weight' => false,
-        'contribution' => false,
-        'status' => false
+        'id' => false,
+        'method' => false,
+        'source_id' => false,
+        'source_revision' => false,
+        'checked_at' => false,
+        'evaluated_at' => false,
+        'covered_attributes' => false,
+        'covered_components' => false,
+        'request_binding' => false,
+        'replay_policy' => false
     ];
 
     /**
@@ -179,11 +194,16 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'code' => 'code',
-        'detected' => 'detected',
-        'weight' => 'weight',
-        'contribution' => 'contribution',
-        'status' => 'status'
+        'id' => 'id',
+        'method' => 'method',
+        'source_id' => 'source_id',
+        'source_revision' => 'source_revision',
+        'checked_at' => 'checked_at',
+        'evaluated_at' => 'evaluated_at',
+        'covered_attributes' => 'covered_attributes',
+        'covered_components' => 'covered_components',
+        'request_binding' => 'request_binding',
+        'replay_policy' => 'replay_policy'
     ];
 
     /**
@@ -192,11 +212,16 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'code' => 'setCode',
-        'detected' => 'setDetected',
-        'weight' => 'setWeight',
-        'contribution' => 'setContribution',
-        'status' => 'setStatus'
+        'id' => 'setId',
+        'method' => 'setMethod',
+        'source_id' => 'setSourceId',
+        'source_revision' => 'setSourceRevision',
+        'checked_at' => 'setCheckedAt',
+        'evaluated_at' => 'setEvaluatedAt',
+        'covered_attributes' => 'setCoveredAttributes',
+        'covered_components' => 'setCoveredComponents',
+        'request_binding' => 'setRequestBinding',
+        'replay_policy' => 'setReplayPolicy'
     ];
 
     /**
@@ -205,11 +230,16 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'code' => 'getCode',
-        'detected' => 'getDetected',
-        'weight' => 'getWeight',
-        'contribution' => 'getContribution',
-        'status' => 'getStatus'
+        'id' => 'getId',
+        'method' => 'getMethod',
+        'source_id' => 'getSourceId',
+        'source_revision' => 'getSourceRevision',
+        'checked_at' => 'getCheckedAt',
+        'evaluated_at' => 'getEvaluatedAt',
+        'covered_attributes' => 'getCoveredAttributes',
+        'covered_components' => 'getCoveredComponents',
+        'request_binding' => 'getRequestBinding',
+        'replay_policy' => 'getReplayPolicy'
     ];
 
     /**
@@ -269,11 +299,16 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('code', $data ?? [], null);
-        $this->setIfExists('detected', $data ?? [], null);
-        $this->setIfExists('weight', $data ?? [], null);
-        $this->setIfExists('contribution', $data ?? [], null);
-        $this->setIfExists('status', $data ?? [], null);
+        $this->setIfExists('id', $data ?? [], null);
+        $this->setIfExists('method', $data ?? [], null);
+        $this->setIfExists('source_id', $data ?? [], null);
+        $this->setIfExists('source_revision', $data ?? [], null);
+        $this->setIfExists('checked_at', $data ?? [], null);
+        $this->setIfExists('evaluated_at', $data ?? [], null);
+        $this->setIfExists('covered_attributes', $data ?? [], null);
+        $this->setIfExists('covered_components', $data ?? [], null);
+        $this->setIfExists('request_binding', $data ?? [], null);
+        $this->setIfExists('replay_policy', $data ?? [], null);
     }
 
     /**
@@ -303,20 +338,26 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['code'] === null) {
-            $invalidProperties[] = "'code' can't be null";
+        if ($this->container['id'] === null) {
+            $invalidProperties[] = "'id' can't be null";
         }
-        if ($this->container['detected'] === null) {
-            $invalidProperties[] = "'detected' can't be null";
+        if ($this->container['method'] === null) {
+            $invalidProperties[] = "'method' can't be null";
         }
-        if ($this->container['weight'] === null) {
-            $invalidProperties[] = "'weight' can't be null";
+        if ($this->container['source_id'] === null) {
+            $invalidProperties[] = "'source_id' can't be null";
         }
-        if ($this->container['contribution'] === null) {
-            $invalidProperties[] = "'contribution' can't be null";
+        if ($this->container['source_revision'] === null) {
+            $invalidProperties[] = "'source_revision' can't be null";
         }
-        if ($this->container['status'] === null) {
-            $invalidProperties[] = "'status' can't be null";
+        if ($this->container['checked_at'] === null) {
+            $invalidProperties[] = "'checked_at' can't be null";
+        }
+        if ($this->container['evaluated_at'] === null) {
+            $invalidProperties[] = "'evaluated_at' can't be null";
+        }
+        if ($this->container['covered_attributes'] === null) {
+            $invalidProperties[] = "'covered_attributes' can't be null";
         }
         return $invalidProperties;
     }
@@ -334,136 +375,271 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets code
+     * Gets id
      *
      * @return string
      */
-    public function getCode()
+    public function getId()
     {
-        return $this->container['code'];
+        return $this->container['id'];
     }
 
     /**
-     * Sets code
+     * Sets id
      *
-     * @param string $code Open catalogue of independent source signals. ai_bot and ai_browser carry weight 0; search_bot remains separate. browser_automation carries weight 90 in task 204 releases. UI Good bot and Bad bot groups are not risk event codes. Keep unknown codes and use the payload scoring_version/result_version for historical interpretation.
+     * @param string $id id
      *
      * @return self
      */
-    public function setCode($code)
+    public function setId($id)
     {
-        if (is_null($code)) {
-            throw new \InvalidArgumentException('non-nullable code cannot be null');
+        if (is_null($id)) {
+            throw new \InvalidArgumentException('non-nullable id cannot be null');
         }
-        $this->container['code'] = $code;
+        $this->container['id'] = $id;
 
         return $this;
     }
 
     /**
-     * Gets detected
-     *
-     * @return bool
-     */
-    public function getDetected()
-    {
-        return $this->container['detected'];
-    }
-
-    /**
-     * Sets detected
-     *
-     * @param bool $detected Final scoring flag. false does not assert that every underlying probe completed.
-     *
-     * @return self
-     */
-    public function setDetected($detected)
-    {
-        if (is_null($detected)) {
-            throw new \InvalidArgumentException('non-nullable detected cannot be null');
-        }
-        $this->container['detected'] = $detected;
-
-        return $this;
-    }
-
-    /**
-     * Gets weight
-     *
-     * @return int
-     */
-    public function getWeight()
-    {
-        return $this->container['weight'];
-    }
-
-    /**
-     * Sets weight
-     *
-     * @param int $weight Catalogue weight, not an additive score. Banned IP 999 is a marker.
-     *
-     * @return self
-     */
-    public function setWeight($weight)
-    {
-        if (is_null($weight)) {
-            throw new \InvalidArgumentException('non-nullable weight cannot be null');
-        }
-        $this->container['weight'] = $weight;
-
-        return $this;
-    }
-
-    /**
-     * Gets contribution
-     *
-     * @return int
-     */
-    public function getContribution()
-    {
-        return $this->container['contribution'];
-    }
-
-    /**
-     * Sets contribution
-     *
-     * @param int $contribution Matching score details, may contain corrections. Never recompute risk_score by summing.
-     *
-     * @return self
-     */
-    public function setContribution($contribution)
-    {
-        if (is_null($contribution)) {
-            throw new \InvalidArgumentException('non-nullable contribution cannot be null');
-        }
-        $this->container['contribution'] = $contribution;
-
-        return $this;
-    }
-
-    /**
-     * Gets status
+     * Gets method
      *
      * @return string
      */
-    public function getStatus()
+    public function getMethod()
     {
-        return $this->container['status'];
+        return $this->container['method'];
     }
 
     /**
-     * Sets status
+     * Sets method
      *
-     * @param string $status The final scoring flag has been evaluated. Probe incompleteness is reported by dedicated risk events.
+     * @param string $method method
      *
      * @return self
      */
-    public function setStatus($status)
+    public function setMethod($method)
     {
-        if (is_null($status)) {
-            throw new \InvalidArgumentException('non-nullable status cannot be null');
+        if (is_null($method)) {
+            throw new \InvalidArgumentException('non-nullable method cannot be null');
         }
-        $this->container['status'] = $status;
+        $this->container['method'] = $method;
+
+        return $this;
+    }
+
+    /**
+     * Gets source_id
+     *
+     * @return string
+     */
+    public function getSourceId()
+    {
+        return $this->container['source_id'];
+    }
+
+    /**
+     * Sets source_id
+     *
+     * @param string $source_id source_id
+     *
+     * @return self
+     */
+    public function setSourceId($source_id)
+    {
+        if (is_null($source_id)) {
+            throw new \InvalidArgumentException('non-nullable source_id cannot be null');
+        }
+        $this->container['source_id'] = $source_id;
+
+        return $this;
+    }
+
+    /**
+     * Gets source_revision
+     *
+     * @return string
+     */
+    public function getSourceRevision()
+    {
+        return $this->container['source_revision'];
+    }
+
+    /**
+     * Sets source_revision
+     *
+     * @param string $source_revision source_revision
+     *
+     * @return self
+     */
+    public function setSourceRevision($source_revision)
+    {
+        if (is_null($source_revision)) {
+            throw new \InvalidArgumentException('non-nullable source_revision cannot be null');
+        }
+        $this->container['source_revision'] = $source_revision;
+
+        return $this;
+    }
+
+    /**
+     * Gets checked_at
+     *
+     * @return \DateTime
+     */
+    public function getCheckedAt()
+    {
+        return $this->container['checked_at'];
+    }
+
+    /**
+     * Sets checked_at
+     *
+     * @param \DateTime $checked_at checked_at
+     *
+     * @return self
+     */
+    public function setCheckedAt($checked_at)
+    {
+        if (is_null($checked_at)) {
+            throw new \InvalidArgumentException('non-nullable checked_at cannot be null');
+        }
+        $this->container['checked_at'] = $checked_at;
+
+        return $this;
+    }
+
+    /**
+     * Gets evaluated_at
+     *
+     * @return \DateTime
+     */
+    public function getEvaluatedAt()
+    {
+        return $this->container['evaluated_at'];
+    }
+
+    /**
+     * Sets evaluated_at
+     *
+     * @param \DateTime $evaluated_at evaluated_at
+     *
+     * @return self
+     */
+    public function setEvaluatedAt($evaluated_at)
+    {
+        if (is_null($evaluated_at)) {
+            throw new \InvalidArgumentException('non-nullable evaluated_at cannot be null');
+        }
+        $this->container['evaluated_at'] = $evaluated_at;
+
+        return $this;
+    }
+
+    /**
+     * Gets covered_attributes
+     *
+     * @return string[]
+     */
+    public function getCoveredAttributes()
+    {
+        return $this->container['covered_attributes'];
+    }
+
+    /**
+     * Sets covered_attributes
+     *
+     * @param string[] $covered_attributes covered_attributes
+     *
+     * @return self
+     */
+    public function setCoveredAttributes($covered_attributes)
+    {
+        if (is_null($covered_attributes)) {
+            throw new \InvalidArgumentException('non-nullable covered_attributes cannot be null');
+        }
+        $this->container['covered_attributes'] = $covered_attributes;
+
+        return $this;
+    }
+
+    /**
+     * Gets covered_components
+     *
+     * @return string[]|null
+     */
+    public function getCoveredComponents()
+    {
+        return $this->container['covered_components'];
+    }
+
+    /**
+     * Sets covered_components
+     *
+     * @param string[]|null $covered_components covered_components
+     *
+     * @return self
+     */
+    public function setCoveredComponents($covered_components)
+    {
+        if (is_null($covered_components)) {
+            throw new \InvalidArgumentException('non-nullable covered_components cannot be null');
+        }
+        $this->container['covered_components'] = $covered_components;
+
+        return $this;
+    }
+
+    /**
+     * Gets request_binding
+     *
+     * @return string|null
+     */
+    public function getRequestBinding()
+    {
+        return $this->container['request_binding'];
+    }
+
+    /**
+     * Sets request_binding
+     *
+     * @param string|null $request_binding request_binding
+     *
+     * @return self
+     */
+    public function setRequestBinding($request_binding)
+    {
+        if (is_null($request_binding)) {
+            throw new \InvalidArgumentException('non-nullable request_binding cannot be null');
+        }
+        $this->container['request_binding'] = $request_binding;
+
+        return $this;
+    }
+
+    /**
+     * Gets replay_policy
+     *
+     * @return string|null
+     */
+    public function getReplayPolicy()
+    {
+        return $this->container['replay_policy'];
+    }
+
+    /**
+     * Sets replay_policy
+     *
+     * @param string|null $replay_policy replay_policy
+     *
+     * @return self
+     */
+    public function setReplayPolicy($replay_policy)
+    {
+        if (is_null($replay_policy)) {
+            throw new \InvalidArgumentException('non-nullable replay_policy cannot be null');
+        }
+        $this->container['replay_policy'] = $replay_policy;
 
         return $this;
     }
