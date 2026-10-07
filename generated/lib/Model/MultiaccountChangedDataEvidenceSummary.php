@@ -1,6 +1,6 @@
 <?php
 /**
- * RiskEvent
+ * MultiaccountChangedDataEvidenceSummary
  *
  * PHP version 8.1
  *
@@ -33,7 +33,7 @@ use \ArrayAccess;
 use \ShieldLabs\Generated\ObjectSerializer;
 
 /**
- * RiskEvent Class Doc Comment
+ * MultiaccountChangedDataEvidenceSummary Class Doc Comment
  *
  * @category Class
  * @package  ShieldLabs\Generated
@@ -41,7 +41,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
+class MultiaccountChangedDataEvidenceSummary implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -50,7 +50,7 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @var string
      */
-    protected static $openAPIModelName = 'RiskEvent';
+    protected static $openAPIModelName = 'MultiaccountChangedData_evidence_summary';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -58,11 +58,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
-        'code' => 'string',
-        'detected' => 'bool',
-        'weight' => 'int',
-        'contribution' => 'int',
-        'status' => 'string'
+        'basis_types' => 'string[]',
+        'rules' => 'string[]',
+        'detail_truncated' => 'bool'
     ];
 
     /**
@@ -73,11 +71,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'code' => null,
-        'detected' => null,
-        'weight' => null,
-        'contribution' => null,
-        'status' => null
+        'basis_types' => null,
+        'rules' => null,
+        'detail_truncated' => null
     ];
 
     /**
@@ -86,11 +82,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'code' => false,
-        'detected' => false,
-        'weight' => false,
-        'contribution' => false,
-        'status' => false
+        'basis_types' => false,
+        'rules' => false,
+        'detail_truncated' => false
     ];
 
     /**
@@ -179,11 +173,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'code' => 'code',
-        'detected' => 'detected',
-        'weight' => 'weight',
-        'contribution' => 'contribution',
-        'status' => 'status'
+        'basis_types' => 'basis_types',
+        'rules' => 'rules',
+        'detail_truncated' => 'detail_truncated'
     ];
 
     /**
@@ -192,11 +184,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'code' => 'setCode',
-        'detected' => 'setDetected',
-        'weight' => 'setWeight',
-        'contribution' => 'setContribution',
-        'status' => 'setStatus'
+        'basis_types' => 'setBasisTypes',
+        'rules' => 'setRules',
+        'detail_truncated' => 'setDetailTruncated'
     ];
 
     /**
@@ -205,11 +195,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'code' => 'getCode',
-        'detected' => 'getDetected',
-        'weight' => 'getWeight',
-        'contribution' => 'getContribution',
-        'status' => 'getStatus'
+        'basis_types' => 'getBasisTypes',
+        'rules' => 'getRules',
+        'detail_truncated' => 'getDetailTruncated'
     ];
 
     /**
@@ -269,11 +257,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('code', $data ?? [], null);
-        $this->setIfExists('detected', $data ?? [], null);
-        $this->setIfExists('weight', $data ?? [], null);
-        $this->setIfExists('contribution', $data ?? [], null);
-        $this->setIfExists('status', $data ?? [], null);
+        $this->setIfExists('basis_types', $data ?? [], null);
+        $this->setIfExists('rules', $data ?? [], null);
+        $this->setIfExists('detail_truncated', $data ?? [], null);
     }
 
     /**
@@ -303,20 +289,14 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['code'] === null) {
-            $invalidProperties[] = "'code' can't be null";
+        if ($this->container['basis_types'] === null) {
+            $invalidProperties[] = "'basis_types' can't be null";
         }
-        if ($this->container['detected'] === null) {
-            $invalidProperties[] = "'detected' can't be null";
+        if ($this->container['rules'] === null) {
+            $invalidProperties[] = "'rules' can't be null";
         }
-        if ($this->container['weight'] === null) {
-            $invalidProperties[] = "'weight' can't be null";
-        }
-        if ($this->container['contribution'] === null) {
-            $invalidProperties[] = "'contribution' can't be null";
-        }
-        if ($this->container['status'] === null) {
-            $invalidProperties[] = "'status' can't be null";
+        if ($this->container['detail_truncated'] === null) {
+            $invalidProperties[] = "'detail_truncated' can't be null";
         }
         return $invalidProperties;
     }
@@ -334,136 +314,86 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets code
+     * Gets basis_types
      *
-     * @return string
+     * @return string[]
      */
-    public function getCode()
+    public function getBasisTypes()
     {
-        return $this->container['code'];
+        return $this->container['basis_types'];
     }
 
     /**
-     * Sets code
+     * Sets basis_types
      *
-     * @param string $code Open catalogue of independent source signals. ai_bot and ai_browser carry weight 0; search_bot remains separate. browser_automation carries weight 90 in task 204 releases. UI Good bot and Bad bot groups are not risk event codes. Keep unknown codes and use the payload scoring_version/result_version for historical interpretation.
+     * @param string[] $basis_types basis_types
      *
      * @return self
      */
-    public function setCode($code)
+    public function setBasisTypes($basis_types)
     {
-        if (is_null($code)) {
-            throw new \InvalidArgumentException('non-nullable code cannot be null');
+        if (is_null($basis_types)) {
+            throw new \InvalidArgumentException('non-nullable basis_types cannot be null');
         }
-        $this->container['code'] = $code;
+
+
+        $this->container['basis_types'] = $basis_types;
 
         return $this;
     }
 
     /**
-     * Gets detected
+     * Gets rules
+     *
+     * @return string[]
+     */
+    public function getRules()
+    {
+        return $this->container['rules'];
+    }
+
+    /**
+     * Sets rules
+     *
+     * @param string[] $rules rules
+     *
+     * @return self
+     */
+    public function setRules($rules)
+    {
+        if (is_null($rules)) {
+            throw new \InvalidArgumentException('non-nullable rules cannot be null');
+        }
+
+
+        $this->container['rules'] = $rules;
+
+        return $this;
+    }
+
+    /**
+     * Gets detail_truncated
      *
      * @return bool
      */
-    public function getDetected()
+    public function getDetailTruncated()
     {
-        return $this->container['detected'];
+        return $this->container['detail_truncated'];
     }
 
     /**
-     * Sets detected
+     * Sets detail_truncated
      *
-     * @param bool $detected Final scoring flag. false does not assert that every underlying probe completed.
+     * @param bool $detail_truncated Whether the detector's underlying detailed evidence was truncated. Group membership remains complete.
      *
      * @return self
      */
-    public function setDetected($detected)
+    public function setDetailTruncated($detail_truncated)
     {
-        if (is_null($detected)) {
-            throw new \InvalidArgumentException('non-nullable detected cannot be null');
+        if (is_null($detail_truncated)) {
+            throw new \InvalidArgumentException('non-nullable detail_truncated cannot be null');
         }
-        $this->container['detected'] = $detected;
-
-        return $this;
-    }
-
-    /**
-     * Gets weight
-     *
-     * @return int
-     */
-    public function getWeight()
-    {
-        return $this->container['weight'];
-    }
-
-    /**
-     * Sets weight
-     *
-     * @param int $weight Catalogue weight, not an additive score. Banned IP 999 is a marker.
-     *
-     * @return self
-     */
-    public function setWeight($weight)
-    {
-        if (is_null($weight)) {
-            throw new \InvalidArgumentException('non-nullable weight cannot be null');
-        }
-        $this->container['weight'] = $weight;
-
-        return $this;
-    }
-
-    /**
-     * Gets contribution
-     *
-     * @return int
-     */
-    public function getContribution()
-    {
-        return $this->container['contribution'];
-    }
-
-    /**
-     * Sets contribution
-     *
-     * @param int $contribution Matching score details, may contain corrections. Never recompute risk_score by summing.
-     *
-     * @return self
-     */
-    public function setContribution($contribution)
-    {
-        if (is_null($contribution)) {
-            throw new \InvalidArgumentException('non-nullable contribution cannot be null');
-        }
-        $this->container['contribution'] = $contribution;
-
-        return $this;
-    }
-
-    /**
-     * Gets status
-     *
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->container['status'];
-    }
-
-    /**
-     * Sets status
-     *
-     * @param string $status The final scoring flag has been evaluated. Probe incompleteness is reported by dedicated risk events.
-     *
-     * @return self
-     */
-    public function setStatus($status)
-    {
-        if (is_null($status)) {
-            throw new \InvalidArgumentException('non-nullable status cannot be null');
-        }
-        $this->container['status'] = $status;
+        $this->container['detail_truncated'] = $detail_truncated;
 
         return $this;
     }

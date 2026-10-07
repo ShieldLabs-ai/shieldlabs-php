@@ -7,10 +7,14 @@ lib/ApiException.php
 lib/Configuration.php
 lib/FormDataProcessor.php
 lib/HeaderSelector.php
+lib/Model/ClientIdentity.php
+lib/Model/ClientIdentityAssessmentsInner.php
+lib/Model/ClientIdentityClaimsInner.php
+lib/Model/ClientIdentityEvidenceInner.php
+lib/Model/ClientIdentityVerifiedInner.php
 lib/Model/DetectionFlags.php
 lib/Model/DomainProfile.php
 lib/Model/ErrorBody.php
-lib/Model/Fingerprint.php
 lib/Model/HRE.php
 lib/Model/HREResult.php
 lib/Model/HealthStatus.php
@@ -21,6 +25,10 @@ lib/Model/IdentificationScoredEvent.php
 lib/Model/IpInfo.php
 lib/Model/LegacySnapshot.php
 lib/Model/ModelInterface.php
+lib/Model/MultiaccountChangedData.php
+lib/Model/MultiaccountChangedDataEvidenceSummary.php
+lib/Model/MultiaccountChangedDataSource.php
+lib/Model/MultiaccountChangedEvent.php
 lib/Model/RiskEvent.php
 lib/Model/ScoreDetail.php
 lib/Model/Signal.php

@@ -59,6 +59,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
+        'client_identity' => '\ShieldLabs\Generated\Model\ClientIdentity',
         'request_id' => 'string',
         'session_id' => 'string',
         'cookie_id' => 'string',
@@ -122,6 +123,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
+        'client_identity' => null,
         'request_id' => 'uuid',
         'session_id' => 'uuid',
         'cookie_id' => 'uuid',
@@ -183,6 +185,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
+        'client_identity' => false,
         'request_id' => false,
         'session_id' => false,
         'cookie_id' => false,
@@ -324,6 +327,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
+        'client_identity' => 'client_identity',
         'request_id' => 'request_id',
         'session_id' => 'session_id',
         'cookie_id' => 'cookie_id',
@@ -385,6 +389,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
+        'client_identity' => 'setClientIdentity',
         'request_id' => 'setRequestId',
         'session_id' => 'setSessionId',
         'cookie_id' => 'setCookieId',
@@ -446,6 +451,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
+        'client_identity' => 'getClientIdentity',
         'request_id' => 'getRequestId',
         'session_id' => 'getSessionId',
         'cookie_id' => 'getCookieId',
@@ -558,6 +564,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
+        $this->setIfExists('client_identity', $data ?? [], null);
         $this->setIfExists('request_id', $data ?? [], null);
         $this->setIfExists('session_id', $data ?? [], null);
         $this->setIfExists('cookie_id', $data ?? [], null);
@@ -782,6 +789,33 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         return count($this->listInvalidProperties()) === 0;
     }
 
+
+    /**
+     * Gets client_identity
+     *
+     * @return \ShieldLabs\Generated\Model\ClientIdentity|null
+     */
+    public function getClientIdentity()
+    {
+        return $this->container['client_identity'];
+    }
+
+    /**
+     * Sets client_identity
+     *
+     * @param \ShieldLabs\Generated\Model\ClientIdentity|null $client_identity client_identity
+     *
+     * @return self
+     */
+    public function setClientIdentity($client_identity)
+    {
+        if (is_null($client_identity)) {
+            throw new \InvalidArgumentException('non-nullable client_identity cannot be null');
+        }
+        $this->container['client_identity'] = $client_identity;
+
+        return $this;
+    }
 
     /**
      * Gets request_id

@@ -1,6 +1,6 @@
 <?php
 /**
- * RiskEvent
+ * ClientIdentityAssessmentsInner
  *
  * PHP version 8.1
  *
@@ -33,7 +33,7 @@ use \ArrayAccess;
 use \ShieldLabs\Generated\ObjectSerializer;
 
 /**
- * RiskEvent Class Doc Comment
+ * ClientIdentityAssessmentsInner Class Doc Comment
  *
  * @category Class
  * @package  ShieldLabs\Generated
@@ -41,7 +41,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
+class ClientIdentityAssessmentsInner implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -50,7 +50,7 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @var string
      */
-    protected static $openAPIModelName = 'RiskEvent';
+    protected static $openAPIModelName = 'ClientIdentity_assessments_inner';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -58,11 +58,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
-        'code' => 'string',
-        'detected' => 'bool',
-        'weight' => 'int',
-        'contribution' => 'int',
-        'status' => 'string'
+        'candidate_profile_id' => 'string',
+        'status' => 'string',
+        'reason' => 'string'
     ];
 
     /**
@@ -73,11 +71,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'code' => null,
-        'detected' => null,
-        'weight' => null,
-        'contribution' => null,
-        'status' => null
+        'candidate_profile_id' => null,
+        'status' => null,
+        'reason' => null
     ];
 
     /**
@@ -86,11 +82,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'code' => false,
-        'detected' => false,
-        'weight' => false,
-        'contribution' => false,
-        'status' => false
+        'candidate_profile_id' => false,
+        'status' => false,
+        'reason' => false
     ];
 
     /**
@@ -179,11 +173,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'code' => 'code',
-        'detected' => 'detected',
-        'weight' => 'weight',
-        'contribution' => 'contribution',
-        'status' => 'status'
+        'candidate_profile_id' => 'candidate_profile_id',
+        'status' => 'status',
+        'reason' => 'reason'
     ];
 
     /**
@@ -192,11 +184,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'code' => 'setCode',
-        'detected' => 'setDetected',
-        'weight' => 'setWeight',
-        'contribution' => 'setContribution',
-        'status' => 'setStatus'
+        'candidate_profile_id' => 'setCandidateProfileId',
+        'status' => 'setStatus',
+        'reason' => 'setReason'
     ];
 
     /**
@@ -205,11 +195,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'code' => 'getCode',
-        'detected' => 'getDetected',
-        'weight' => 'getWeight',
-        'contribution' => 'getContribution',
-        'status' => 'getStatus'
+        'candidate_profile_id' => 'getCandidateProfileId',
+        'status' => 'getStatus',
+        'reason' => 'getReason'
     ];
 
     /**
@@ -269,11 +257,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('code', $data ?? [], null);
-        $this->setIfExists('detected', $data ?? [], null);
-        $this->setIfExists('weight', $data ?? [], null);
-        $this->setIfExists('contribution', $data ?? [], null);
+        $this->setIfExists('candidate_profile_id', $data ?? [], null);
         $this->setIfExists('status', $data ?? [], null);
+        $this->setIfExists('reason', $data ?? [], null);
     }
 
     /**
@@ -303,20 +289,11 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['code'] === null) {
-            $invalidProperties[] = "'code' can't be null";
-        }
-        if ($this->container['detected'] === null) {
-            $invalidProperties[] = "'detected' can't be null";
-        }
-        if ($this->container['weight'] === null) {
-            $invalidProperties[] = "'weight' can't be null";
-        }
-        if ($this->container['contribution'] === null) {
-            $invalidProperties[] = "'contribution' can't be null";
-        }
         if ($this->container['status'] === null) {
             $invalidProperties[] = "'status' can't be null";
+        }
+        if ($this->container['reason'] === null) {
+            $invalidProperties[] = "'reason' can't be null";
         }
         return $invalidProperties;
     }
@@ -334,109 +311,28 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets code
+     * Gets candidate_profile_id
      *
-     * @return string
+     * @return string|null
      */
-    public function getCode()
+    public function getCandidateProfileId()
     {
-        return $this->container['code'];
+        return $this->container['candidate_profile_id'];
     }
 
     /**
-     * Sets code
+     * Sets candidate_profile_id
      *
-     * @param string $code Open catalogue of independent source signals. ai_bot and ai_browser carry weight 0; search_bot remains separate. browser_automation carries weight 90 in task 204 releases. UI Good bot and Bad bot groups are not risk event codes. Keep unknown codes and use the payload scoring_version/result_version for historical interpretation.
+     * @param string|null $candidate_profile_id candidate_profile_id
      *
      * @return self
      */
-    public function setCode($code)
+    public function setCandidateProfileId($candidate_profile_id)
     {
-        if (is_null($code)) {
-            throw new \InvalidArgumentException('non-nullable code cannot be null');
+        if (is_null($candidate_profile_id)) {
+            throw new \InvalidArgumentException('non-nullable candidate_profile_id cannot be null');
         }
-        $this->container['code'] = $code;
-
-        return $this;
-    }
-
-    /**
-     * Gets detected
-     *
-     * @return bool
-     */
-    public function getDetected()
-    {
-        return $this->container['detected'];
-    }
-
-    /**
-     * Sets detected
-     *
-     * @param bool $detected Final scoring flag. false does not assert that every underlying probe completed.
-     *
-     * @return self
-     */
-    public function setDetected($detected)
-    {
-        if (is_null($detected)) {
-            throw new \InvalidArgumentException('non-nullable detected cannot be null');
-        }
-        $this->container['detected'] = $detected;
-
-        return $this;
-    }
-
-    /**
-     * Gets weight
-     *
-     * @return int
-     */
-    public function getWeight()
-    {
-        return $this->container['weight'];
-    }
-
-    /**
-     * Sets weight
-     *
-     * @param int $weight Catalogue weight, not an additive score. Banned IP 999 is a marker.
-     *
-     * @return self
-     */
-    public function setWeight($weight)
-    {
-        if (is_null($weight)) {
-            throw new \InvalidArgumentException('non-nullable weight cannot be null');
-        }
-        $this->container['weight'] = $weight;
-
-        return $this;
-    }
-
-    /**
-     * Gets contribution
-     *
-     * @return int
-     */
-    public function getContribution()
-    {
-        return $this->container['contribution'];
-    }
-
-    /**
-     * Sets contribution
-     *
-     * @param int $contribution Matching score details, may contain corrections. Never recompute risk_score by summing.
-     *
-     * @return self
-     */
-    public function setContribution($contribution)
-    {
-        if (is_null($contribution)) {
-            throw new \InvalidArgumentException('non-nullable contribution cannot be null');
-        }
-        $this->container['contribution'] = $contribution;
+        $this->container['candidate_profile_id'] = $candidate_profile_id;
 
         return $this;
     }
@@ -454,7 +350,7 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets status
      *
-     * @param string $status The final scoring flag has been evaluated. Probe incompleteness is reported by dedicated risk events.
+     * @param string $status status
      *
      * @return self
      */
@@ -464,6 +360,33 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable status cannot be null');
         }
         $this->container['status'] = $status;
+
+        return $this;
+    }
+
+    /**
+     * Gets reason
+     *
+     * @return string
+     */
+    public function getReason()
+    {
+        return $this->container['reason'];
+    }
+
+    /**
+     * Sets reason
+     *
+     * @param string $reason reason
+     *
+     * @return self
+     */
+    public function setReason($reason)
+    {
+        if (is_null($reason)) {
+            throw new \InvalidArgumentException('non-nullable reason cannot be null');
+        }
+        $this->container['reason'] = $reason;
 
         return $this;
     }

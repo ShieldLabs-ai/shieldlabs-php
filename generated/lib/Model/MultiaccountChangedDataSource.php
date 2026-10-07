@@ -1,6 +1,6 @@
 <?php
 /**
- * RiskEvent
+ * MultiaccountChangedDataSource
  *
  * PHP version 8.1
  *
@@ -33,7 +33,7 @@ use \ArrayAccess;
 use \ShieldLabs\Generated\ObjectSerializer;
 
 /**
- * RiskEvent Class Doc Comment
+ * MultiaccountChangedDataSource Class Doc Comment
  *
  * @category Class
  * @package  ShieldLabs\Generated
@@ -41,7 +41,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
+class MultiaccountChangedDataSource implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -50,7 +50,7 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @var string
      */
-    protected static $openAPIModelName = 'RiskEvent';
+    protected static $openAPIModelName = 'MultiaccountChangedData_source';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -58,11 +58,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
-        'code' => 'string',
-        'detected' => 'bool',
-        'weight' => 'int',
-        'contribution' => 'int',
-        'status' => 'string'
+        'publication_epoch' => 'mixed',
+        'publication_version' => 'string',
+        'coverage_id' => 'string'
     ];
 
     /**
@@ -73,11 +71,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'code' => null,
-        'detected' => null,
-        'weight' => null,
-        'contribution' => null,
-        'status' => null
+        'publication_epoch' => null,
+        'publication_version' => null,
+        'coverage_id' => null
     ];
 
     /**
@@ -86,11 +82,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'code' => false,
-        'detected' => false,
-        'weight' => false,
-        'contribution' => false,
-        'status' => false
+        'publication_epoch' => true,
+        'publication_version' => false,
+        'coverage_id' => false
     ];
 
     /**
@@ -179,11 +173,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'code' => 'code',
-        'detected' => 'detected',
-        'weight' => 'weight',
-        'contribution' => 'contribution',
-        'status' => 'status'
+        'publication_epoch' => 'publication_epoch',
+        'publication_version' => 'publication_version',
+        'coverage_id' => 'coverage_id'
     ];
 
     /**
@@ -192,11 +184,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'code' => 'setCode',
-        'detected' => 'setDetected',
-        'weight' => 'setWeight',
-        'contribution' => 'setContribution',
-        'status' => 'setStatus'
+        'publication_epoch' => 'setPublicationEpoch',
+        'publication_version' => 'setPublicationVersion',
+        'coverage_id' => 'setCoverageId'
     ];
 
     /**
@@ -205,11 +195,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'code' => 'getCode',
-        'detected' => 'getDetected',
-        'weight' => 'getWeight',
-        'contribution' => 'getContribution',
-        'status' => 'getStatus'
+        'publication_epoch' => 'getPublicationEpoch',
+        'publication_version' => 'getPublicationVersion',
+        'coverage_id' => 'getCoverageId'
     ];
 
     /**
@@ -269,11 +257,9 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('code', $data ?? [], null);
-        $this->setIfExists('detected', $data ?? [], null);
-        $this->setIfExists('weight', $data ?? [], null);
-        $this->setIfExists('contribution', $data ?? [], null);
-        $this->setIfExists('status', $data ?? [], null);
+        $this->setIfExists('publication_epoch', $data ?? [], null);
+        $this->setIfExists('publication_version', $data ?? [], null);
+        $this->setIfExists('coverage_id', $data ?? [], null);
     }
 
     /**
@@ -303,21 +289,23 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['code'] === null) {
-            $invalidProperties[] = "'code' can't be null";
+        if ($this->container['publication_epoch'] === null && !$this->isNullableSetToNull('publication_epoch')) {
+            $invalidProperties[] = "'publication_epoch' is required";
         }
-        if ($this->container['detected'] === null) {
-            $invalidProperties[] = "'detected' can't be null";
+        if ($this->container['publication_version'] === null) {
+            $invalidProperties[] = "'publication_version' can't be null";
         }
-        if ($this->container['weight'] === null) {
-            $invalidProperties[] = "'weight' can't be null";
+        if (!preg_match("/^[1-9][0-9]{0,19}$/", $this->container['publication_version'])) {
+            $invalidProperties[] = "invalid value for 'publication_version', must be conform to the pattern /^[1-9][0-9]{0,19}$/.";
         }
-        if ($this->container['contribution'] === null) {
-            $invalidProperties[] = "'contribution' can't be null";
+
+        if ($this->container['coverage_id'] === null) {
+            $invalidProperties[] = "'coverage_id' can't be null";
         }
-        if ($this->container['status'] === null) {
-            $invalidProperties[] = "'status' can't be null";
+        if (!preg_match("/^[a-f0-9]{64}$/", $this->container['coverage_id'])) {
+            $invalidProperties[] = "invalid value for 'coverage_id', must be conform to the pattern /^[a-f0-9]{64}$/.";
         }
+
         return $invalidProperties;
     }
 
@@ -334,136 +322,99 @@ class RiskEvent implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets code
+     * Gets publication_epoch
+     *
+     * @return mixed|null
+     */
+    public function getPublicationEpoch()
+    {
+        return $this->container['publication_epoch'];
+    }
+
+    /**
+     * Sets publication_epoch
+     *
+     * @param mixed|null $publication_epoch publication_epoch
+     *
+     * @return self
+     */
+    public function setPublicationEpoch($publication_epoch)
+    {
+        if (is_null($publication_epoch)) {
+            array_push($this->openAPINullablesSetToNull, 'publication_epoch');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('publication_epoch', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
+        $this->container['publication_epoch'] = $publication_epoch;
+
+        return $this;
+    }
+
+    /**
+     * Gets publication_version
      *
      * @return string
      */
-    public function getCode()
+    public function getPublicationVersion()
     {
-        return $this->container['code'];
+        return $this->container['publication_version'];
     }
 
     /**
-     * Sets code
+     * Sets publication_version
      *
-     * @param string $code Open catalogue of independent source signals. ai_bot and ai_browser carry weight 0; search_bot remains separate. browser_automation carries weight 90 in task 204 releases. UI Good bot and Bad bot groups are not risk event codes. Keep unknown codes and use the payload scoring_version/result_version for historical interpretation.
+     * @param string $publication_version The exact immutable publication containing this result and event.
      *
      * @return self
      */
-    public function setCode($code)
+    public function setPublicationVersion($publication_version)
     {
-        if (is_null($code)) {
-            throw new \InvalidArgumentException('non-nullable code cannot be null');
+        if (is_null($publication_version)) {
+            throw new \InvalidArgumentException('non-nullable publication_version cannot be null');
         }
-        $this->container['code'] = $code;
+
+        if ((!preg_match("/^[1-9][0-9]{0,19}$/", ObjectSerializer::toString($publication_version)))) {
+            throw new \InvalidArgumentException("invalid value for \$publication_version when calling MultiaccountChangedDataSource., must conform to the pattern /^[1-9][0-9]{0,19}$/.");
+        }
+
+        $this->container['publication_version'] = $publication_version;
 
         return $this;
     }
 
     /**
-     * Gets detected
-     *
-     * @return bool
-     */
-    public function getDetected()
-    {
-        return $this->container['detected'];
-    }
-
-    /**
-     * Sets detected
-     *
-     * @param bool $detected Final scoring flag. false does not assert that every underlying probe completed.
-     *
-     * @return self
-     */
-    public function setDetected($detected)
-    {
-        if (is_null($detected)) {
-            throw new \InvalidArgumentException('non-nullable detected cannot be null');
-        }
-        $this->container['detected'] = $detected;
-
-        return $this;
-    }
-
-    /**
-     * Gets weight
-     *
-     * @return int
-     */
-    public function getWeight()
-    {
-        return $this->container['weight'];
-    }
-
-    /**
-     * Sets weight
-     *
-     * @param int $weight Catalogue weight, not an additive score. Banned IP 999 is a marker.
-     *
-     * @return self
-     */
-    public function setWeight($weight)
-    {
-        if (is_null($weight)) {
-            throw new \InvalidArgumentException('non-nullable weight cannot be null');
-        }
-        $this->container['weight'] = $weight;
-
-        return $this;
-    }
-
-    /**
-     * Gets contribution
-     *
-     * @return int
-     */
-    public function getContribution()
-    {
-        return $this->container['contribution'];
-    }
-
-    /**
-     * Sets contribution
-     *
-     * @param int $contribution Matching score details, may contain corrections. Never recompute risk_score by summing.
-     *
-     * @return self
-     */
-    public function setContribution($contribution)
-    {
-        if (is_null($contribution)) {
-            throw new \InvalidArgumentException('non-nullable contribution cannot be null');
-        }
-        $this->container['contribution'] = $contribution;
-
-        return $this;
-    }
-
-    /**
-     * Gets status
+     * Gets coverage_id
      *
      * @return string
      */
-    public function getStatus()
+    public function getCoverageId()
     {
-        return $this->container['status'];
+        return $this->container['coverage_id'];
     }
 
     /**
-     * Sets status
+     * Sets coverage_id
      *
-     * @param string $status The final scoring flag has been evaluated. Probe incompleteness is reported by dedicated risk events.
+     * @param string $coverage_id Immutable binding to the trusted source completeness proof.
      *
      * @return self
      */
-    public function setStatus($status)
+    public function setCoverageId($coverage_id)
     {
-        if (is_null($status)) {
-            throw new \InvalidArgumentException('non-nullable status cannot be null');
+        if (is_null($coverage_id)) {
+            throw new \InvalidArgumentException('non-nullable coverage_id cannot be null');
         }
-        $this->container['status'] = $status;
+
+        if ((!preg_match("/^[a-f0-9]{64}$/", ObjectSerializer::toString($coverage_id)))) {
+            throw new \InvalidArgumentException("invalid value for \$coverage_id when calling MultiaccountChangedDataSource., must conform to the pattern /^[a-f0-9]{64}$/.");
+        }
+
+        $this->container['coverage_id'] = $coverage_id;
 
         return $this;
     }

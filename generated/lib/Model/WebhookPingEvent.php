@@ -405,7 +405,7 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets schema_version
      *
-     * @param string $schema_version Webhook contract version. Current release 2026-10-06; parsers also accept legacy 2026-06-01.
+     * @param string $schema_version Webhook contract version. Scored release 2026-10-06; multi-account group release 2026-10-07; parsers also accept legacy 2026-06-01.
      *
      * @return self
      */

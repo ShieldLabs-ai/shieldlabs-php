@@ -1,6 +1,6 @@
 <?php
 /**
- * Fingerprint
+ * MultiaccountChangedEvent
  *
  * PHP version 8.1
  *
@@ -33,16 +33,16 @@ use \ArrayAccess;
 use \ShieldLabs\Generated\ObjectSerializer;
 
 /**
- * Fingerprint Class Doc Comment
+ * MultiaccountChangedEvent Class Doc Comment
  *
  * @category Class
- * @description FP21 for tracked users. Legacy sharing/takeover/travel mirrors are retained; prefer data.hre. Absent on anonymous checks.
+ * @description An immutable opt-in notification of a complete multi-account group transition.
  * @package  ShieldLabs\Generated
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
+class MultiaccountChangedEvent implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -51,7 +51,7 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @var string
      */
-    protected static $openAPIModelName = 'Fingerprint';
+    protected static $openAPIModelName = 'MultiaccountChangedEvent';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -59,13 +59,12 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
-        'outcome' => 'string',
-        'record_id' => 'string',
-        'hardware_id' => 'string',
-        'rules_version' => 'string',
-        'sharing' => 'object',
-        'takeover' => 'object',
-        'travel' => 'object'
+        'event_id' => 'string',
+        'event_type' => 'mixed',
+        'schema_version' => 'mixed',
+        'site_id' => 'int',
+        'created_at' => '\DateTime',
+        'data' => '\ShieldLabs\Generated\Model\MultiaccountChangedData'
     ];
 
     /**
@@ -76,13 +75,12 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'outcome' => null,
-        'record_id' => null,
-        'hardware_id' => null,
-        'rules_version' => null,
-        'sharing' => null,
-        'takeover' => null,
-        'travel' => null
+        'event_id' => null,
+        'event_type' => null,
+        'schema_version' => null,
+        'site_id' => null,
+        'created_at' => 'date-time',
+        'data' => null
     ];
 
     /**
@@ -91,13 +89,12 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'outcome' => false,
-        'record_id' => false,
-        'hardware_id' => false,
-        'rules_version' => false,
-        'sharing' => false,
-        'takeover' => false,
-        'travel' => false
+        'event_id' => false,
+        'event_type' => true,
+        'schema_version' => true,
+        'site_id' => false,
+        'created_at' => false,
+        'data' => false
     ];
 
     /**
@@ -186,13 +183,12 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'outcome' => 'outcome',
-        'record_id' => 'record_id',
-        'hardware_id' => 'hardware_id',
-        'rules_version' => 'rules_version',
-        'sharing' => 'sharing',
-        'takeover' => 'takeover',
-        'travel' => 'travel'
+        'event_id' => 'event_id',
+        'event_type' => 'event_type',
+        'schema_version' => 'schema_version',
+        'site_id' => 'site_id',
+        'created_at' => 'created_at',
+        'data' => 'data'
     ];
 
     /**
@@ -201,13 +197,12 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'outcome' => 'setOutcome',
-        'record_id' => 'setRecordId',
-        'hardware_id' => 'setHardwareId',
-        'rules_version' => 'setRulesVersion',
-        'sharing' => 'setSharing',
-        'takeover' => 'setTakeover',
-        'travel' => 'setTravel'
+        'event_id' => 'setEventId',
+        'event_type' => 'setEventType',
+        'schema_version' => 'setSchemaVersion',
+        'site_id' => 'setSiteId',
+        'created_at' => 'setCreatedAt',
+        'data' => 'setData'
     ];
 
     /**
@@ -216,13 +211,12 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'outcome' => 'getOutcome',
-        'record_id' => 'getRecordId',
-        'hardware_id' => 'getHardwareId',
-        'rules_version' => 'getRulesVersion',
-        'sharing' => 'getSharing',
-        'takeover' => 'getTakeover',
-        'travel' => 'getTravel'
+        'event_id' => 'getEventId',
+        'event_type' => 'getEventType',
+        'schema_version' => 'getSchemaVersion',
+        'site_id' => 'getSiteId',
+        'created_at' => 'getCreatedAt',
+        'data' => 'getData'
     ];
 
     /**
@@ -282,13 +276,12 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('outcome', $data ?? [], null);
-        $this->setIfExists('record_id', $data ?? [], null);
-        $this->setIfExists('hardware_id', $data ?? [], null);
-        $this->setIfExists('rules_version', $data ?? [], null);
-        $this->setIfExists('sharing', $data ?? [], null);
-        $this->setIfExists('takeover', $data ?? [], null);
-        $this->setIfExists('travel', $data ?? [], null);
+        $this->setIfExists('event_id', $data ?? [], null);
+        $this->setIfExists('event_type', $data ?? [], null);
+        $this->setIfExists('schema_version', $data ?? [], null);
+        $this->setIfExists('site_id', $data ?? [], null);
+        $this->setIfExists('created_at', $data ?? [], null);
+        $this->setIfExists('data', $data ?? [], null);
     }
 
     /**
@@ -318,11 +311,35 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['outcome'] === null) {
-            $invalidProperties[] = "'outcome' can't be null";
+        if ($this->container['event_id'] === null) {
+            $invalidProperties[] = "'event_id' can't be null";
         }
-        if ($this->container['rules_version'] === null) {
-            $invalidProperties[] = "'rules_version' can't be null";
+        if (!preg_match("/^[a-f0-9]{40}$/", $this->container['event_id'])) {
+            $invalidProperties[] = "invalid value for 'event_id', must be conform to the pattern /^[a-f0-9]{40}$/.";
+        }
+
+        if ($this->container['event_type'] === null && !$this->isNullableSetToNull('event_type')) {
+            $invalidProperties[] = "'event_type' is required";
+        }
+        if ($this->container['schema_version'] === null && !$this->isNullableSetToNull('schema_version')) {
+            $invalidProperties[] = "'schema_version' is required";
+        }
+        if ($this->container['site_id'] === null) {
+            $invalidProperties[] = "'site_id' can't be null";
+        }
+        if (($this->container['site_id'] < 1)) {
+            $invalidProperties[] = "invalid value for 'site_id', must be bigger than or equal to 1.";
+        }
+
+        if ($this->container['created_at'] === null) {
+            $invalidProperties[] = "'created_at' can't be null";
+        }
+        if (!preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/", $this->container['created_at'])) {
+            $invalidProperties[] = "invalid value for 'created_at', must be conform to the pattern /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/.";
+        }
+
+        if ($this->container['data'] === null) {
+            $invalidProperties[] = "'data' can't be null";
         }
         return $invalidProperties;
     }
@@ -340,190 +357,192 @@ class Fingerprint implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets outcome
+     * Gets event_id
      *
      * @return string
      */
-    public function getOutcome()
+    public function getEventId()
     {
-        return $this->container['outcome'];
+        return $this->container['event_id'];
     }
 
     /**
-     * Sets outcome
+     * Sets event_id
      *
-     * @param string $outcome outcome
+     * @param string $event_id Stable logical event ID. Delivery retries preserve this ID and the signed body.
      *
      * @return self
      */
-    public function setOutcome($outcome)
+    public function setEventId($event_id)
     {
-        if (is_null($outcome)) {
-            throw new \InvalidArgumentException('non-nullable outcome cannot be null');
+        if (is_null($event_id)) {
+            throw new \InvalidArgumentException('non-nullable event_id cannot be null');
         }
-        $this->container['outcome'] = $outcome;
+
+        if ((!preg_match("/^[a-f0-9]{40}$/", ObjectSerializer::toString($event_id)))) {
+            throw new \InvalidArgumentException("invalid value for \$event_id when calling MultiaccountChangedEvent., must conform to the pattern /^[a-f0-9]{40}$/.");
+        }
+
+        $this->container['event_id'] = $event_id;
 
         return $this;
     }
 
     /**
-     * Gets record_id
+     * Gets event_type
      *
-     * @return string|null
+     * @return mixed|null
      */
-    public function getRecordId()
+    public function getEventType()
     {
-        return $this->container['record_id'];
+        return $this->container['event_type'];
     }
 
     /**
-     * Sets record_id
+     * Sets event_type
      *
-     * @param string|null $record_id record_id
+     * @param mixed|null $event_type event_type
      *
      * @return self
      */
-    public function setRecordId($record_id)
+    public function setEventType($event_type)
     {
-        if (is_null($record_id)) {
-            throw new \InvalidArgumentException('non-nullable record_id cannot be null');
+        if (is_null($event_type)) {
+            array_push($this->openAPINullablesSetToNull, 'event_type');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('event_type', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
         }
-        $this->container['record_id'] = $record_id;
+        $this->container['event_type'] = $event_type;
 
         return $this;
     }
 
     /**
-     * Gets hardware_id
+     * Gets schema_version
      *
-     * @return string|null
+     * @return mixed|null
      */
-    public function getHardwareId()
+    public function getSchemaVersion()
     {
-        return $this->container['hardware_id'];
+        return $this->container['schema_version'];
     }
 
     /**
-     * Sets hardware_id
+     * Sets schema_version
      *
-     * @param string|null $hardware_id FP21 hardware identity, distinct from device_id.
+     * @param mixed|null $schema_version schema_version
      *
      * @return self
      */
-    public function setHardwareId($hardware_id)
+    public function setSchemaVersion($schema_version)
     {
-        if (is_null($hardware_id)) {
-            throw new \InvalidArgumentException('non-nullable hardware_id cannot be null');
+        if (is_null($schema_version)) {
+            array_push($this->openAPINullablesSetToNull, 'schema_version');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('schema_version', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
         }
-        $this->container['hardware_id'] = $hardware_id;
+        $this->container['schema_version'] = $schema_version;
 
         return $this;
     }
 
     /**
-     * Gets rules_version
+     * Gets site_id
      *
-     * @return string
+     * @return int
      */
-    public function getRulesVersion()
+    public function getSiteId()
     {
-        return $this->container['rules_version'];
+        return $this->container['site_id'];
     }
 
     /**
-     * Sets rules_version
+     * Sets site_id
      *
-     * @param string $rules_version rules_version
+     * @param int $site_id site_id
      *
      * @return self
      */
-    public function setRulesVersion($rules_version)
+    public function setSiteId($site_id)
     {
-        if (is_null($rules_version)) {
-            throw new \InvalidArgumentException('non-nullable rules_version cannot be null');
+        if (is_null($site_id)) {
+            throw new \InvalidArgumentException('non-nullable site_id cannot be null');
         }
-        $this->container['rules_version'] = $rules_version;
+
+        if (($site_id < 1)) {
+            throw new \InvalidArgumentException('invalid value for $site_id when calling MultiaccountChangedEvent., must be bigger than or equal to 1.');
+        }
+
+        $this->container['site_id'] = $site_id;
 
         return $this;
     }
 
     /**
-     * Gets sharing
+     * Gets created_at
      *
-     * @return object|null
+     * @return \DateTime
      */
-    public function getSharing()
+    public function getCreatedAt()
     {
-        return $this->container['sharing'];
+        return $this->container['created_at'];
     }
 
     /**
-     * Sets sharing
+     * Sets created_at
      *
-     * @param object|null $sharing sharing
+     * @param \DateTime $created_at RFC 3339 timestamp in UTC with up to 9 fractional digits (trailing zeros trimmed), for example `2026-09-30T12:34:57.482913041Z`. Parse it with a parser that accepts nanoseconds.
      *
      * @return self
      */
-    public function setSharing($sharing)
+    public function setCreatedAt($created_at)
     {
-        if (is_null($sharing)) {
-            throw new \InvalidArgumentException('non-nullable sharing cannot be null');
+        if (is_null($created_at)) {
+            throw new \InvalidArgumentException('non-nullable created_at cannot be null');
         }
-        $this->container['sharing'] = $sharing;
+
+        if ((!preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/", ObjectSerializer::toString($created_at)))) {
+            throw new \InvalidArgumentException("invalid value for \$created_at when calling MultiaccountChangedEvent., must conform to the pattern /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/.");
+        }
+
+        $this->container['created_at'] = $created_at;
 
         return $this;
     }
 
     /**
-     * Gets takeover
+     * Gets data
      *
-     * @return object|null
+     * @return \ShieldLabs\Generated\Model\MultiaccountChangedData
      */
-    public function getTakeover()
+    public function getData()
     {
-        return $this->container['takeover'];
+        return $this->container['data'];
     }
 
     /**
-     * Sets takeover
+     * Sets data
      *
-     * @param object|null $takeover takeover
+     * @param \ShieldLabs\Generated\Model\MultiaccountChangedData $data data
      *
      * @return self
      */
-    public function setTakeover($takeover)
+    public function setData($data)
     {
-        if (is_null($takeover)) {
-            throw new \InvalidArgumentException('non-nullable takeover cannot be null');
+        if (is_null($data)) {
+            throw new \InvalidArgumentException('non-nullable data cannot be null');
         }
-        $this->container['takeover'] = $takeover;
-
-        return $this;
-    }
-
-    /**
-     * Gets travel
-     *
-     * @return object|null
-     */
-    public function getTravel()
-    {
-        return $this->container['travel'];
-    }
-
-    /**
-     * Sets travel
-     *
-     * @param object|null $travel travel
-     *
-     * @return self
-     */
-    public function setTravel($travel)
-    {
-        if (is_null($travel)) {
-            throw new \InvalidArgumentException('non-nullable travel cannot be null');
-        }
-        $this->container['travel'] = $travel;
+        $this->container['data'] = $data;
 
         return $this;
     }

@@ -36,7 +36,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * IdentificationScoredData Class Doc Comment
  *
  * @category Class
- * @description Final identification. risk_score is this scan only; no all-time entity risk. New extension fields are required by version 2026-10-06; legacy bodies remain accepted.
+ * @description Final identification. risk_score is this scan only. Version 2026-10-07 uses signals for score contributions, detection_flags for final decisions, and hre for account results. Older bodies remain accepted.
  * @package  ShieldLabs\Generated
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -59,6 +59,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $openAPITypes = [
+        'client_identity' => '\ShieldLabs\Generated\Model\ClientIdentity',
         'request_id' => 'string',
         'visitor_id' => 'string',
         'device_id' => 'string',
@@ -81,7 +82,9 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'scoring_version' => 'string',
         'risk_events' => '\ShieldLabs\Generated\Model\RiskEvent[]',
         'hre' => '\ShieldLabs\Generated\Model\HRE',
-        'fingerprint' => '\ShieldLabs\Generated\Model\Fingerprint'
+        'search_bot_owner' => 'string',
+        'ai_bot_owner' => 'string',
+        'ai_browser_owner' => 'string'
     ];
 
     /**
@@ -92,6 +95,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
+        'client_identity' => null,
         'request_id' => 'uuid',
         'visitor_id' => 'uuid',
         'device_id' => 'uuid',
@@ -114,7 +118,9 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'scoring_version' => null,
         'risk_events' => null,
         'hre' => null,
-        'fingerprint' => null
+        'search_bot_owner' => null,
+        'ai_bot_owner' => null,
+        'ai_browser_owner' => null
     ];
 
     /**
@@ -123,6 +129,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var boolean[]
      */
     protected static array $openAPINullables = [
+        'client_identity' => false,
         'request_id' => false,
         'visitor_id' => false,
         'device_id' => false,
@@ -145,7 +152,9 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'scoring_version' => false,
         'risk_events' => false,
         'hre' => false,
-        'fingerprint' => false
+        'search_bot_owner' => false,
+        'ai_bot_owner' => false,
+        'ai_browser_owner' => false
     ];
 
     /**
@@ -234,6 +243,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $attributeMap = [
+        'client_identity' => 'client_identity',
         'request_id' => 'request_id',
         'visitor_id' => 'visitor_id',
         'device_id' => 'device_id',
@@ -256,7 +266,9 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'scoring_version' => 'scoring_version',
         'risk_events' => 'risk_events',
         'hre' => 'hre',
-        'fingerprint' => 'fingerprint'
+        'search_bot_owner' => 'search_bot_owner',
+        'ai_bot_owner' => 'ai_bot_owner',
+        'ai_browser_owner' => 'ai_browser_owner'
     ];
 
     /**
@@ -265,6 +277,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $setters = [
+        'client_identity' => 'setClientIdentity',
         'request_id' => 'setRequestId',
         'visitor_id' => 'setVisitorId',
         'device_id' => 'setDeviceId',
@@ -287,7 +300,9 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'scoring_version' => 'setScoringVersion',
         'risk_events' => 'setRiskEvents',
         'hre' => 'setHre',
-        'fingerprint' => 'setFingerprint'
+        'search_bot_owner' => 'setSearchBotOwner',
+        'ai_bot_owner' => 'setAiBotOwner',
+        'ai_browser_owner' => 'setAiBrowserOwner'
     ];
 
     /**
@@ -296,6 +311,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $getters = [
+        'client_identity' => 'getClientIdentity',
         'request_id' => 'getRequestId',
         'visitor_id' => 'getVisitorId',
         'device_id' => 'getDeviceId',
@@ -318,7 +334,9 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'scoring_version' => 'getScoringVersion',
         'risk_events' => 'getRiskEvents',
         'hre' => 'getHre',
-        'fingerprint' => 'getFingerprint'
+        'search_bot_owner' => 'getSearchBotOwner',
+        'ai_bot_owner' => 'getAiBotOwner',
+        'ai_browser_owner' => 'getAiBrowserOwner'
     ];
 
     /**
@@ -378,6 +396,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      */
     public function __construct(?array $data = null)
     {
+        $this->setIfExists('client_identity', $data ?? [], null);
         $this->setIfExists('request_id', $data ?? [], null);
         $this->setIfExists('visitor_id', $data ?? [], null);
         $this->setIfExists('device_id', $data ?? [], null);
@@ -400,7 +419,9 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         $this->setIfExists('scoring_version', $data ?? [], null);
         $this->setIfExists('risk_events', $data ?? [], null);
         $this->setIfExists('hre', $data ?? [], null);
-        $this->setIfExists('fingerprint', $data ?? [], null);
+        $this->setIfExists('search_bot_owner', $data ?? [], null);
+        $this->setIfExists('ai_bot_owner', $data ?? [], null);
+        $this->setIfExists('ai_browser_owner', $data ?? [], null);
     }
 
     /**
@@ -510,6 +531,33 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         return count($this->listInvalidProperties()) === 0;
     }
 
+
+    /**
+     * Gets client_identity
+     *
+     * @return \ShieldLabs\Generated\Model\ClientIdentity|null
+     */
+    public function getClientIdentity()
+    {
+        return $this->container['client_identity'];
+    }
+
+    /**
+     * Sets client_identity
+     *
+     * @param \ShieldLabs\Generated\Model\ClientIdentity|null $client_identity client_identity
+     *
+     * @return self
+     */
+    public function setClientIdentity($client_identity)
+    {
+        if (is_null($client_identity)) {
+            throw new \InvalidArgumentException('non-nullable client_identity cannot be null');
+        }
+        $this->container['client_identity'] = $client_identity;
+
+        return $this;
+    }
 
     /**
      * Gets request_id
@@ -1077,6 +1125,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * Gets risk_events
      *
      * @return \ShieldLabs\Generated\Model\RiskEvent[]|null
+     * @deprecated
      */
     public function getRiskEvents()
     {
@@ -1086,9 +1135,10 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets risk_events
      *
-     * @param \ShieldLabs\Generated\Model\RiskEvent[]|null $risk_events risk_events
+     * @param \ShieldLabs\Generated\Model\RiskEvent[]|null $risk_events Legacy 2026-10-06 only; absent from current scored events.
      *
      * @return self
+     * @deprecated
      */
     public function setRiskEvents($risk_events)
     {
@@ -1128,28 +1178,82 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     }
 
     /**
-     * Gets fingerprint
+     * Gets search_bot_owner
      *
-     * @return \ShieldLabs\Generated\Model\Fingerprint|null
+     * @return string|null
      */
-    public function getFingerprint()
+    public function getSearchBotOwner()
     {
-        return $this->container['fingerprint'];
+        return $this->container['search_bot_owner'];
     }
 
     /**
-     * Sets fingerprint
+     * Sets search_bot_owner
      *
-     * @param \ShieldLabs\Generated\Model\Fingerprint|null $fingerprint fingerprint
+     * @param string|null $search_bot_owner Owner label from accepted search-bot detection; omitted when unknown or inactive.
      *
      * @return self
      */
-    public function setFingerprint($fingerprint)
+    public function setSearchBotOwner($search_bot_owner)
     {
-        if (is_null($fingerprint)) {
-            throw new \InvalidArgumentException('non-nullable fingerprint cannot be null');
+        if (is_null($search_bot_owner)) {
+            throw new \InvalidArgumentException('non-nullable search_bot_owner cannot be null');
         }
-        $this->container['fingerprint'] = $fingerprint;
+        $this->container['search_bot_owner'] = $search_bot_owner;
+
+        return $this;
+    }
+
+    /**
+     * Gets ai_bot_owner
+     *
+     * @return string|null
+     */
+    public function getAiBotOwner()
+    {
+        return $this->container['ai_bot_owner'];
+    }
+
+    /**
+     * Sets ai_bot_owner
+     *
+     * @param string|null $ai_bot_owner Provider company label from accepted AI-bot detection; omitted when unknown or inactive.
+     *
+     * @return self
+     */
+    public function setAiBotOwner($ai_bot_owner)
+    {
+        if (is_null($ai_bot_owner)) {
+            throw new \InvalidArgumentException('non-nullable ai_bot_owner cannot be null');
+        }
+        $this->container['ai_bot_owner'] = $ai_bot_owner;
+
+        return $this;
+    }
+
+    /**
+     * Gets ai_browser_owner
+     *
+     * @return string|null
+     */
+    public function getAiBrowserOwner()
+    {
+        return $this->container['ai_browser_owner'];
+    }
+
+    /**
+     * Sets ai_browser_owner
+     *
+     * @param string|null $ai_browser_owner Owner label from accepted AI-browser detection; omitted when unknown or inactive.
+     *
+     * @return self
+     */
+    public function setAiBrowserOwner($ai_browser_owner)
+    {
+        if (is_null($ai_browser_owner)) {
+            throw new \InvalidArgumentException('non-nullable ai_browser_owner cannot be null');
+        }
+        $this->container['ai_browser_owner'] = $ai_browser_owner;
 
         return $this;
     }
