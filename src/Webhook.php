@@ -21,15 +21,14 @@ use ShieldLabs\Model\Identification;
  * request body (for example `file_get_contents('php://input')`), never JSON you
  * decoded and encoded again.
  *
- * Today each identification is delivered once per endpoint, with a 1-second timeout
- * and no retries: answer with a 2xx quickly. Future retries resend identical bytes,
- * so make handlers idempotent on `data.request_id`, and use the History API for
- * guaranteed reads.
+ * Version 2026-10-07 carries signed event_id and a convenience X-Shield-Event-Id
+ * header. Failed deliveries are retried in a bounded window. Persist before 2xx
+ * and deduplicate by event_id (legacy: data.request_id). History is recovery/latest state.
  */
 final class Webhook
 {
     public const SIGNATURE_HEADER = 'X-Shield-Signature';
-    public const SCHEMA_VERSION = '2026-06-01';
+    public const SCHEMA_VERSION = '2026-10-07';
 
     private const SIGNATURE_PREFIX = 'sha256=';
 

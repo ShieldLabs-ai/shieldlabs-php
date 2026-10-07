@@ -21,6 +21,18 @@ final class Identification implements \JsonSerializable
     public const SOURCE_WEBHOOK = 'webhook';
     public const SOURCE_HISTORY = 'history';
 
+    public readonly ?string $search_bot_owner;
+    public readonly ?string $ai_bot_owner;
+    public readonly ?string $ai_browser_owner;
+    public readonly ?string $result_version;
+    public readonly ?string $scoring_version;
+    /** @var array<mixed>|null */
+    public readonly ?array $risk_events;
+    /** @var array<mixed>|null */
+    public readonly ?array $hre;
+    /** @var array<mixed>|null */
+    public readonly ?array $fingerprint;
+
     /**
      * @param string                  $request_id      UUID created in the browser for this identification
      * @param string                  $visitor_id      server-side visitor ID (sticky to the device)
@@ -57,7 +69,16 @@ final class Identification implements \JsonSerializable
         public readonly ?\DateTimeImmutable $observed_at,
         public readonly string $source,
         public readonly array $raw = [],
-    ) {}
+    ) {
+        $this->search_bot_owner = \is_string($raw['search_bot_owner'] ?? null) ? $raw['search_bot_owner'] : null;
+        $this->ai_bot_owner = \is_string($raw['ai_bot_owner'] ?? null) ? $raw['ai_bot_owner'] : null;
+        $this->ai_browser_owner = \is_string($raw['ai_browser_owner'] ?? null) ? $raw['ai_browser_owner'] : null;
+        $this->result_version = \is_string($raw['result_version'] ?? null) ? $raw['result_version'] : null;
+        $this->scoring_version = \is_string($raw['scoring_version'] ?? null) ? $raw['scoring_version'] : null;
+        $this->risk_events = \is_array($raw['risk_events'] ?? null) ? $raw['risk_events'] : null;
+        $this->hre = \is_array($raw['hre'] ?? null) ? $raw['hre'] : null;
+        $this->fingerprint = \is_array($raw['fingerprint'] ?? null) ? $raw['fingerprint'] : null;
+    }
 
     /**
      * Builds an identification from one History API row.
@@ -132,6 +153,14 @@ final class Identification implements \JsonSerializable
             'detection_flags' => $this->detection_flags->toArray(),
             'observed_at' => Time::format($this->observed_at),
             'source' => $this->source,
+            ...($this->result_version !== null ? ['result_version' => $this->result_version] : []),
+            ...($this->scoring_version !== null ? ['scoring_version' => $this->scoring_version] : []),
+            ...($this->risk_events !== null ? ['risk_events' => $this->risk_events] : []),
+            ...($this->search_bot_owner !== null ? ['search_bot_owner' => $this->search_bot_owner] : []),
+            ...($this->ai_bot_owner !== null ? ['ai_bot_owner' => $this->ai_bot_owner] : []),
+            ...($this->ai_browser_owner !== null ? ['ai_browser_owner' => $this->ai_browser_owner] : []),
+            ...($this->hre !== null ? ['hre' => $this->hre] : []),
+            ...($this->fingerprint !== null ? ['fingerprint' => $this->fingerprint] : []),
         ];
     }
 

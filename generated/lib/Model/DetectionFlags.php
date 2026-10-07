@@ -36,7 +36,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * DetectionFlags Class Doc Comment
  *
  * @category Class
- * @description Stable yes/no verdicts for the identification. Always all 19 keys. Branch on these flags and on the Risk Score; signal names are for display and logging.  When &#x60;search_bot&#x60; is &#x60;true&#x60;, &#x60;incognito&#x60;, &#x60;check_incomplete&#x60;, &#x60;ip_mismatch&#x60; and &#x60;javascript_disabled&#x60; are always &#x60;false&#x60;.
+ * @description Stable yes/no verdicts for the identification. Legacy 19 keys are always present; the extension flags depend on the scoring release. Task 204 adds optional ai_bot and ai_browser flags; older payloads omit them. Branch on these flags and on the Risk Score; signal names are for display and logging.  When &#x60;search_bot&#x60; is &#x60;true&#x60;, &#x60;incognito&#x60;, &#x60;check_incomplete&#x60;, &#x60;ip_mismatch&#x60; and &#x60;javascript_disabled&#x60; are always &#x60;false&#x60;.
  * @package  ShieldLabs\Generated
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -77,7 +77,13 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => 'bool',
         'javascript_disabled' => 'bool',
         'stun_not_checked' => 'bool',
-        'check_incomplete' => 'bool'
+        'check_incomplete' => 'bool',
+        'device_spoofing' => 'bool',
+        'latency_test' => 'bool',
+        'banned_ip' => 'bool',
+        'ai_bot' => 'bool',
+        'ai_browser' => 'bool',
+        'os_mismatch2' => 'bool'
     ];
 
     /**
@@ -106,7 +112,13 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => null,
         'javascript_disabled' => null,
         'stun_not_checked' => null,
-        'check_incomplete' => null
+        'check_incomplete' => null,
+        'device_spoofing' => null,
+        'latency_test' => null,
+        'banned_ip' => null,
+        'ai_bot' => null,
+        'ai_browser' => null,
+        'os_mismatch2' => null
     ];
 
     /**
@@ -133,7 +145,13 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => false,
         'javascript_disabled' => false,
         'stun_not_checked' => false,
-        'check_incomplete' => false
+        'check_incomplete' => false,
+        'device_spoofing' => false,
+        'latency_test' => false,
+        'banned_ip' => false,
+        'ai_bot' => false,
+        'ai_browser' => false,
+        'os_mismatch2' => false
     ];
 
     /**
@@ -240,7 +258,13 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => 'suspicious_paid_click',
         'javascript_disabled' => 'javascript_disabled',
         'stun_not_checked' => 'stun_not_checked',
-        'check_incomplete' => 'check_incomplete'
+        'check_incomplete' => 'check_incomplete',
+        'device_spoofing' => 'device_spoofing',
+        'latency_test' => 'latency_test',
+        'banned_ip' => 'banned_ip',
+        'ai_bot' => 'ai_bot',
+        'ai_browser' => 'ai_browser',
+        'os_mismatch2' => 'os_mismatch2'
     ];
 
     /**
@@ -267,7 +291,13 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => 'setSuspiciousPaidClick',
         'javascript_disabled' => 'setJavascriptDisabled',
         'stun_not_checked' => 'setStunNotChecked',
-        'check_incomplete' => 'setCheckIncomplete'
+        'check_incomplete' => 'setCheckIncomplete',
+        'device_spoofing' => 'setDeviceSpoofing',
+        'latency_test' => 'setLatencyTest',
+        'banned_ip' => 'setBannedIp',
+        'ai_bot' => 'setAiBot',
+        'ai_browser' => 'setAiBrowser',
+        'os_mismatch2' => 'setOsMismatch2'
     ];
 
     /**
@@ -294,7 +324,13 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'suspicious_paid_click' => 'getSuspiciousPaidClick',
         'javascript_disabled' => 'getJavascriptDisabled',
         'stun_not_checked' => 'getStunNotChecked',
-        'check_incomplete' => 'getCheckIncomplete'
+        'check_incomplete' => 'getCheckIncomplete',
+        'device_spoofing' => 'getDeviceSpoofing',
+        'latency_test' => 'getLatencyTest',
+        'banned_ip' => 'getBannedIp',
+        'ai_bot' => 'getAiBot',
+        'ai_browser' => 'getAiBrowser',
+        'os_mismatch2' => 'getOsMismatch2'
     ];
 
     /**
@@ -373,6 +409,12 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('javascript_disabled', $data ?? [], null);
         $this->setIfExists('stun_not_checked', $data ?? [], null);
         $this->setIfExists('check_incomplete', $data ?? [], null);
+        $this->setIfExists('device_spoofing', $data ?? [], null);
+        $this->setIfExists('latency_test', $data ?? [], null);
+        $this->setIfExists('banned_ip', $data ?? [], null);
+        $this->setIfExists('ai_bot', $data ?? [], null);
+        $this->setIfExists('ai_browser', $data ?? [], null);
+        $this->setIfExists('os_mismatch2', $data ?? [], null);
     }
 
     /**
@@ -676,7 +718,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets os_mismatch
      *
-     * @param bool $os_mismatch The operating system seen on the network differs from the one the browser reports.
+     * @param bool $os_mismatch Either internal OS consistency check detected a mismatch. The public flag combines browser/network and TCP behaviour checks.
      *
      * @return self
      */
@@ -784,7 +826,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets browser_automation
      *
-     * @param bool $browser_automation Browser automation was detected, for example a WebDriver-controlled browser.
+     * @param bool $browser_automation Browser automation was detected, for example a WebDriver-controlled browser. Catalogue weight is 90 for task 204 scoring releases; historical result versions may retain the earlier weight 60.
      *
      * @return self
      */
@@ -983,6 +1025,170 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable check_incomplete cannot be null');
         }
         $this->container['check_incomplete'] = $check_incomplete;
+
+        return $this;
+    }
+
+    /**
+     * Gets device_spoofing
+     *
+     * @return bool|null
+     */
+    public function getDeviceSpoofing()
+    {
+        return $this->container['device_spoofing'];
+    }
+
+    /**
+     * Sets device_spoofing
+     *
+     * @param bool|null $device_spoofing device_spoofing
+     *
+     * @return self
+     */
+    public function setDeviceSpoofing($device_spoofing)
+    {
+        if (is_null($device_spoofing)) {
+            throw new \InvalidArgumentException('non-nullable device_spoofing cannot be null');
+        }
+        $this->container['device_spoofing'] = $device_spoofing;
+
+        return $this;
+    }
+
+    /**
+     * Gets latency_test
+     *
+     * @return bool|null
+     */
+    public function getLatencyTest()
+    {
+        return $this->container['latency_test'];
+    }
+
+    /**
+     * Sets latency_test
+     *
+     * @param bool|null $latency_test latency_test
+     *
+     * @return self
+     */
+    public function setLatencyTest($latency_test)
+    {
+        if (is_null($latency_test)) {
+            throw new \InvalidArgumentException('non-nullable latency_test cannot be null');
+        }
+        $this->container['latency_test'] = $latency_test;
+
+        return $this;
+    }
+
+    /**
+     * Gets banned_ip
+     *
+     * @return bool|null
+     */
+    public function getBannedIp()
+    {
+        return $this->container['banned_ip'];
+    }
+
+    /**
+     * Sets banned_ip
+     *
+     * @param bool|null $banned_ip banned_ip
+     *
+     * @return self
+     */
+    public function setBannedIp($banned_ip)
+    {
+        if (is_null($banned_ip)) {
+            throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');
+        }
+        $this->container['banned_ip'] = $banned_ip;
+
+        return $this;
+    }
+
+    /**
+     * Gets ai_bot
+     *
+     * @return bool|null
+     */
+    public function getAiBot()
+    {
+        return $this->container['ai_bot'];
+    }
+
+    /**
+     * Sets ai_bot
+     *
+     * @param bool|null $ai_bot An accepted bot is classified as AI training or user-requested fetch. ChatGPT-User, Claude-User and Perplexity-User are AI bots, not AI browsers. Weight 0. The flag is optional on older payloads; its absence is not an evaluated negative result. Provider claims alone do not grant zero risk.
+     *
+     * @return self
+     */
+    public function setAiBot($ai_bot)
+    {
+        if (is_null($ai_bot)) {
+            throw new \InvalidArgumentException('non-nullable ai_bot cannot be null');
+        }
+        $this->container['ai_bot'] = $ai_bot;
+
+        return $this;
+    }
+
+    /**
+     * Gets ai_browser
+     *
+     * @return bool|null
+     */
+    public function getAiBrowser()
+    {
+        return $this->container['ai_browser'];
+    }
+
+    /**
+     * Sets ai_browser
+     *
+     * @param bool|null $ai_browser A browser is identified by separate verified browser infrastructure. A generic browser User-Agent or a verified provider alone is insufficient. Weight 0. Optional on older payloads; absence is not an evaluated negative.
+     *
+     * @return self
+     */
+    public function setAiBrowser($ai_browser)
+    {
+        if (is_null($ai_browser)) {
+            throw new \InvalidArgumentException('non-nullable ai_browser cannot be null');
+        }
+        $this->container['ai_browser'] = $ai_browser;
+
+        return $this;
+    }
+
+    /**
+     * Gets os_mismatch2
+     *
+     * @return bool|null
+     * @deprecated
+     */
+    public function getOsMismatch2()
+    {
+        return $this->container['os_mismatch2'];
+    }
+
+    /**
+     * Sets os_mismatch2
+     *
+     * @param bool|null $os_mismatch2 Legacy 2026-10-06 only; current payloads combine this check into os_mismatch.
+     *
+     * @return self
+     * @deprecated
+     */
+    public function setOsMismatch2($os_mismatch2)
+    {
+        if (is_null($os_mismatch2)) {
+            throw new \InvalidArgumentException('non-nullable os_mismatch2 cannot be null');
+        }
+        $this->container['os_mismatch2'] = $os_mismatch2;
 
         return $this;
     }

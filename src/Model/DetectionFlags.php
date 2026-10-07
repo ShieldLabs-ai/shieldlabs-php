@@ -39,6 +39,12 @@ final class DetectionFlags implements \JsonSerializable
         public readonly bool $javascript_disabled = false,
         public readonly bool $stun_not_checked = false,
         public readonly bool $check_incomplete = false,
+        public readonly ?bool $os_mismatch2 = null,
+        public readonly ?bool $device_spoofing = null,
+        public readonly ?bool $latency_test = null,
+        public readonly ?bool $banned_ip = null,
+        public readonly ?bool $ai_bot = null,
+        public readonly ?bool $ai_browser = null,
     ) {}
 
     /**
@@ -68,6 +74,12 @@ final class DetectionFlags implements \JsonSerializable
             javascript_disabled: $value('javascript_disabled'),
             stun_not_checked: $value('stun_not_checked'),
             check_incomplete: $value('check_incomplete'),
+            ai_bot: \array_key_exists('ai_bot', $flags) ? $value('ai_bot') : null,
+            ai_browser: \array_key_exists('ai_browser', $flags) ? $value('ai_browser') : null,
+            os_mismatch2: \array_key_exists('os_mismatch2', $flags) ? $value('os_mismatch2') : null,
+            device_spoofing: \array_key_exists('device_spoofing', $flags) ? $value('device_spoofing') : null,
+            latency_test: \array_key_exists('latency_test', $flags) ? $value('latency_test') : null,
+            banned_ip: \array_key_exists('banned_ip', $flags) ? $value('banned_ip') : null,
         );
     }
 
@@ -121,6 +133,12 @@ final class DetectionFlags implements \JsonSerializable
             'javascript_disabled' => $this->javascript_disabled,
             'stun_not_checked' => $this->stun_not_checked,
             'check_incomplete' => $this->check_incomplete,
+            ...($this->ai_bot !== null ? ['ai_bot' => $this->ai_bot] : []),
+            ...($this->ai_browser !== null ? ['ai_browser' => $this->ai_browser] : []),
+            ...($this->os_mismatch2 !== null ? ['os_mismatch2' => $this->os_mismatch2] : []),
+            ...($this->device_spoofing !== null ? ['device_spoofing' => $this->device_spoofing] : []),
+            ...($this->latency_test !== null ? ['latency_test' => $this->latency_test] : []),
+            ...($this->banned_ip !== null ? ['banned_ip' => $this->banned_ip] : []),
         ];
     }
 

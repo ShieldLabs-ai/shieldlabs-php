@@ -316,6 +316,12 @@ final class Normalizer
             }
         }
 
+        foreach (['os_mismatch2', 'device_spoofing', 'latency_test', 'banned_ip', 'ai_bot', 'ai_browser'] as $key) {
+            if (\is_bool($rawFlags[$key] ?? null)) {
+                $flags[$key] = $rawFlags[$key];
+            }
+        }
+
         return [
             'request_id' => self::str($data['request_id'] ?? null),
             'visitor_id' => self::str($data['visitor_id'] ?? null),

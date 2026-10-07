@@ -1,6 +1,6 @@
 <?php
 /**
- * WebhookPingEvent
+ * MultiaccountChangedEvent
  *
  * PHP version 8.1
  *
@@ -33,16 +33,16 @@ use \ArrayAccess;
 use \ShieldLabs\Generated\ObjectSerializer;
 
 /**
- * WebhookPingEvent Class Doc Comment
+ * MultiaccountChangedEvent Class Doc Comment
  *
  * @category Class
- * @description Body of a &#x60;webhook.ping&#x60; delivery, sent when you verify an endpoint. It has no &#x60;data&#x60;. The keys arrive sorted alphabetically and &#x60;created_at&#x60; has second precision.
+ * @description An immutable opt-in notification of a complete multi-account group transition.
  * @package  ShieldLabs\Generated
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<string, mixed>
  */
-class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
+class MultiaccountChangedEvent implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -51,7 +51,7 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @var string
      */
-    protected static $openAPIModelName = 'WebhookPingEvent';
+    protected static $openAPIModelName = 'MultiaccountChangedEvent';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -59,10 +59,12 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
-        'event_type' => 'string',
-        'schema_version' => 'string',
+        'event_id' => 'string',
+        'event_type' => 'mixed',
+        'schema_version' => 'mixed',
+        'site_id' => 'int',
         'created_at' => '\DateTime',
-        'event_id' => 'string'
+        'data' => '\ShieldLabs\Generated\Model\MultiaccountChangedData'
     ];
 
     /**
@@ -73,10 +75,12 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
+        'event_id' => null,
         'event_type' => null,
         'schema_version' => null,
+        'site_id' => null,
         'created_at' => 'date-time',
-        'event_id' => null
+        'data' => null
     ];
 
     /**
@@ -85,10 +89,12 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'event_type' => false,
-        'schema_version' => false,
+        'event_id' => false,
+        'event_type' => true,
+        'schema_version' => true,
+        'site_id' => false,
         'created_at' => false,
-        'event_id' => false
+        'data' => false
     ];
 
     /**
@@ -177,10 +183,12 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
+        'event_id' => 'event_id',
         'event_type' => 'event_type',
         'schema_version' => 'schema_version',
+        'site_id' => 'site_id',
         'created_at' => 'created_at',
-        'event_id' => 'event_id'
+        'data' => 'data'
     ];
 
     /**
@@ -189,10 +197,12 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
+        'event_id' => 'setEventId',
         'event_type' => 'setEventType',
         'schema_version' => 'setSchemaVersion',
+        'site_id' => 'setSiteId',
         'created_at' => 'setCreatedAt',
-        'event_id' => 'setEventId'
+        'data' => 'setData'
     ];
 
     /**
@@ -201,10 +211,12 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
+        'event_id' => 'getEventId',
         'event_type' => 'getEventType',
         'schema_version' => 'getSchemaVersion',
+        'site_id' => 'getSiteId',
         'created_at' => 'getCreatedAt',
-        'event_id' => 'getEventId'
+        'data' => 'getData'
     ];
 
     /**
@@ -248,19 +260,6 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    public const EVENT_TYPE_WEBHOOK_PING = 'webhook.ping';
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getEventTypeAllowableValues()
-    {
-        return [
-            self::EVENT_TYPE_WEBHOOK_PING,
-        ];
-    }
 
     /**
      * Associative array for storing property values
@@ -277,10 +276,12 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
+        $this->setIfExists('event_id', $data ?? [], null);
         $this->setIfExists('event_type', $data ?? [], null);
         $this->setIfExists('schema_version', $data ?? [], null);
+        $this->setIfExists('site_id', $data ?? [], null);
         $this->setIfExists('created_at', $data ?? [], null);
-        $this->setIfExists('event_id', $data ?? [], null);
+        $this->setIfExists('data', $data ?? [], null);
     }
 
     /**
@@ -310,23 +311,24 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['event_type'] === null) {
-            $invalidProperties[] = "'event_type' can't be null";
+        if ($this->container['event_id'] === null) {
+            $invalidProperties[] = "'event_id' can't be null";
         }
-        $allowedValues = $this->getEventTypeAllowableValues();
-        if (!is_null($this->container['event_type']) && !in_array($this->container['event_type'], $allowedValues, true)) {
-            $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'event_type', must be one of '%s'",
-                $this->container['event_type'],
-                implode("', '", $allowedValues)
-            );
+        if (!preg_match("/^[a-f0-9]{40}$/", $this->container['event_id'])) {
+            $invalidProperties[] = "invalid value for 'event_id', must be conform to the pattern /^[a-f0-9]{40}$/.";
         }
 
-        if ($this->container['schema_version'] === null) {
-            $invalidProperties[] = "'schema_version' can't be null";
+        if ($this->container['event_type'] === null && !$this->isNullableSetToNull('event_type')) {
+            $invalidProperties[] = "'event_type' is required";
         }
-        if ((mb_strlen($this->container['schema_version']) < 1)) {
-            $invalidProperties[] = "invalid value for 'schema_version', the character length must be bigger than or equal to 1.";
+        if ($this->container['schema_version'] === null && !$this->isNullableSetToNull('schema_version')) {
+            $invalidProperties[] = "'schema_version' is required";
+        }
+        if ($this->container['site_id'] === null) {
+            $invalidProperties[] = "'site_id' can't be null";
+        }
+        if (($this->container['site_id'] < 1)) {
+            $invalidProperties[] = "invalid value for 'site_id', must be bigger than or equal to 1.";
         }
 
         if ($this->container['created_at'] === null) {
@@ -336,10 +338,9 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
             $invalidProperties[] = "invalid value for 'created_at', must be conform to the pattern /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/.";
         }
 
-        if (!is_null($this->container['event_id']) && (mb_strlen($this->container['event_id']) < 1)) {
-            $invalidProperties[] = "invalid value for 'event_id', the character length must be bigger than or equal to 1.";
+        if ($this->container['data'] === null) {
+            $invalidProperties[] = "'data' can't be null";
         }
-
         return $invalidProperties;
     }
 
@@ -356,9 +357,41 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets event_type
+     * Gets event_id
      *
      * @return string
+     */
+    public function getEventId()
+    {
+        return $this->container['event_id'];
+    }
+
+    /**
+     * Sets event_id
+     *
+     * @param string $event_id Stable logical event ID. Delivery retries preserve this ID and the signed body.
+     *
+     * @return self
+     */
+    public function setEventId($event_id)
+    {
+        if (is_null($event_id)) {
+            throw new \InvalidArgumentException('non-nullable event_id cannot be null');
+        }
+
+        if ((!preg_match("/^[a-f0-9]{40}$/", ObjectSerializer::toString($event_id)))) {
+            throw new \InvalidArgumentException("invalid value for \$event_id when calling MultiaccountChangedEvent., must conform to the pattern /^[a-f0-9]{40}$/.");
+        }
+
+        $this->container['event_id'] = $event_id;
+
+        return $this;
+    }
+
+    /**
+     * Gets event_type
+     *
+     * @return mixed|null
      */
     public function getEventType()
     {
@@ -368,24 +401,21 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets event_type
      *
-     * @param string $event_type Event type.
+     * @param mixed|null $event_type event_type
      *
      * @return self
      */
     public function setEventType($event_type)
     {
         if (is_null($event_type)) {
-            throw new \InvalidArgumentException('non-nullable event_type cannot be null');
-        }
-        $allowedValues = $this->getEventTypeAllowableValues();
-        if (!in_array($event_type, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'event_type', must be one of '%s'",
-                    $event_type,
-                    implode("', '", $allowedValues)
-                )
-            );
+            array_push($this->openAPINullablesSetToNull, 'event_type');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('event_type', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
         }
         $this->container['event_type'] = $event_type;
 
@@ -395,7 +425,7 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets schema_version
      *
-     * @return string
+     * @return mixed|null
      */
     public function getSchemaVersion()
     {
@@ -405,21 +435,55 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets schema_version
      *
-     * @param string $schema_version Webhook contract version. Scored release 2026-10-06; multi-account group release 2026-10-07; parsers also accept legacy 2026-06-01.
+     * @param mixed|null $schema_version schema_version
      *
      * @return self
      */
     public function setSchemaVersion($schema_version)
     {
         if (is_null($schema_version)) {
-            throw new \InvalidArgumentException('non-nullable schema_version cannot be null');
+            array_push($this->openAPINullablesSetToNull, 'schema_version');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('schema_version', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
         }
-
-        if ((mb_strlen($schema_version) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $schema_version when calling WebhookPingEvent., must be bigger than or equal to 1.');
-        }
-
         $this->container['schema_version'] = $schema_version;
+
+        return $this;
+    }
+
+    /**
+     * Gets site_id
+     *
+     * @return int
+     */
+    public function getSiteId()
+    {
+        return $this->container['site_id'];
+    }
+
+    /**
+     * Sets site_id
+     *
+     * @param int $site_id site_id
+     *
+     * @return self
+     */
+    public function setSiteId($site_id)
+    {
+        if (is_null($site_id)) {
+            throw new \InvalidArgumentException('non-nullable site_id cannot be null');
+        }
+
+        if (($site_id < 1)) {
+            throw new \InvalidArgumentException('invalid value for $site_id when calling MultiaccountChangedEvent., must be bigger than or equal to 1.');
+        }
+
+        $this->container['site_id'] = $site_id;
 
         return $this;
     }
@@ -437,7 +501,7 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets created_at
      *
-     * @param \DateTime $created_at When the ping was sent, with second precision.
+     * @param \DateTime $created_at RFC 3339 timestamp in UTC with up to 9 fractional digits (trailing zeros trimmed), for example `2026-09-30T12:34:57.482913041Z`. Parse it with a parser that accepts nanoseconds.
      *
      * @return self
      */
@@ -448,7 +512,7 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
         }
 
         if ((!preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/", ObjectSerializer::toString($created_at)))) {
-            throw new \InvalidArgumentException("invalid value for \$created_at when calling WebhookPingEvent., must conform to the pattern /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/.");
+            throw new \InvalidArgumentException("invalid value for \$created_at when calling MultiaccountChangedEvent., must conform to the pattern /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/.");
         }
 
         $this->container['created_at'] = $created_at;
@@ -457,33 +521,28 @@ class WebhookPingEvent implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-     * Gets event_id
+     * Gets data
      *
-     * @return string|null
+     * @return \ShieldLabs\Generated\Model\MultiaccountChangedData
      */
-    public function getEventId()
+    public function getData()
     {
-        return $this->container['event_id'];
+        return $this->container['data'];
     }
 
     /**
-     * Sets event_id
+     * Sets data
      *
-     * @param string|null $event_id event_id
+     * @param \ShieldLabs\Generated\Model\MultiaccountChangedData $data data
      *
      * @return self
      */
-    public function setEventId($event_id)
+    public function setData($data)
     {
-        if (is_null($event_id)) {
-            throw new \InvalidArgumentException('non-nullable event_id cannot be null');
+        if (is_null($data)) {
+            throw new \InvalidArgumentException('non-nullable data cannot be null');
         }
-
-        if ((mb_strlen($event_id) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $event_id when calling WebhookPingEvent., must be bigger than or equal to 1.');
-        }
-
-        $this->container['event_id'] = $event_id;
+        $this->container['data'] = $data;
 
         return $this;
     }

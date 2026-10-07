@@ -289,8 +289,8 @@ The result is HMAC-SHA256 as 64 lowercase hex characters: stable for a user and 
 - The header is `X-Shield-Signature: sha256=<hex>`, the HMAC-SHA256 of the raw body keyed with the full signing secret, `whsec_` prefix included.
 - To rotate a secret without downtime, pass both: `Webhook::constructEvent($payload, $header, [$newSecret, $oldSecret])`. A delivery is valid when any secret matches.
 - Events: `IdentificationScoredEvent` (`$event->data` is an `Identification`), `WebhookPingEvent` (sent when you verify an endpoint) and `UnknownWebhookEvent` for event types newer than this SDK (acknowledge them with a 2xx). `SignatureVerificationException` means the delivery is not authentic; `WebhookParseException` means a correctly signed body is not a valid event.
-- Today each identification is delivered once per endpoint: one attempt with a 1-second timeout and no retries. Respond with a 2xx quickly and do slow work afterwards. Future retries will resend identical bytes, so make handlers idempotent on `data.request_id` (`$event->data->request_id`) now.
-- For guaranteed reads, use the History API: a missed delivery is not sent again, and a History row can be refined after its webhook was sent.
+- Current failed deliveries retry within a bounded window; store the verified event before 2xx and deduplicate by event_id.
+- For guaranteed reads, use the History API: retries can exhaust, and a History row can be refined after its webhook was sent.
 - The "Test" button in the analytics dashboard sends a sample with 17 of the 19 flags and second-precision timestamps. It parses normally; missing flags are false.
 - `Webhook::verifySignature()` returns a boolean without parsing, for custom flows.
 
@@ -461,3 +461,19 @@ docker run --rm -v "$PWD":/app -w /app composer:2 sh -c "composer install && com
 ## License
 
 [MIT](LICENSE)
+
+
+### Webhook contract 2026-10-06
+
+Current events include signed `event_id`, optional `site_id`, the complete `data.risk_events`
+catalogue (including zero-weight events), `data.fingerprint` (FP21 hardware ID distinct from
+`device_id`), and `data.hre` for sharing/takeover/travel with explicit statuses. Older envelopes
+remain supported. Only identification risk score is sent; AI bots/browser are planned only,
+and all-time entity risks are excluded.
+
+Persist the verified event in a durable inbox **before** returning 2xx and deduplicate by
+`event_id` (legacy scored bodies: `data.request_id`). Timeout/network/429/5xx retry with
+backoff in a bounded window (8 failed sends / 15-minute retry age), then DLQ. Other 4xx are
+terminal. Retried bodies and event IDs stay unchanged. `X-Shield-Event-Id` mirrors the body ID;
+trust the signed body. Signature verification remains raw-body HMAC-SHA256. Delivery is not
+exactly-once and later History corrections do not automatically create a new webhook event.
