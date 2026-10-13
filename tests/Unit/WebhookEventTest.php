@@ -49,12 +49,12 @@ final class WebhookEventTest extends TestCase
 
         self::assertInstanceOf(IdentificationScoredEvent::class, $event);
         self::assertSame('identification.scored', $event->event_type);
-        self::assertSame('2026-06-01', $event->schema_version);
+        self::assertSame('2026-10-13', $event->schema_version);
         self::assertSame('2026-09-30T12:34:57.482913+00:00', $event->created_at?->format('Y-m-d\TH:i:s.uP'));
         self::assertSame(self::expected('webhook_scored'), $event->data->toArray());
         self::assertSame('https://shop.example.com/signup?utm_source=google&utm_medium=cpc&gclid=abc123', $event->data->traffic_source->landing_url);
         self::assertSame(RiskBand::Dangerous, $event->data->riskBand());
-        self::assertSame(['proxy', 'datacenter_ip', 'anti_detect_browser', 'ip_mismatch', 'suspicious_paid_click'], $event->data->detection_flags->active());
+        self::assertSame(['proxy', 'ip_mismatch', 'anti_detect_browser'], $event->data->detection_flags->active());
         self::assertIsArray($event->raw['data']);
         self::assertSame($event->raw['data'], $event->data->raw);
     }
@@ -113,7 +113,7 @@ final class WebhookEventTest extends TestCase
         $body = Fixtures::raw('webhook-test-delivery.json');
         $decoded = Fixtures::json('webhook-test-delivery.json');
         \assert(\is_array($decoded['data']) && \is_array($decoded['data']['detection_flags']));
-        self::assertCount(17, $decoded['data']['detection_flags']);
+        self::assertCount(20, $decoded['data']['detection_flags']);
 
         $event = Webhook::constructEvent($body, self::sign($body), self::SECRET);
 

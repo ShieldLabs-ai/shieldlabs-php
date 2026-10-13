@@ -291,7 +291,7 @@ The result is HMAC-SHA256 as 64 lowercase hex characters: stable for a user and 
 - Events: `IdentificationScoredEvent` (`$event->data` is an `Identification`), `WebhookPingEvent` (sent when you verify an endpoint) and `UnknownWebhookEvent` for event types newer than this SDK (acknowledge them with a 2xx). `SignatureVerificationException` means the delivery is not authentic; `WebhookParseException` means a correctly signed body is not a valid event.
 - Today each identification is delivered once per endpoint: one attempt with a 1-second timeout and no retries. Respond with a 2xx quickly and do slow work afterwards. Future retries will resend identical bytes, so make handlers idempotent on `data.request_id` (`$event->data->request_id`) now.
 - For guaranteed reads, use the History API: a missed delivery is not sent again, and a History row can be refined after its webhook was sent.
-- The "Test" button in the analytics dashboard sends a sample with 17 of the 19 flags and second-precision timestamps. It parses normally; missing flags are false.
+- The "Test" button in the analytics dashboard sends a sample event. It parses normally; missing flags are false.
 - `Webhook::verifySignature()` returns a boolean without parsing, for custom flows.
 
 ### Domain profile (Management API)

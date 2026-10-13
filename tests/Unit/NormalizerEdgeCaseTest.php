@@ -114,8 +114,8 @@ final class NormalizerEdgeCaseTest extends TestCase
 
     public function testBrowserVpnProxyComesFromTheConnectionType(): void
     {
-        self::assertTrue(Identification::fromHistoryRow(['connection_type' => 'browser_vpn_proxy'])->detection_flags->browser_vpn_proxy);
-        self::assertFalse(Identification::fromHistoryRow(['connection_type' => 'vpn'])->detection_flags->browser_vpn_proxy);
+        self::assertTrue(Identification::fromHistoryRow(['connection_type' => 'browser_vpn_proxy'])->detection_flags->vpn);
+        self::assertFalse(Identification::fromHistoryRow(['connection_type' => 'vpn'])->detection_flags->vpn);
     }
 
     public function testSiteDomainWinsOverTheRequestHost(): void
@@ -126,9 +126,9 @@ final class NormalizerEdgeCaseTest extends TestCase
 
     public function testFlagTruthinessFollowsJson(): void
     {
-        $identification = Identification::fromHistoryRow(['is_vpn' => 'false', 'is_tor' => 0, 'is_proxy' => '', 'is_abuser' => 1, 'is_datacenter' => null]);
+        $identification = Identification::fromHistoryRow(['is_vpn' => 'false', 'is_tor' => 0, 'is_proxy' => '', 'is_incognito' => 1, 'is_datacenter' => null]);
 
-        self::assertSame(['vpn', 'abuser'], $identification->detection_flags->active());
+        self::assertSame(['vpn', 'incognito'], $identification->detection_flags->active());
     }
 
     public function testToleratesWrongTypes(): void

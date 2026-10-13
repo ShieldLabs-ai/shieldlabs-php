@@ -16,12 +16,12 @@ namespace ShieldLabs\Internal;
  */
 final class Normalizer
 {
-    /** The 19 detection flags, in wire order. */
+    /** The 20 public detection flags, in wire order. */
     public const FLAG_KEYS = [
-        'vpn', 'privacy_relay', 'browser_vpn_proxy', 'tor', 'proxy', 'datacenter_ip', 'abuser',
-        'os_mismatch', 'os_not_detected', 'timezone_mismatch', 'anti_detect_browser',
-        'browser_automation', 'ip_mismatch', 'incognito', 'search_bot', 'suspicious_paid_click',
-        'javascript_disabled', 'stun_not_checked', 'check_incomplete',
+        'vpn', 'proxy', 'privacy_relay', 'check_incomplete', 'stun_not_checked', 'os_not_detected',
+        'timezone_mismatch', 'javascript_disabled', 'os_mismatch', 'ip_mismatch', 'ws_tcp_latency',
+        'anti_detect_browser', 'device_spoofing', 'rate_limited', 'incognito', 'search_bot', 'ai_bot',
+        'browser_automation', 'ai_browser', 'tor',
     ];
 
     public const TRAFFIC_KEYS = [
@@ -31,23 +31,23 @@ final class Normalizer
 
     /** Normalized flag name to History row column. */
     private const HISTORY_FLAG_MAP = [
-        'vpn' => 'is_vpn',
-        'privacy_relay' => 'is_privacy_relay',
-        'tor' => 'is_tor',
         'proxy' => 'is_proxy',
-        'datacenter_ip' => 'is_datacenter',
-        'abuser' => 'is_abuser',
-        'os_mismatch' => 'is_os_mismatch',
+        'privacy_relay' => 'is_privacy_relay',
+        'check_incomplete' => 'check_incomplete',
+        'stun_not_checked' => 'is_stun_not_checked',
         'os_not_detected' => 'is_os_not_detected',
         'timezone_mismatch' => 'is_timezone_mismatch',
+        'javascript_disabled' => 'is_js_disabled',
+        'ws_tcp_latency' => 'is_latency_test',
         'anti_detect_browser' => 'is_antidetect',
-        'browser_automation' => 'is_browser_automation',
+        'device_spoofing' => 'is_device_spoof',
+        'rate_limited' => 'is_rate_limited',
         'incognito' => 'is_incognito',
         'search_bot' => 'is_search_bot',
-        'suspicious_paid_click' => 'is_suspicious_paid_click',
-        'javascript_disabled' => 'is_js_disabled',
-        'stun_not_checked' => 'is_stun_not_checked',
-        'check_incomplete' => 'check_incomplete',
+        'ai_bot' => 'is_ai_bot',
+        'browser_automation' => 'is_browser_automation',
+        'ai_browser' => 'is_ai_browser',
+        'tor' => 'is_tor',
     ];
 
     private const EXACT_SLUGS = [
@@ -62,7 +62,7 @@ final class Normalizer
         'UA OS is not detected' => 'os_not_detected',
         'Network OS is not detected' => 'os_not_detected',
         'Browser timezone ≠ IP-timezone' => 'timezone_mismatch',
-        'Browser VPN/Proxy' => 'browser_vpn_proxy',
+        'Browser VPN/Proxy' => 'vpn',
         'Browser Automation' => 'browser_automation',
         'Port scan routed via proxy (antidetect browser pattern)' => 'proxy_routed_antidetect',
         'User has been banned 1H, to many requests' => 'rate_limited',
@@ -71,7 +71,7 @@ final class Normalizer
     private const PREFIX_SLUGS = [
         ['Antidetect browser', 'antidetect_browser'],
         ['Os_mismatch', 'os_mismatch'],
-        ['OS mismatch2', 'os_mismatch2'],
+        ['OS mismatch2', 'os_mismatch'],
         ['TCP handshake', 'tcp_handshake_v2'],
         ['Latency test', 'ws_tcp_latency'],
         ['JavaScript disabled', 'javascript_disabled'],
@@ -227,8 +227,13 @@ final class Normalizer
         $searchBot = self::truthy($row['is_search_bot'] ?? null);
         $flags = [];
         foreach (self::FLAG_KEYS as $key) {
-            if ($key === 'browser_vpn_proxy') {
-                $flags[$key] = ($row['connection_type'] ?? null) === 'browser_vpn_proxy';
+            if ($key === 'vpn') {
+                $flags[$key] = self::truthy($row['is_vpn'] ?? null)
+                    || self::truthy($row['is_browser_vpn_proxy'] ?? null)
+                    || ($row['connection_type'] ?? null) === 'browser_vpn_proxy';
+            } elseif ($key === 'os_mismatch') {
+                $flags[$key] = self::truthy($row['is_os_mismatch'] ?? null)
+                    || self::truthy($row['is_os_mismatch2'] ?? null);
             } elseif ($key === 'ip_mismatch') {
                 $flags[$key] = !$searchBot
                     && ($ipLeakDetail || ($publicIp !== '' && $localIp !== '' && $publicIp !== $localIp));
