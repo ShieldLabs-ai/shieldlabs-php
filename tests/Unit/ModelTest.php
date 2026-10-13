@@ -85,7 +85,7 @@ final class ModelTest extends TestCase
         self::assertSame(['vpn', 'check_incomplete'], $flags->active());
         self::assertSame(DetectionFlags::KEYS, array_keys($flags->toArray()));
         self::assertSame($flags->toArray(), $flags->jsonSerialize());
-        self::assertCount(19, DetectionFlags::KEYS);
+        self::assertCount(20, DetectionFlags::KEYS);
 
         $this->expectException(ValidationException::class);
         $flags->get('bot');

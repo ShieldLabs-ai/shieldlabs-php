@@ -13,7 +13,7 @@ abstract class WebhookEvent
 {
     /**
      * @param string                  $event_type     for example "identification.scored"
-     * @param string                  $schema_version payload schema version, "2026-06-01" today (other values are accepted)
+     * @param string                  $schema_version payload schema version, "2026-10-13" today (other values are accepted)
      * @param \DateTimeImmutable|null $created_at     when the event was created (UTC)
      * @param array<mixed>            $raw            the decoded body as received
      */

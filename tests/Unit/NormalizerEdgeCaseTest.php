@@ -114,8 +114,8 @@ final class NormalizerEdgeCaseTest extends TestCase
 
     public function testBrowserVpnProxyComesFromTheConnectionType(): void
     {
-        self::assertTrue(Identification::fromHistoryRow(['connection_type' => 'browser_vpn_proxy'])->detection_flags->browser_vpn_proxy);
-        self::assertFalse(Identification::fromHistoryRow(['connection_type' => 'vpn'])->detection_flags->browser_vpn_proxy);
+        self::assertTrue(Identification::fromHistoryRow(['connection_type' => 'browser_vpn_proxy'])->detection_flags->vpn);
+        self::assertFalse(Identification::fromHistoryRow(['connection_type' => 'vpn'])->detection_flags->vpn);
     }
 
     public function testSiteDomainWinsOverTheRequestHost(): void

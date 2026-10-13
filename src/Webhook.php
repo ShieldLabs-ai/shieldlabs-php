@@ -29,7 +29,7 @@ use ShieldLabs\Model\Identification;
 final class Webhook
 {
     public const SIGNATURE_HEADER = 'X-Shield-Signature';
-    public const SCHEMA_VERSION = '2026-06-01';
+    public const SCHEMA_VERSION = '2026-10-13';
 
     private const SIGNATURE_PREFIX = 'sha256=';
 
