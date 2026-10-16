@@ -461,3 +461,13 @@ docker run --rm -v "$PWD":/app -w /app composer:2 sh -c "composer install && com
 ## License
 
 [MIT](LICENSE)
+
+### Bot / Agent attribution
+
+The optional client identity field preserves the stored ingest decision from both
+History and webhook data. Claims are unverified names; each verified entry proves
+only its named subject through referenced evidence. Provider proof does not
+confirm the agent name, service or AI mode. Missing data stays absent, and unknown
+string values remain open. This field does not change risk evaluation or flags.
+The legacy `search_bot` scoring flag may include allowlisted UA self-identification;
+it is not a general cryptographic verification flag.

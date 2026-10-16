@@ -57,6 +57,7 @@ final class Identification implements \JsonSerializable
         public readonly ?\DateTimeImmutable $observed_at,
         public readonly string $source,
         public readonly array $raw = [],
+        public readonly ?ClientIdentity $client_identity = null,
     ) {}
 
     /**
@@ -132,6 +133,7 @@ final class Identification implements \JsonSerializable
             'detection_flags' => $this->detection_flags->toArray(),
             'observed_at' => Time::format($this->observed_at),
             'source' => $this->source,
+            ...($this->client_identity !== null ? ['client_identity' => $this->client_identity->jsonSerialize()] : []),
         ];
     }
 
@@ -193,6 +195,7 @@ final class Identification implements \JsonSerializable
             observed_at: $normalized['observed_at'],
             source: $normalized['source'],
             raw: $raw,
+            client_identity: ClientIdentity::fromValue($raw['client_identity'] ?? null),
         );
     }
 }
