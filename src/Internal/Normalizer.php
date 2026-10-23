@@ -430,6 +430,9 @@ final class Normalizer
         return self::truthy($value) ? self::str($value) : '';
     }
 
+    /**
+     * @param array<mixed> $row
+     */
     private static function identificationId(array $row): string
     {
         $value = self::str($row['identification_id'] ?? null);
