@@ -22,19 +22,19 @@ final class Identification implements \JsonSerializable
     public const SOURCE_HISTORY = 'history';
 
     /**
-     * @param string                  $request_id      UUID created in the browser for this identification
-     * @param string                  $visitor_id      server-side visitor ID (sticky to the device)
-     * @param string                  $device_id       server-side device ID; {@see self::NIL_UUID} when there were no usable device signals
-     * @param string                  $session_id      one visit on one origin
-     * @param string                  $cookie_id       first-party browser ID kept by the agent
-     * @param string|null             $user_hid        your User HID as sent by the browser, "anonymous" for anonymous checks, null when empty
-     * @param string                  $domain          registered domain the identification belongs to
-     * @param string                  $connection_type see {@see \ShieldLabs\ConnectionType}; unknown values are kept
-     * @param int                     $risk_score      0-100, or 999 as the rate-limit marker
-     * @param list<Signal>            $signals         weighted risk signals behind the score
-     * @param \DateTimeImmutable|null $observed_at     UTC time of the identification (null only when the payload had no parsable time)
-     * @param string                  $source          {@see self::SOURCE_WEBHOOK} or {@see self::SOURCE_HISTORY}
-     * @param array<mixed>            $raw             the payload as received (webhook `data` or the History row)
+     * @param string                  $identification_id UUID created in the browser for this identification
+     * @param string                  $visitor_id        server-side visitor ID (sticky to the device)
+     * @param string                  $device_id         server-side device ID; {@see self::NIL_UUID} when there were no usable device signals
+     * @param string                  $session_id        one visit on one origin
+     * @param string                  $cookie_id         first-party browser ID kept by the agent
+     * @param string|null             $user_hid          your User HID as sent by the browser, "anonymous" for anonymous checks, null when empty
+     * @param string                  $domain            registered domain the identification belongs to
+     * @param string                  $connection_type   see {@see \ShieldLabs\ConnectionType}; unknown values are kept
+     * @param int                     $risk_score        0-100, or 999 as the rate-limit marker
+     * @param list<Signal>            $signals           weighted risk signals behind the score
+     * @param \DateTimeImmutable|null $observed_at       UTC time of the identification (null only when the payload had no parsable time)
+     * @param string                  $source            {@see self::SOURCE_WEBHOOK} or {@see self::SOURCE_HISTORY}
+     * @param array<mixed>            $raw               the payload as received (webhook `data` or the History row)
      */
     public function __construct(
         public readonly string $identification_id,
