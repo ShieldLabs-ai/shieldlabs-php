@@ -27,7 +27,7 @@ final class RiskEvaluateTest extends TestCase
         ?string $observedAt = self::OBSERVED,
     ): Identification {
         return new Identification(
-            request_id: '3b241101-e2bb-4255-8caf-4136c566a962',
+            identification_id: '3b241101-e2bb-4255-8caf-4136c566a962',
             visitor_id: 'bde0e249-20d8-4544-838c-ed9a0b6d7a36',
             device_id: $deviceId,
             session_id: 'bde78778-efd2-4c49-952f-1f11b9c05f35',
@@ -86,8 +86,8 @@ final class RiskEvaluateTest extends TestCase
     public function testReplayCallbackRunsBeforeTheOtherChecks(): void
     {
         $seen = [];
-        $isReplay = static function (string $requestId) use (&$seen): bool {
-            $seen[] = $requestId;
+        $isReplay = static function (string $identificationId) use (&$seen): bool {
+            $seen[] = $identificationId;
 
             return true;
         };

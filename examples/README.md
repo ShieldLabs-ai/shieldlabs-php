@@ -3,12 +3,12 @@
 `server.php` is a small app for PHP's built-in web server that does both halves of a
 ShieldLabs integration:
 
-- `POST /signup` reads the `requestId` your frontend sent (JSON `{"requestId": "..."}` or a
+- `POST /signup` reads the `identificationId` your frontend sent (JSON `{"identificationId": "..."}` or a
   form field), waits for the verdict with `identifications->get()` and applies
   `Risk::evaluate()`: a missing, reused, stale or rate-limited identification is refused, and
   so are browser automation, disabled JavaScript and the dangerous band.
 - `POST /webhooks/shieldlabs` verifies the signature, parses the event and logs it once per
-  `request_id`.
+  `identification_id`.
 
 ## Run it
 
@@ -41,7 +41,7 @@ integration:
 ```bash
 curl -i -X POST http://localhost:8000/signup \
   -H 'Content-Type: application/json' \
-  -d '{"requestId": "3b241101-e2bb-4255-8caf-4136c566a962"}'
+  -d '{"identificationId": "3b241101-e2bb-4255-8caf-4136c566a962"}'
 ```
 
 Send a signed `webhook.ping` the way ShieldLabs does. The signature is computed from

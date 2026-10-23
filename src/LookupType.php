@@ -14,6 +14,8 @@ enum LookupType: string
     /** Your hashed or pseudonymous account id, sent exactly as given. */
     case UserHid = 'user_hid';
     case VisitorId = 'visitor_id';
+    case IdentificationId = 'identification_id';
+    /** Legacy alias of IdentificationId. Still accepted on History search. */
     case RequestId = 'request_id';
     case DeviceId = 'device_id';
     case SessionId = 'session_id';

@@ -52,7 +52,7 @@ final class History
 
     /**
      * Every identification for an identifier, fetched page by page as you iterate.
-     * Rows are de-duplicated on request_id (offset paging can repeat a row while new
+     * Rows are de-duplicated on identification_id (offset paging can repeat a row while new
      * rows arrive); iteration stops at the reported total, at an empty page or after
      * max_items rows. With max_items 0 it yields nothing and sends no request.
      *
@@ -110,10 +110,10 @@ final class History
                 return;
             }
             foreach ($page->data as $identification) {
-                if (isset($seen[$identification->request_id])) {
+                if (isset($seen[$identification->identification_id])) {
                     continue;
                 }
-                $seen[$identification->request_id] = true;
+                $seen[$identification->identification_id] = true;
                 yield $identification;
                 ++$yielded;
                 if ($maxItems !== null && $yielded >= $maxItems) {

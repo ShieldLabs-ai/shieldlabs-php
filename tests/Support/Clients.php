@@ -43,14 +43,14 @@ final class Clients
     }
 
     /**
-     * A History response with one row whose request_id is $requestId.
+     * A History response with one row whose identification_id is $identificationId.
      */
-    public static function rowFor(string $requestId, int $score = 10, string $createdAt = '2026-09-30 12:40:01.007'): \Psr\Http\Message\ResponseInterface
+    public static function rowFor(string $identificationId, int $score = 10, string $createdAt = '2026-09-30 12:40:01.007'): \Psr\Http\Message\ResponseInterface
     {
         $page = Fixtures::json('history-page.json');
         \assert(\is_array($page['data']) && \is_array($page['data'][1]));
         $row = $page['data'][1];
-        $row['request_id'] = $requestId;
+        $row['identification_id'] = $identificationId;
         $row['score'] = $score;
         $row['created_at'] = $createdAt;
 

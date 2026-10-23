@@ -10,12 +10,12 @@ ShieldLabs identifies visitors with device intelligence and scores every identif
 
 ## How it fits
 
-1. **Browser.** The ShieldLabs agent (loaded with `@shieldlabs-ai/js` or one of the framework packages) runs an identification and hands your page a `requestId`. The browser never sees a Risk Score or a device ID.
-2. **Your backend (this SDK).** The page sends the `requestId` with the protected action (signup, login, checkout). Your backend reads the verdict for it from the History API, or receives it in a signed `identification.scored` webhook.
+1. **Browser.** The ShieldLabs agent (loaded with `@shieldlabs-ai/js` or one of the framework packages) runs an identification and hands your page a `identificationId`. The browser never sees a Risk Score or a device ID.
+2. **Your backend (this SDK).** The page sends the `identificationId` with the protected action (signup, login, checkout). Your backend reads the verdict for it from the History API, or receives it in a signed `identification.scored` webhook.
 3. **Decision.** Your backend acts on the Risk Score, the risk band, the detection flags and the identifiers (for example: how many accounts one device ID has used).
 
 ```
-browser --requestId--> your PHP backend --History API--> Identification --> allow / review / refuse
+browser --identificationId--> your PHP backend --History API--> Identification --> allow / review / refuse
 ```
 
 ## Install
@@ -42,7 +42,7 @@ Keys come from the ShieldLabs analytics dashboard at [app.shieldlabs.ai](https:/
 
 ## Quick start
 
-Save this as `signup.php` next to your `vendor/` folder. It reads the verdict for the `requestId` your frontend sent with the form, then decides:
+Save this as `signup.php` next to your `vendor/` folder. It reads the verdict for the `identificationId` your frontend sent with the form, then decides:
 
 ```php
 <?php
@@ -65,31 +65,31 @@ function respond(int $status, array $body): never
 // One identification authorizes one action, so remember the request IDs you accepted.
 // Marker files keep this snippet self-contained; see "Storing used request IDs" below
 // for a database version.
-function markRequestIdUsed(string $requestId): bool
+function markIdentificationIdUsed(string $identificationId): bool
 {
-    $marker = sys_get_temp_dir() . '/shieldlabs-used-' . hash('sha256', $requestId);
+    $marker = sys_get_temp_dir() . '/shieldlabs-used-' . hash('sha256', $identificationId);
 
     return @fopen($marker, 'x') !== false; // mode "x" fails when the file already exists
 }
 
-// The requestId arrives as a form field or in a JSON body.
+// The identificationId arrives as a form field or in a JSON body.
 $json = json_decode((string) file_get_contents('php://input'), true);
-$requestId = $_POST['requestId'] ?? (is_array($json) ? ($json['requestId'] ?? null) : null);
+$identificationId = $_POST['identificationId'] ?? (is_array($json) ? ($json['identificationId'] ?? null) : null);
 
 $shieldlabs = new ShieldLabs(['api_key' => 'sec_your_private_key']); // or new ShieldLabs() to read SHIELDLABS_API_KEY
 
 try {
     // Polls the History API until the verdict is stored (usually 1-3 seconds after
     // the browser call), for up to 10 seconds by default.
-    $identification = $shieldlabs->identifications->get(is_string($requestId) ? $requestId : '');
+    $identification = $shieldlabs->identifications->get(is_string($identificationId) ? $identificationId : '');
 } catch (ValidationException) {
-    respond(400, ['error' => 'requestId must be a UUID']);
+    respond(400, ['error' => 'identificationId must be a UUID']);
 } catch (ShieldLabsException) {
     respond(503, ['error' => 'verification unavailable']); // unverified is never "clean"
 }
 
 $evaluation = Risk::evaluate($identification, [
-    'is_replay' => fn(string $id): bool => !markRequestIdUsed($id),
+    'is_replay' => fn(string $id): bool => !markIdentificationIdUsed($id),
 ]);
 
 if (!$evaluation->ok) {
@@ -100,7 +100,7 @@ if (!$evaluation->ok) {
 respond(200, ['ok' => true]);
 ```
 
-Try it with `php -S localhost:8000 signup.php` and a request ID from your browser integration: `curl -X POST localhost:8000 -d requestId=<requestId>`. With the placeholder key the SDK logs a warning that the key does not look like a Private API Key; use your own key.
+Try it with `php -S localhost:8000 signup.php` and a request ID from your browser integration: `curl -X POST localhost:8000 -d identificationId=<identificationId>`. With the placeholder key the SDK logs a warning that the key does not look like a Private API Key; use your own key.
 
 Verify a webhook delivery (`webhook.php`):
 
@@ -129,7 +129,7 @@ try {
 
 if ($event instanceof IdentificationScoredEvent) {
     $identification = $event->data; // the same Identification model the History API returns
-    // Store it keyed by $identification->request_id so a repeated delivery is harmless.
+    // Store it keyed by $identification->identification_id so a repeated delivery is harmless.
 }
 
 http_response_code(200); // answer fast: the sender waits at most 1 second
@@ -157,9 +157,9 @@ The limit per poll applies to the built-in `CurlClient`, whether the SDK created
 With `'wait' => false` the SDK makes one lookup, with the client's `timeout` and the usual retries. To read the refined version of a row, for example to log the final risk signals, make such a lookup again after about 10 seconds.
 
 ```php
-$identification = $shieldlabs->identifications->get($requestId);                     // wait up to 10 s in total
-$identification = $shieldlabs->identifications->get($requestId, ['timeout' => 3]);   // a 3-second budget
-$identification = $shieldlabs->identifications->get($requestId, ['wait' => false]);  // one lookup, no polling
+$identification = $shieldlabs->identifications->get($identificationId);                     // wait up to 10 s in total
+$identification = $shieldlabs->identifications->get($identificationId, ['timeout' => 3]);   // a 3-second budget
+$identification = $shieldlabs->identifications->get($identificationId, ['wait' => false]);  // one lookup, no polling
 ```
 
 The agent also runs background identifications on its own (on clicks and navigation). Their request IDs never reach your page, so the History API can show extra rows for the same visitor. Always look up the request ID that arrived with the action.
@@ -180,7 +180,7 @@ Branch on the score, the band and the flags. Signal names are an open set and we
 | Order | Check | Reason |
 |---|---|---|
 | 1 | No identification | `missing` |
-| 2 | `is_replay($requestId)` returns true (the SDK stores nothing itself) | `replayed` |
+| 2 | `is_replay($identificationId)` returns true (the SDK stores nothing itself) | `replayed` |
 | 3 | Older than `max_age` seconds, by `observed_at` | `stale` |
 | 4 | Score above 100 | `rate_limited` |
 | 5 | Device ID is the all-zero UUID (no usable device signals) | `no_device_signals` |
@@ -212,11 +212,11 @@ Pass `is_replay` so that one identification authorizes one action. The SDK store
 
 ```php
 // CREATE TABLE used_request_ids (request_id CHAR(36) PRIMARY KEY, used_at TIMESTAMP NOT NULL)
-function markRequestIdUsed(PDO $pdo, string $requestId): bool
+function markIdentificationIdUsed(PDO $pdo, string $identificationId): bool
 {
     try {
         $pdo->prepare('INSERT INTO used_request_ids (request_id, used_at) VALUES (?, CURRENT_TIMESTAMP)')
-            ->execute([$requestId]);
+            ->execute([$identificationId]);
 
         return true;
     } catch (PDOException $exception) {
@@ -229,7 +229,7 @@ function markRequestIdUsed(PDO $pdo, string $requestId): bool
 }
 
 $evaluation = Risk::evaluate($identification, [
-    'is_replay' => fn(string $id): bool => !markRequestIdUsed($pdo, $id),
+    'is_replay' => fn(string $id): bool => !markIdentificationIdUsed($pdo, $id),
 ]);
 ```
 
@@ -245,7 +245,7 @@ $page->data;  // list of Identification, newest first
 $page->total; // rows for this User HID across all pages
 ```
 
-Lookup types: `ip` (dotted IPv4), `user_hid`, `visitor_id`, `request_id`, `device_id`, `session_id` and `cookie_id`. The SDK checks every lookup before sending it: an unknown type, a malformed UUID, an IPv6 address, an empty User HID or a `limit` outside 1-100 throws `ValidationException` and sends nothing.
+Lookup types: `ip` (dotted IPv4), `user_hid`, `visitor_id`, `identification_id`, `device_id`, `session_id` and `cookie_id`. The SDK checks every lookup before sending it: an unknown type, a malformed UUID, an IPv6 address, an empty User HID or a `limit` outside 1-100 throws `ValidationException` and sends nothing.
 
 A User HID is sent as one URL path segment in canonical form, so values with `@`, `+`, `=` or spaces (an email address, a base64 string) match exactly. A value that contains `/`, and the values `.` and `..`, cannot be searched and throw `ValidationException`. User HIDs from `UserHid::fromUserId()` are 64 hex characters and always work.
 
@@ -289,7 +289,7 @@ The result is HMAC-SHA256 as 64 lowercase hex characters: stable for a user and 
 - The header is `X-Shield-Signature: sha256=<hex>`, the HMAC-SHA256 of the raw body keyed with the full signing secret, `whsec_` prefix included.
 - To rotate a secret without downtime, pass both: `Webhook::constructEvent($payload, $header, [$newSecret, $oldSecret])`. A delivery is valid when any secret matches.
 - Events: `IdentificationScoredEvent` (`$event->data` is an `Identification`), `WebhookPingEvent` (sent when you verify an endpoint) and `UnknownWebhookEvent` for event types newer than this SDK (acknowledge them with a 2xx). `SignatureVerificationException` means the delivery is not authentic; `WebhookParseException` means a correctly signed body is not a valid event.
-- Today each identification is delivered once per endpoint: one attempt with a 1-second timeout and no retries. Respond with a 2xx quickly and do slow work afterwards. Future retries will resend identical bytes, so make handlers idempotent on `data.request_id` (`$event->data->request_id`) now.
+- Today each identification is delivered once per endpoint: one attempt with a 1-second timeout and no retries. Respond with a 2xx quickly and do slow work afterwards. Future retries will resend identical bytes, so make handlers idempotent on `data.identification_id` (`$event->data->identification_id`) now.
 - For guaranteed reads, use the History API: a missed delivery is not sent again, and a History row can be refined after its webhook was sent.
 - The "Test" button in the analytics dashboard sends a sample event. It parses normally; missing flags are false.
 - `Webhook::verifySignature()` returns a boolean without parsing, for custom flows.
@@ -392,7 +392,7 @@ A client keeps no mutable state after construction: share one instance, for exam
 | API | Returns |
 |---|---|
 | `new ShieldLabs(array $options = [])` | History API client |
-| `$client->identifications->get(string $requestId, array $options = [])` | `?Model\Identification`. Options: `wait` (true), `timeout` (10, the total budget in seconds), `poll_interval` (0.25, the first wait; the later waits are 2, 4, 6 and 8 times it, each at most 2 s, or at most `poll_interval` when that is longer) |
+| `$client->identifications->get(string $identificationId, array $options = [])` | `?Model\Identification`. Options: `wait` (true), `timeout` (10, the total budget in seconds), `poll_interval` (0.25, the first wait; the later waits are 2, 4, 6 and 8 times it, each at most 2 s, or at most `poll_interval` when that is longer) |
 | `$client->history->search(LookupType\|string $type, string $value, array $options = [])` | `Model\HistoryPage`. Options: `limit` (20, 1-100), `offset` (0). A `user_hid` value cannot contain `/` |
 | `$client->history->iterate(LookupType\|string $type, string $value, array $options = [])` | `Generator` of `Model\Identification`. Options: `page_size` (100), `max_items` (no limit; 0 yields nothing) |
 | `new ShieldLabsManagement(array $options = [])` | Management API client |
@@ -408,7 +408,7 @@ A client keeps no mutable state after construction: share one instance, for exam
 
 | Model | Properties |
 |---|---|
-| `Model\Identification` | `request_id`, `visitor_id`, `device_id`, `session_id`, `cookie_id`, `user_hid` (`?string`; `"anonymous"` for anonymous checks), `domain`, `public_ip` and `local_ip` (`IpInfo`), `connection_type`, `os`, `browser`, `device_type`, `traffic_source` (`TrafficSource`), `risk_score` (`int`), `signals` (list of `Signal`), `detection_flags` (`DetectionFlags`), `observed_at` (`?DateTimeImmutable`, UTC), `source` (`"webhook"` or `"history"`), `raw` (the payload as received). Methods: `riskBand()`, `isRateLimited()`, `hasDeviceSignals()`, `toArray()` |
+| `Model\Identification` | `identification_id`, `visitor_id`, `device_id`, `session_id`, `cookie_id`, `user_hid` (`?string`; `"anonymous"` for anonymous checks), `domain`, `public_ip` and `local_ip` (`IpInfo`), `connection_type`, `os`, `browser`, `device_type`, `traffic_source` (`TrafficSource`), `risk_score` (`int`), `signals` (list of `Signal`), `detection_flags` (`DetectionFlags`), `observed_at` (`?DateTimeImmutable`, UTC), `source` (`"webhook"` or `"history"`), `raw` (the payload as received). Methods: `riskBand()`, `isRateLimited()`, `hasDeviceSignals()`, `toArray()` |
 | `Model\IpInfo` | `ip` (`""` when unknown), `country` (English country name such as `"Germany"`, `""` when unknown) |
 | `Model\TrafficSource` | `channel`, `referrer_domain`, `landing_url`, `click_id_type`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term` |
 | `Model\Signal` | `name`, `weight` (`int`, can be negative), `description` (History API rows only) |

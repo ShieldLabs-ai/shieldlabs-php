@@ -37,7 +37,7 @@ final class Identification implements \JsonSerializable
      * @param array<mixed>            $raw             the payload as received (webhook `data` or the History row)
      */
     public function __construct(
-        public readonly string $request_id,
+        public readonly string $identification_id,
         public readonly string $visitor_id,
         public readonly string $device_id,
         public readonly string $session_id,
@@ -113,7 +113,7 @@ final class Identification implements \JsonSerializable
     public function toArray(): array
     {
         return [
-            'request_id' => $this->request_id,
+            'identification_id' => $this->identification_id,
             'visitor_id' => $this->visitor_id,
             'device_id' => $this->device_id,
             'session_id' => $this->session_id,
@@ -145,7 +145,7 @@ final class Identification implements \JsonSerializable
 
     /**
      * @param array{
-     *     request_id: string, visitor_id: string, device_id: string, session_id: string, cookie_id: string,
+     *     identification_id: string, visitor_id: string, device_id: string, session_id: string, cookie_id: string,
      *     user_hid: string|null, domain: string,
      *     public_ip: array{ip: string, country: string}, local_ip: array{ip: string, country: string},
      *     connection_type: string, os: string, browser: string, device_type: string,
@@ -160,7 +160,7 @@ final class Identification implements \JsonSerializable
         $traffic = $normalized['traffic_source'];
 
         return new self(
-            request_id: $normalized['request_id'],
+            identification_id: $normalized['identification_id'],
             visitor_id: $normalized['visitor_id'],
             device_id: $normalized['device_id'],
             session_id: $normalized['session_id'],
