@@ -19,19 +19,19 @@ final class SignalName
     public const PROXY_ROUTED_ANTIDETECT = 'proxy_routed_antidetect';
     public const PORT_SCAN_ROUTED_VIA_PROXY = 'port_scan_routed_via_proxy';
     public const BROWSER_AUTOMATION = 'browser_automation';
-    public const STUN_NOT_CHECKED = 'stun_not_checked';
+    public const STUN_NOT_CHECKED = 'network_check_incomplete';
     public const OS_NOT_DETECTED = 'os_not_detected';
     public const BROWSER_VPN_PROXY = 'browser_vpn_proxy';
     public const VPN = 'vpn';
-    public const PRIVACY_RELAY = 'privacy_relay';
+    public const PRIVACY_RELAY = 'private_relay';
     public const PROXY = 'proxy';
     public const DATACENTER_IP = 'datacenter_ip';
     public const ABUSER = 'abuser';
     public const TIMEZONE_MISMATCH = 'timezone_mismatch';
-    /** Negative weight: a late network check corrected an earlier stun_not_checked. */
+    /** Negative weight: a late network check corrected an earlier network_check_incomplete. */
     public const STUN_LATE_CORRECTION = 'stun_late_correction';
     /** Marker of the rate-limit ban (weight 999), not a risk signal. */
-    public const RATE_LIMITED = 'rate_limited';
+    public const RATE_LIMITED = 'banned_ip';
 
     private function __construct() {}
 }
