@@ -139,13 +139,13 @@ final class WebhookEventTest extends TestCase
 
     public function testAcceptsAnUnknownSchemaVersionAndTolerantData(): void
     {
-        $body = '{"event_type":"identification.scored","schema_version":"2099-01-01","created_at":"not a date","data":{"request_id":"3b241101-e2bb-4255-8caf-4136c566a962","extra":{"nested":true}}}';
+        $body = '{"event_type":"identification.scored","schema_version":"2099-01-01","created_at":"not a date","data":{"identification_id":"3b241101-e2bb-4255-8caf-4136c566a962","extra":{"nested":true}}}';
         $event = Webhook::constructEvent($body, self::sign($body), self::SECRET);
 
         self::assertInstanceOf(IdentificationScoredEvent::class, $event);
         self::assertSame('2099-01-01', $event->schema_version);
         self::assertNull($event->created_at);
-        self::assertSame('3b241101-e2bb-4255-8caf-4136c566a962', $event->data->request_id);
+        self::assertSame('3b241101-e2bb-4255-8caf-4136c566a962', $event->data->identification_id);
         self::assertSame(0, $event->data->risk_score);
         self::assertSame([], $event->data->signals);
         self::assertNull($event->data->observed_at);

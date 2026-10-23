@@ -149,9 +149,9 @@ final class HistorySearchTest extends TestCase
         yield 'empty type' => ['', '203.0.113.24', [], 'Unknown lookup type'];
         yield 'uppercase type' => ['DEVICE_ID', 'ac7c303d-971b-41d1-8e25-cd5b46b46aed', [], 'Unknown lookup type'];
         yield 'bad UUID' => [LookupType::DeviceId, 'abc', [], 'must be a UUID'];
-        yield 'UUID without dashes' => [LookupType::RequestId, 'ac7c303d971b41d18e25cd5b46b46aed', [], 'must be a UUID'];
+        yield 'UUID without dashes' => [LookupType::IdentificationId, 'ac7c303d971b41d18e25cd5b46b46aed', [], 'must be a UUID'];
         yield 'UUID in braces' => [LookupType::VisitorId, '{ac7c303d-971b-41d1-8e25-cd5b46b46aed}', [], 'must be a UUID'];
-        yield 'UUID with newline' => [LookupType::RequestId, "ac7c303d-971b-41d1-8e25-cd5b46b46aed\n", [], 'must be a UUID'];
+        yield 'UUID with newline' => [LookupType::IdentificationId, "ac7c303d-971b-41d1-8e25-cd5b46b46aed\n", [], 'must be a UUID'];
         yield 'IPv6' => [LookupType::Ip, '2001:db8::1', [], 'IPv6'];
         yield 'IPv4 out of range' => [LookupType::Ip, '203.0.113.256', [], 'IPv4'];
         yield 'IPv4 with spaces' => [LookupType::Ip, ' 203.0.113.5', [], 'IPv4'];
@@ -338,7 +338,7 @@ final class HistorySearchTest extends TestCase
     public function testToleratesOddPageShapes(): void
     {
         $http = (new MockHttpClient())->queue(
-            MockHttpClient::json(200, ['data' => [['request_id' => '3b241101-e2bb-4255-8caf-4136c566a962'], 'junk', 7], 'total' => 2.0]),
+            MockHttpClient::json(200, ['data' => [['identification_id' => '3b241101-e2bb-4255-8caf-4136c566a962'], 'junk', 7], 'total' => 2.0]),
             MockHttpClient::json(200, ['data' => 'nope']),
             MockHttpClient::json(200, ['total' => 'x']),
         );
@@ -347,7 +347,7 @@ final class HistorySearchTest extends TestCase
         $page = $client->history->search(LookupType::Ip, '192.0.2.1');
         self::assertCount(1, $page->data);
         self::assertSame(2, $page->total);
-        self::assertSame('3b241101-e2bb-4255-8caf-4136c566a962', $page->data[0]->request_id);
+        self::assertSame('3b241101-e2bb-4255-8caf-4136c566a962', $page->data[0]->identification_id);
 
         self::assertSame(0, $client->history->search(LookupType::Ip, '192.0.2.1')->total);
         self::assertSame(0, $client->history->search(LookupType::Ip, '192.0.2.1')->total);
@@ -360,7 +360,7 @@ final class HistorySearchTest extends TestCase
         $page = Clients::history($http)->history->search(LookupType::Ip, '192.0.2.1');
         $ids = [];
         foreach ($page as $identification) {
-            $ids[] = $identification->request_id;
+            $ids[] = $identification->identification_id;
         }
 
         self::assertCount(5, $ids);

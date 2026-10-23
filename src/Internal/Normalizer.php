@@ -182,7 +182,7 @@ final class Normalizer
      * @param array<mixed> $row one element of a History API response `data` array
      *
      * @return array{
-     *     request_id: string, visitor_id: string, device_id: string, session_id: string, cookie_id: string,
+     *     identification_id: string, visitor_id: string, device_id: string, session_id: string, cookie_id: string,
      *     user_hid: string|null, domain: string,
      *     public_ip: array{ip: string, country: string}, local_ip: array{ip: string, country: string},
      *     connection_type: string, os: string, browser: string, device_type: string,
@@ -245,7 +245,7 @@ final class Normalizer
         $siteDomain = $row['site_domain'] ?? null;
 
         return [
-            'request_id' => self::str($row['request_id'] ?? null),
+            'identification_id' => self::identificationId($row),
             'visitor_id' => self::str($row['visitor_id'] ?? null),
             'device_id' => self::str($row['device_id'] ?? null),
             'session_id' => self::str($row['session_id'] ?? null),
@@ -281,7 +281,7 @@ final class Normalizer
      * @param array<mixed> $data the `data` object of an identification.scored webhook
      *
      * @return array{
-     *     request_id: string, visitor_id: string, device_id: string, session_id: string, cookie_id: string,
+     *     identification_id: string, visitor_id: string, device_id: string, session_id: string, cookie_id: string,
      *     user_hid: string|null, domain: string,
      *     public_ip: array{ip: string, country: string}, local_ip: array{ip: string, country: string},
      *     connection_type: string, os: string, browser: string, device_type: string,
@@ -330,7 +330,7 @@ final class Normalizer
         }
 
         return [
-            'request_id' => self::str($data['request_id'] ?? null),
+            'identification_id' => self::identificationId($data),
             'visitor_id' => self::str($data['visitor_id'] ?? null),
             'device_id' => self::str($data['device_id'] ?? null),
             'session_id' => self::str($data['session_id'] ?? null),
@@ -436,6 +436,19 @@ final class Normalizer
     private static function orEmpty(mixed $value): string
     {
         return self::truthy($value) ? self::str($value) : '';
+    }
+
+    /**
+     * @param array<mixed> $row
+     */
+    private static function identificationId(array $row): string
+    {
+        $value = self::str($row['identification_id'] ?? null);
+        if ($value !== '') {
+            return $value;
+        }
+
+        return self::str($row['request_id'] ?? null);
     }
 
     private static function str(mixed $value): string

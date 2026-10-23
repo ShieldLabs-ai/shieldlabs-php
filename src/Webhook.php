@@ -23,7 +23,7 @@ use ShieldLabs\Model\Identification;
  *
  * Today each identification is delivered once per endpoint, with a 1-second timeout
  * and no retries: answer with a 2xx quickly. Future retries resend identical bytes,
- * so make handlers idempotent on `data.request_id`, and use the History API for
+ * so make handlers idempotent on `data.identification_id`, and use the History API for
  * guaranteed reads.
  */
 final class Webhook

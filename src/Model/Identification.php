@@ -22,22 +22,22 @@ final class Identification implements \JsonSerializable
     public const SOURCE_HISTORY = 'history';
 
     /**
-     * @param string                  $request_id      UUID created in the browser for this identification
-     * @param string                  $visitor_id      server-side visitor ID (sticky to the device)
-     * @param string                  $device_id       server-side device ID; {@see self::NIL_UUID} when there were no usable device signals
-     * @param string                  $session_id      one visit on one origin
-     * @param string                  $cookie_id       first-party browser ID kept by the agent
-     * @param string|null             $user_hid        your User HID as sent by the browser, "anonymous" for anonymous checks, null when empty
-     * @param string                  $domain          registered domain the identification belongs to
-     * @param string                  $connection_type see {@see \ShieldLabs\ConnectionType}; unknown values are kept
-     * @param int                     $risk_score      0-100, or 999 as the rate-limit marker
-     * @param list<Signal>            $signals         weighted risk signals behind the score
-     * @param \DateTimeImmutable|null $observed_at     UTC time of the identification (null only when the payload had no parsable time)
-     * @param string                  $source          {@see self::SOURCE_WEBHOOK} or {@see self::SOURCE_HISTORY}
-     * @param array<mixed>            $raw             the payload as received (webhook `data` or the History row)
+     * @param string                  $identification_id UUID created in the browser for this identification
+     * @param string                  $visitor_id        server-side visitor ID (sticky to the device)
+     * @param string                  $device_id         server-side device ID; {@see self::NIL_UUID} when there were no usable device signals
+     * @param string                  $session_id        one visit on one origin
+     * @param string                  $cookie_id         first-party browser ID kept by the agent
+     * @param string|null             $user_hid          your User HID as sent by the browser, "anonymous" for anonymous checks, null when empty
+     * @param string                  $domain            registered domain the identification belongs to
+     * @param string                  $connection_type   see {@see \ShieldLabs\ConnectionType}; unknown values are kept
+     * @param int                     $risk_score        0-100, or 999 as the rate-limit marker
+     * @param list<Signal>            $signals           weighted risk signals behind the score
+     * @param \DateTimeImmutable|null $observed_at       UTC time of the identification (null only when the payload had no parsable time)
+     * @param string                  $source            {@see self::SOURCE_WEBHOOK} or {@see self::SOURCE_HISTORY}
+     * @param array<mixed>            $raw               the payload as received (webhook `data` or the History row)
      */
     public function __construct(
-        public readonly string $request_id,
+        public readonly string $identification_id,
         public readonly string $visitor_id,
         public readonly string $device_id,
         public readonly string $session_id,
@@ -113,7 +113,7 @@ final class Identification implements \JsonSerializable
     public function toArray(): array
     {
         return [
-            'request_id' => $this->request_id,
+            'identification_id' => $this->identification_id,
             'visitor_id' => $this->visitor_id,
             'device_id' => $this->device_id,
             'session_id' => $this->session_id,
@@ -145,7 +145,7 @@ final class Identification implements \JsonSerializable
 
     /**
      * @param array{
-     *     request_id: string, visitor_id: string, device_id: string, session_id: string, cookie_id: string,
+     *     identification_id: string, visitor_id: string, device_id: string, session_id: string, cookie_id: string,
      *     user_hid: string|null, domain: string,
      *     public_ip: array{ip: string, country: string}, local_ip: array{ip: string, country: string},
      *     connection_type: string, os: string, browser: string, device_type: string,
@@ -160,7 +160,7 @@ final class Identification implements \JsonSerializable
         $traffic = $normalized['traffic_source'];
 
         return new self(
-            request_id: $normalized['request_id'],
+            identification_id: $normalized['identification_id'],
             visitor_id: $normalized['visitor_id'],
             device_id: $normalized['device_id'],
             session_id: $normalized['session_id'],

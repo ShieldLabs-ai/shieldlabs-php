@@ -55,7 +55,7 @@ final class ErrorResponsesTest extends TestCase
 
         try {
             if ($surface === 'history') {
-                Clients::history($http, $clock)->history->search(LookupType::RequestId, '3b241101-e2bb-4255-8caf-4136c566a962');
+                Clients::history($http, $clock)->history->search(LookupType::IdentificationId, '3b241101-e2bb-4255-8caf-4136c566a962');
             } else {
                 Clients::management($http, $clock)->getProfile();
             }

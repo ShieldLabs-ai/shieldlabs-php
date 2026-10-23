@@ -83,16 +83,16 @@ final class Identifications
      * @throws ValidationException before any request when the request ID is not a UUID
      * @throws ShieldLabsException
      */
-    public function get(string $requestId, array $options = []): ?Identification
+    public function get(string $identificationId, array $options = []): ?Identification
     {
         Options::assertKnown($options, ['wait', 'timeout', 'poll_interval'], 'identifications->get()');
-        $requestId = Validate::uuid($requestId, 'request ID');
+        $identificationId = Validate::uuid($identificationId, 'request ID');
         $wait = Options::boolean($options, 'wait', true);
         $timeout = Options::seconds($options, 'timeout', self::DEFAULT_TIMEOUT, true);
         $pollInterval = Options::seconds($options, 'poll_interval', self::DEFAULT_POLL_INTERVAL, false);
 
         if (!$wait) {
-            return $this->history->fetch(LookupType::RequestId, $requestId, 1, 0)->data[0] ?? null;
+            return $this->history->fetch(LookupType::IdentificationId, $identificationId, 1, 0)->data[0] ?? null;
         }
 
         $deadline = $this->clock->now() + $timeout;
@@ -101,7 +101,7 @@ final class Identifications
             $attemptTimeout = max($deadline - $this->clock->now(), self::MIN_ATTEMPT_TIMEOUT);
             $error = null;
             try {
-                $page = $this->history->fetch(LookupType::RequestId, $requestId, 1, 0, 0, $attemptTimeout);
+                $page = $this->history->fetch(LookupType::IdentificationId, $identificationId, 1, 0, 0, $attemptTimeout);
                 if ($page->data !== []) {
                     return $page->data[0];
                 }

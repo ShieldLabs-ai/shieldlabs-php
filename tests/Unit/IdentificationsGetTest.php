@@ -50,9 +50,9 @@ final class IdentificationsGetTest extends TestCase
 
         $identification = Clients::history($http, $clock)->identifications->get(self::REQUEST_ID, ['wait' => false]);
 
-        self::assertSame(self::REQUEST_ID, $identification?->request_id);
+        self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         self::assertSame(
-            'https://account.shieldlabs.ai/api/v1/history/request_id/' . self::REQUEST_ID . '?limit=1&offset=0',
+            'https://account.shieldlabs.ai/api/v1/history/identification_id/' . self::REQUEST_ID . '?limit=1&offset=0',
             (string) $http->lastRequest()->getUri(),
         );
         self::assertSame([], $clock->sleeps);
@@ -75,20 +75,20 @@ final class IdentificationsGetTest extends TestCase
 
         $identification = Clients::history($http, $clock)->identifications->get(self::REQUEST_ID, ['wait' => false]);
 
-        self::assertSame(self::REQUEST_ID, $identification?->request_id);
+        self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         self::assertCount(2, $http->requests);
         self::assertCount(1, $clock->sleeps);
         self::assertGreaterThanOrEqual(0.25, $clock->sleeps[0]);
         self::assertLessThanOrEqual(0.5, $clock->sleeps[0]);
     }
 
-    public function testSendsTheRequestIdInLowercase(): void
+    public function testSendsTheIdentificationIdInLowercase(): void
     {
         $http = (new MockHttpClient())->queue(Clients::rowFor(self::REQUEST_ID));
 
         Clients::history($http)->identifications->get(strtoupper(self::REQUEST_ID));
 
-        self::assertStringContainsString('/request_id/' . self::REQUEST_ID . '?', (string) $http->lastRequest()->getUri());
+        self::assertStringContainsString('/identification_id/' . self::REQUEST_ID . '?', (string) $http->lastRequest()->getUri());
     }
 
     public function testPollsWithTheBackoffScheduleUntilTheRowAppears(): void
@@ -104,7 +104,7 @@ final class IdentificationsGetTest extends TestCase
 
         $identification = Clients::history($http, $clock)->identifications->get(self::REQUEST_ID);
 
-        self::assertSame(self::REQUEST_ID, $identification?->request_id);
+        self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         self::assertSame([0.25, 0.5, 1.0, 1.5], $clock->sleeps);
         self::assertCount(5, $http->requests);
     }
@@ -180,7 +180,7 @@ final class IdentificationsGetTest extends TestCase
      * @param class-string<ShieldLabsException>|null $exception
      */
     #[DataProvider('lastPolls')]
-    public function testTheLastPollRunsAtTheDeadline(ResponseInterface $last, ?string $requestId, ?string $exception): void
+    public function testTheLastPollRunsAtTheDeadline(ResponseInterface $last, ?string $identificationId, ?string $exception): void
     {
         $empty = MockHttpClient::emptyPage();
         $http = (new MockHttpClient())->queue($empty, $empty, $empty, $empty, $last);
@@ -189,7 +189,7 @@ final class IdentificationsGetTest extends TestCase
         try {
             $identification = Clients::history($http, $clock)->identifications->get(self::REQUEST_ID, ['timeout' => 2.3]);
             self::assertNull($exception, 'Expected ' . $exception);
-            self::assertSame($requestId, $identification?->request_id);
+            self::assertSame($identificationId, $identification?->identification_id);
         } catch (ShieldLabsException $thrown) {
             self::assertSame($exception, $thrown::class);
         }
@@ -239,7 +239,7 @@ final class IdentificationsGetTest extends TestCase
 
         $identification = Clients::history($http, $clock)->identifications->get(self::REQUEST_ID);
 
-        self::assertSame(self::REQUEST_ID, $identification?->request_id);
+        self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         // The schedule goes on through the errors. After the 429 the 1.5 s step is already
         // longer than the 1 s minimum.
         self::assertSame([0.25, 0.5, 1.0, 1.5], $clock->sleeps);
@@ -339,7 +339,7 @@ final class IdentificationsGetTest extends TestCase
 
         $identification = Clients::history($http, $clock, ['max_retries' => 5])->identifications->get(self::REQUEST_ID);
 
-        self::assertSame(self::REQUEST_ID, $identification?->request_id);
+        self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         self::assertCount(3, $http->requests);
         self::assertSame([0.25, 0.5], $clock->sleeps);
     }
@@ -395,7 +395,7 @@ final class IdentificationsGetTest extends TestCase
 
         $identification = Clients::history($http, $clock)->identifications->get(self::REQUEST_ID);
 
-        self::assertSame(self::REQUEST_ID, $identification?->request_id);
+        self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         self::assertSame($sleeps, $clock->sleeps);
         self::assertCount($emptyPolls + 2, $http->requests);
     }
@@ -418,7 +418,7 @@ final class IdentificationsGetTest extends TestCase
 
         $identification = Clients::history($http, $clock)->identifications->get(self::REQUEST_ID, ['timeout' => 0.625]);
 
-        self::assertSame(self::REQUEST_ID, $identification?->request_id);
+        self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         self::assertSame([0.625], $clock->sleeps);
         self::assertCount(2, $http->requests);
 
@@ -449,7 +449,7 @@ final class IdentificationsGetTest extends TestCase
 
         $identification = Clients::history($http, $clock)->identifications->get(self::REQUEST_ID);
 
-        self::assertSame(self::REQUEST_ID, $identification?->request_id);
+        self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         self::assertSame([0.25, 3.0, 3.0, 3.0], $clock->sleeps);
         self::assertCount(5, $http->requests);
     }
@@ -481,7 +481,7 @@ final class IdentificationsGetTest extends TestCase
 
         $identification = Clients::history($http, $clock)->identifications->get(self::REQUEST_ID, ['timeout' => 20, 'poll_interval' => 3]);
 
-        self::assertSame(self::REQUEST_ID, $identification?->request_id);
+        self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         self::assertSame([3.0, 3.0, 5.0], $clock->sleeps);
         self::assertCount(4, $http->requests);
     }
@@ -587,7 +587,7 @@ final class IdentificationsGetTest extends TestCase
         $http = (new MockHttpClient())->always(MockHttpClient::emptyPage());
         $client = Clients::history($http, new FakeClock(), ['http_client' => $http->timed(10.0)]);
 
-        $client->history->search(LookupType::RequestId, self::REQUEST_ID);
+        $client->history->search(LookupType::IdentificationId, self::REQUEST_ID);
         $client->identifications->get(self::REQUEST_ID, ['wait' => false]);
 
         self::assertSame([10.0, 10.0], $http->timeouts);
@@ -662,13 +662,13 @@ final class IdentificationsGetTest extends TestCase
      * @param array<string, mixed> $options
      */
     #[DataProvider('invalidCalls')]
-    public function testValidatesBeforeSendingAnything(string $requestId, array $options): void
+    public function testValidatesBeforeSendingAnything(string $identificationId, array $options): void
     {
         $http = new MockHttpClient();
 
         try {
             /** @phpstan-ignore argument.type */
-            Clients::history($http)->identifications->get($requestId, $options);
+            Clients::history($http)->identifications->get($identificationId, $options);
             self::fail('Expected a ValidationException');
         } catch (ValidationException) {
             self::assertSame([], $http->requests);

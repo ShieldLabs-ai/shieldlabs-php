@@ -89,11 +89,11 @@ final class ExampleServerTest extends TestCase
 
     public function testAcceptsATrustedSignupAndRefusesItsReuse(): void
     {
-        [$status, $body] = self::post('/signup', json_encode(['requestId' => self::TRUSTED], \JSON_THROW_ON_ERROR));
+        [$status, $body] = self::post('/signup', json_encode(['identificationId' => self::TRUSTED], \JSON_THROW_ON_ERROR));
         self::assertSame(200, $status, (string) json_encode($body) . self::log());
         self::assertSame(['ok' => true, 'band' => 'trusted'], $body);
 
-        [$status, $body] = self::post('/signup', 'requestId=' . self::TRUSTED, ['Content-Type' => 'application/x-www-form-urlencoded']);
+        [$status, $body] = self::post('/signup', 'identificationId=' . self::TRUSTED, ['Content-Type' => 'application/x-www-form-urlencoded']);
         self::assertSame(403, $status);
         self::assertSame('replayed', $body['reason']);
     }
@@ -110,9 +110,9 @@ final class ExampleServerTest extends TestCase
     }
 
     #[DataProvider('refusals')]
-    public function testRefusesRiskySignups(string $requestId, string $reason, ?string $flag): void
+    public function testRefusesRiskySignups(string $identificationId, string $reason, ?string $flag): void
     {
-        [$status, $body] = self::post('/signup', json_encode(['requestId' => $requestId], \JSON_THROW_ON_ERROR));
+        [$status, $body] = self::post('/signup', json_encode(['identificationId' => $identificationId], \JSON_THROW_ON_ERROR));
 
         self::assertSame(403, $status, (string) json_encode($body) . self::log());
         self::assertFalse($body['ok']);
@@ -120,9 +120,9 @@ final class ExampleServerTest extends TestCase
         self::assertSame($flag, $body['flag']);
     }
 
-    public function testRejectsABadRequestId(): void
+    public function testRejectsABadIdentificationId(): void
     {
-        self::assertSame(400, self::post('/signup', '{"requestId":"not-a-uuid"}')[0]);
+        self::assertSame(400, self::post('/signup', '{"identificationId":"not-a-uuid"}')[0]);
         self::assertSame(400, self::post('/signup', '{}')[0]);
         self::assertSame(400, self::post('/signup', 'not json')[0]);
     }
@@ -136,8 +136,8 @@ final class ExampleServerTest extends TestCase
         self::assertSame([200, ['received' => true]], \array_slice(self::post('/webhooks/shieldlabs', $body, $headers), 0, 2));
 
         $log = self::log();
-        self::assertStringContainsString('identification.scored request_id=02f1d973-84db-4156-a7f7-e799e6bf389b risk_score=80 band=dangerous', $log);
-        self::assertStringContainsString('Duplicate delivery ignored for request_id=02f1d973-84db-4156-a7f7-e799e6bf389b', $log);
+        self::assertStringContainsString('identification.scored identification_id=02f1d973-84db-4156-a7f7-e799e6bf389b risk_score=80 band=dangerous', $log);
+        self::assertStringContainsString('Duplicate delivery ignored for identification_id=02f1d973-84db-4156-a7f7-e799e6bf389b', $log);
     }
 
     public function testAcknowledgesTheVerifyPing(): void
@@ -181,10 +181,10 @@ final class ExampleServerTest extends TestCase
             [self::TRUSTED, 403, ['ok' => false, 'reason' => 'replayed', 'band' => 'trusted', 'flag' => null]],
             ['22222222-2222-4222-8222-222222222222', 403, ['ok' => false, 'reason' => 'blocked_band', 'band' => 'dangerous', 'flag' => null]],
             ['44444444-4444-4444-8444-444444444444', 403, ['ok' => false, 'reason' => 'rate_limited', 'band' => 'rate_limited', 'flag' => null]],
-            ['not-a-uuid', 400, ['ok' => false, 'error' => 'requestId must be a UUID']],
+            ['not-a-uuid', 400, ['ok' => false, 'error' => 'identificationId must be a UUID']],
         ];
-        foreach ($cases as [$requestId, $status, $expected]) {
-            [$actualStatus, , $raw] = self::post('/signup', json_encode(['requestId' => $requestId], \JSON_THROW_ON_ERROR), app: self::$documentedApp);
+        foreach ($cases as [$identificationId, $status, $expected]) {
+            [$actualStatus, , $raw] = self::post('/signup', json_encode(['identificationId' => $identificationId], \JSON_THROW_ON_ERROR), app: self::$documentedApp);
 
             self::assertSame($status, $actualStatus, $raw);
             self::assertSame(json_encode($expected, \JSON_THROW_ON_ERROR) . "\n", $raw);

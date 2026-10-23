@@ -22,7 +22,7 @@ earlier preview package and its API.
 ### Added
 
 - `ShieldLabs\ShieldLabs`: History API client for the Private API Key.
-  - `identifications->get($requestId)` waits for the verdict within a total time
+  - `identifications->get($identificationId)` waits for the verdict within a total time
     budget (`timeout`, 10 s by default). It polls at once, then after waits of
     250 ms, 500 ms, 1 s, 1.5 s and 2 s (1, 2, 4, 6 and 8 times `poll_interval`,
     each at most 2 s, or at most `poll_interval` when that is longer, so 3 s polls
@@ -36,7 +36,7 @@ earlier preview package and its API.
     the 429 is thrown at once. 400, 401, 403, 404 and other errors end the wait at
     once.
   - `history->search($type, $value)` and the lazy `history->iterate()` generator,
-    which de-duplicates rows on `request_id` and stops after `max_items` rows
+    which de-duplicates rows on `identification_id` and stops after `max_items` rows
     (`0` yields nothing and sends no request).
   - Client-side validation of lookup types, UUIDs, IPv4 addresses, `limit` and
     `offset`: invalid input throws `ValidationException` and sends nothing.
