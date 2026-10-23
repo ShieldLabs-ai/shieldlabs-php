@@ -59,7 +59,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
-        'request_id' => 'string',
+        'identification_id' => 'string',
         'session_id' => 'string',
         'cookie_id' => 'string',
         'domain' => 'string',
@@ -122,7 +122,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'request_id' => 'uuid',
+        'identification_id' => 'uuid',
         'session_id' => 'uuid',
         'cookie_id' => 'uuid',
         'domain' => null,
@@ -183,7 +183,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'request_id' => false,
+        'identification_id' => false,
         'session_id' => false,
         'cookie_id' => false,
         'domain' => false,
@@ -324,7 +324,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'request_id' => 'request_id',
+        'identification_id' => 'identification_id',
         'session_id' => 'session_id',
         'cookie_id' => 'cookie_id',
         'domain' => 'domain',
@@ -385,7 +385,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'request_id' => 'setRequestId',
+        'identification_id' => 'setIdentificationId',
         'session_id' => 'setSessionId',
         'cookie_id' => 'setCookieId',
         'domain' => 'setDomain',
@@ -446,7 +446,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'request_id' => 'getRequestId',
+        'identification_id' => 'getIdentificationId',
         'session_id' => 'getSessionId',
         'cookie_id' => 'getCookieId',
         'domain' => 'getDomain',
@@ -558,7 +558,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('request_id', $data ?? [], null);
+        $this->setIfExists('identification_id', $data ?? [], null);
         $this->setIfExists('session_id', $data ?? [], null);
         $this->setIfExists('cookie_id', $data ?? [], null);
         $this->setIfExists('domain', $data ?? [], null);
@@ -640,8 +640,8 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['request_id'] === null) {
-            $invalidProperties[] = "'request_id' can't be null";
+        if ($this->container['identification_id'] === null) {
+            $invalidProperties[] = "'identification_id' can't be null";
         }
         if ($this->container['session_id'] === null) {
             $invalidProperties[] = "'session_id' can't be null";
@@ -784,28 +784,28 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets request_id
+     * Gets identification_id
      *
      * @return string
      */
-    public function getRequestId()
+    public function getIdentificationId()
     {
-        return $this->container['request_id'];
+        return $this->container['identification_id'];
     }
 
     /**
-     * Sets request_id
+     * Sets identification_id
      *
-     * @param string $request_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed request ID.
+     * @param string $identification_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed request ID.
      *
      * @return self
      */
-    public function setRequestId($request_id)
+    public function setIdentificationId($identification_id)
     {
-        if (is_null($request_id)) {
-            throw new \InvalidArgumentException('non-nullable request_id cannot be null');
+        if (is_null($identification_id)) {
+            throw new \InvalidArgumentException('non-nullable identification_id cannot be null');
         }
-        $this->container['request_id'] = $request_id;
+        $this->container['identification_id'] = $identification_id;
 
         return $this;
     }

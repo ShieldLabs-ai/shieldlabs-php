@@ -17,16 +17,16 @@ use ShieldLabs\Tests\Support\MockHttpClient;
 final class HistoryIterateTest extends TestCase
 {
     /**
-     * @param list<string> $requestIds
+     * @param list<string> $identificationIds
      */
-    private static function page(array $requestIds, int $total): ResponseInterface
+    private static function page(array $identificationIds, int $total): ResponseInterface
     {
         $rows = array_map(static fn(string $id): array => [
-            'request_id' => $id,
+            'identification_id' => $id,
             'device_id' => 'ac7c303d-971b-41d1-8e25-cd5b46b46aed',
             'score' => 10,
             'created_at' => '2026-09-30 12:00:00.000',
-        ], $requestIds);
+        ], $identificationIds);
 
         return MockHttpClient::json(200, ['data' => $rows, 'total' => $total]);
     }
@@ -45,7 +45,7 @@ final class HistoryIterateTest extends TestCase
     {
         $ids = [];
         foreach ($items as $item) {
-            $ids[] = $item->request_id;
+            $ids[] = $item->identification_id;
         }
 
         return $ids;
@@ -156,7 +156,7 @@ final class HistoryIterateTest extends TestCase
         $generator = Clients::history($http)->history->iterate(LookupType::Ip, '198.51.100.7');
         self::assertSame([], $http->requests);
 
-        self::assertSame(self::id(1), $generator->current()?->request_id);
+        self::assertSame(self::id(1), $generator->current()?->identification_id);
         self::assertCount(1, $http->requests);
     }
 
@@ -204,7 +204,7 @@ final class HistoryIterateTest extends TestCase
         $http = (new MockHttpClient())->queue(self::page([self::id(1)], 3))->always(MockHttpClient::text(500, ''));
         $generator = Clients::history($http, null, ['max_retries' => 0])->history->iterate(LookupType::Ip, '198.51.100.7', ['page_size' => 1]);
 
-        self::assertSame(self::id(1), $generator->current()?->request_id);
+        self::assertSame(self::id(1), $generator->current()?->identification_id);
         $this->expectException(ServerException::class);
         $generator->next();
     }

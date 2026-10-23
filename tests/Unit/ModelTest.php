@@ -29,7 +29,7 @@ final class ModelTest extends TestCase
     {
         $identification = self::first();
 
-        self::assertSame('02f1d973-84db-4156-a7f7-e799e6bf389b', $identification->request_id);
+        self::assertSame('02f1d973-84db-4156-a7f7-e799e6bf389b', $identification->identification_id);
         self::assertSame('9f86d081884c7d659a2feaa0c55ad015', $identification->user_hid);
         self::assertSame('example.com', $identification->domain);
         self::assertSame('Netherlands', $identification->public_ip->country);
@@ -123,10 +123,10 @@ final class ModelTest extends TestCase
         $uuidTypes = array_values(array_filter(LookupType::cases(), static fn(LookupType $type): bool => $type->isUuid()));
 
         self::assertSame(
-            [LookupType::VisitorId, LookupType::RequestId, LookupType::DeviceId, LookupType::SessionId, LookupType::CookieId],
+            [LookupType::VisitorId, LookupType::IdentificationId, LookupType::RequestId, LookupType::DeviceId, LookupType::SessionId, LookupType::CookieId],
             $uuidTypes,
         );
-        self::assertSame(['ip', 'user_hid', 'visitor_id', 'request_id', 'device_id', 'session_id', 'cookie_id'], array_map(static fn(LookupType $type): string => $type->value, LookupType::cases()));
+        self::assertSame(['ip', 'user_hid', 'visitor_id', 'identification_id', 'request_id', 'device_id', 'session_id', 'cookie_id'], array_map(static fn(LookupType $type): string => $type->value, LookupType::cases()));
     }
 
     public function testIpInfoAndTrafficSourceSerialize(): void

@@ -45,7 +45,7 @@ final class Risk
      * this order and the first failure wins:
      *
      * 1. no identification: `missing` (unverified, never "clean")
-     * 2. `is_replay($requestId)` returns true: `replayed` (the SDK stores nothing itself)
+     * 2. `is_replay($identificationId)` returns true: `replayed` (the SDK stores nothing itself)
      * 3. older than `max_age` seconds by `observed_at`: `stale`
      * 4. score above 100 (rate-limit marker): `rate_limited`
      * 5. all-zero device ID: `no_device_signals`
@@ -82,7 +82,7 @@ final class Risk
             return new Evaluation(false, EvaluationReason::Missing, null);
         }
         $band = $identification->riskBand();
-        if ($isReplay !== null && (bool) $isReplay($identification->request_id)) {
+        if ($isReplay !== null && (bool) $isReplay($identification->identification_id)) {
             return new Evaluation(false, EvaluationReason::Replayed, $band);
         }
         $observedAt = $identification->observed_at;

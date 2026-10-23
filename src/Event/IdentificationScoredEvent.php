@@ -10,7 +10,7 @@ use ShieldLabs\Model\Identification;
  * `identification.scored`: the verdict for one identification. Today it is sent once
  * per identification and endpoint (one attempt, 1-second timeout, no retries).
  * Future retries resend identical bytes, so make your handler idempotent on
- * `$event->data->request_id`, and use the History API for guaranteed reads.
+ * `$event->data->identification_id`, and use the History API for guaranteed reads.
  */
 final class IdentificationScoredEvent extends WebhookEvent
 {

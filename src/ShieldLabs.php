@@ -26,7 +26,7 @@ use ShieldLabs\Resource\Identifications;
  *
  * ```php
  * $client = new ShieldLabs\ShieldLabs(['api_key' => 'sec_your_private_key']);
- * $identification = $client->identifications->get($requestId);
+ * $identification = $client->identifications->get($identificationId);
  * ```
  */
 final class ShieldLabs

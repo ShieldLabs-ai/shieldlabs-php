@@ -14,7 +14,7 @@ if (!in_array($_SERVER['HTTP_AUTHORIZATION'] ?? '', array_map(static fn(string $
     return;
 }
 $path = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), \PHP_URL_PATH);
-if (preg_match('#^/api/v1/history/request_id/([0-9a-f-]{36})$#', $path, $match) !== 1) {
+if (preg_match('#^/api/v1/history/identification_id/([0-9a-f-]{36})$#', $path, $match) !== 1) {
     http_response_code(404);
     echo '"not found"';
 
@@ -30,11 +30,11 @@ $variants = [
     '44444444-4444-4444-8444-444444444444' => ['score' => 999, 'device_id' => '00000000-0000-0000-0000-000000000000'],
     '55555555-5555-4555-8555-555555555555' => ['score' => 15, 'created_at' => '2020-01-01 00:00:00.000'],
 ];
-$requestId = $match[1];
-if (!isset($variants[$requestId])) {
+$identificationId = $match[1];
+if (!isset($variants[$identificationId])) {
     echo json_encode(['data' => [], 'total' => 0]);
 
     return;
 }
-$row = array_merge($template, ['created_at' => gmdate('Y-m-d H:i:s') . '.000'], $variants[$requestId], ['request_id' => $requestId]);
+$row = array_merge($template, ['created_at' => gmdate('Y-m-d H:i:s') . '.000'], $variants[$identificationId], ['identification_id' => $identificationId]);
 echo json_encode(['data' => [$row], 'total' => 1]);

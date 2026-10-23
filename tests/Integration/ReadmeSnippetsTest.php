@@ -154,16 +154,16 @@ final class ReadmeSnippetsTest extends TestCase
         $json = ['Content-Type' => 'application/json'];
         $form = ['Content-Type' => 'application/x-www-form-urlencoded'];
         $refused = static fn(string $reason): string => '{"error":"signup refused","reason":"' . $reason . '"}';
-        $badRequest = '{"error":"requestId must be a UUID"}';
+        $badRequest = '{"error":"identificationId must be a UUID"}';
 
-        self::assertSame([200, '{"ok":true}'], self::post($server, '{"requestId":"11111111-1111-4111-8111-111111111111"}', $json), $server->log());
-        self::assertSame([403, $refused('replayed')], self::post($server, 'requestId=11111111-1111-4111-8111-111111111111', $form));
-        self::assertSame([403, $refused('blocked_band')], self::post($server, 'requestId=22222222-2222-4222-8222-222222222222', $form));
-        self::assertSame([403, $refused('blocked_flag')], self::post($server, '{"requestId":"33333333-3333-4333-8333-333333333333"}', $json));
-        self::assertSame([403, $refused('rate_limited')], self::post($server, '{"requestId":"44444444-4444-4444-8444-444444444444"}', $json));
-        self::assertSame([403, $refused('stale')], self::post($server, 'requestId=55555555-5555-4555-8555-555555555555', $form));
-        self::assertSame([400, $badRequest], self::post($server, '{"requestId":"not-a-uuid"}', $json));
-        self::assertSame([400, $badRequest], self::post($server, 'requestId[]=11111111-1111-4111-8111-111111111111', $form));
+        self::assertSame([200, '{"ok":true}'], self::post($server, '{"identificationId":"11111111-1111-4111-8111-111111111111"}', $json), $server->log());
+        self::assertSame([403, $refused('replayed')], self::post($server, 'identificationId=11111111-1111-4111-8111-111111111111', $form));
+        self::assertSame([403, $refused('blocked_band')], self::post($server, 'identificationId=22222222-2222-4222-8222-222222222222', $form));
+        self::assertSame([403, $refused('blocked_flag')], self::post($server, '{"identificationId":"33333333-3333-4333-8333-333333333333"}', $json));
+        self::assertSame([403, $refused('rate_limited')], self::post($server, '{"identificationId":"44444444-4444-4444-8444-444444444444"}', $json));
+        self::assertSame([403, $refused('stale')], self::post($server, 'identificationId=55555555-5555-4555-8555-555555555555', $form));
+        self::assertSame([400, $badRequest], self::post($server, '{"identificationId":"not-a-uuid"}', $json));
+        self::assertSame([400, $badRequest], self::post($server, 'identificationId[]=11111111-1111-4111-8111-111111111111', $form));
         self::assertSame([400, $badRequest], self::post($server, '', $form));
 
         self::assertStringContainsString('shieldlabs-php: the API key does not look like a Private API Key', $server->log());

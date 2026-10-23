@@ -182,7 +182,7 @@ final class CurlClientTest extends TestCase
 
         self::assertSame(37, $page->total);
         self::assertCount(5, $page->data);
-        self::assertSame('02f1d973-84db-4156-a7f7-e799e6bf389b', $page->data[0]->request_id);
+        self::assertSame('02f1d973-84db-4156-a7f7-e799e6bf389b', $page->data[0]->identification_id);
     }
 
     public function testTheSdkMapsARealAuthenticationError(): void

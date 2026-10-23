@@ -13,7 +13,7 @@ declare(strict_types=1);
  *   php -S localhost:8000 examples/server.php
  *
  * Routes:
- *   POST /signup               body {"requestId": "..."} (JSON) or form field requestId
+ *   POST /signup               body {"identificationId": "..."} (JSON) or form field identificationId
  *   POST /webhooks/shieldlabs  signed identification.scored and webhook.ping deliveries
  *
  * SHIELDLABS_WEBHOOK_SECRET may hold several comma-separated secrets while you
@@ -89,15 +89,15 @@ function respond(int $status, array $body): void
     echo json_encode($body), "\n";
 }
 
-function requestIdFromBody(): ?string
+function identificationIdFromBody(): ?string
 {
-    if (isset($_POST['requestId']) && is_string($_POST['requestId'])) {
-        return $_POST['requestId'];
+    if (isset($_POST['identificationId']) && is_string($_POST['identificationId'])) {
+        return $_POST['identificationId'];
     }
     $json = json_decode((string) file_get_contents('php://input'), true);
-    $requestId = is_array($json) ? ($json['requestId'] ?? null) : null;
+    $identificationId = is_array($json) ? ($json['identificationId'] ?? null) : null;
 
-    return is_string($requestId) && $requestId !== '' ? $requestId : null;
+    return is_string($identificationId) && $identificationId !== '' ? $identificationId : null;
 }
 
 /**
@@ -116,9 +116,9 @@ function shieldlabs(): ShieldLabs
 
 function handleSignup(UsedKeys $usedKeys): void
 {
-    $requestId = requestIdFromBody();
-    if ($requestId === null) {
-        respond(400, ['ok' => false, 'error' => 'requestId is required']);
+    $identificationId = identificationIdFromBody();
+    if ($identificationId === null) {
+        respond(400, ['ok' => false, 'error' => 'identificationId is required']);
 
         return;
     }
@@ -134,9 +134,9 @@ function handleSignup(UsedKeys $usedKeys): void
 
     try {
         // Waits up to 10 s for the verdict: the History row appears about 1-3 s after the browser call.
-        $identification = $client->identifications->get($requestId);
+        $identification = $client->identifications->get($identificationId);
     } catch (ValidationException) {
-        respond(400, ['ok' => false, 'error' => 'requestId must be a UUID']);
+        respond(400, ['ok' => false, 'error' => 'identificationId must be a UUID']);
 
         return;
     } catch (ShieldLabsException $exception) {
@@ -184,17 +184,17 @@ function handleWebhook(UsedKeys $usedKeys): void
     if ($event instanceof IdentificationScoredEvent) {
         $identification = $event->data;
         // One delivery per identification today, without retries. Future retries resend
-        // identical bytes, so stay idempotent on request_id.
-        if ($usedKeys->add('webhook:' . $identification->request_id)) {
+        // identical bytes, so stay idempotent on identification_id.
+        if ($usedKeys->add('webhook:' . $identification->identification_id)) {
             error_log(sprintf(
-                'identification.scored request_id=%s risk_score=%d band=%s flags=%s',
-                $identification->request_id,
+                'identification.scored identification_id=%s risk_score=%d band=%s flags=%s',
+                $identification->identification_id,
                 $identification->risk_score,
                 $identification->riskBand()->value,
                 implode(',', $identification->detection_flags->active()) ?: 'none',
             ));
         } else {
-            error_log('Duplicate delivery ignored for request_id=' . $identification->request_id);
+            error_log('Duplicate delivery ignored for identification_id=' . $identification->identification_id);
         }
     } elseif ($event instanceof WebhookPingEvent) {
         error_log('webhook.ping received');

@@ -19,7 +19,7 @@ final class NormalizerEdgeCaseTest extends TestCase
     {
         $identification = Identification::fromHistoryRow([]);
 
-        self::assertSame('', $identification->request_id);
+        self::assertSame('', $identification->identification_id);
         self::assertNull($identification->user_hid);
         self::assertSame('', $identification->domain);
         self::assertSame(['ip' => '', 'country' => ''], $identification->public_ip->toArray());
@@ -134,7 +134,7 @@ final class NormalizerEdgeCaseTest extends TestCase
     public function testToleratesWrongTypes(): void
     {
         $identification = Identification::fromWebhookData([
-            'request_id' => 12345,
+            'identification_id' => 12345,
             'user_hid' => false,
             'risk_score' => 45.0,
             'public_ip' => 'x',
@@ -144,7 +144,7 @@ final class NormalizerEdgeCaseTest extends TestCase
             'observed_at' => 1790769720,
         ]);
 
-        self::assertSame('12345', $identification->request_id);
+        self::assertSame('12345', $identification->identification_id);
         self::assertNull($identification->user_hid);
         self::assertSame(45, $identification->risk_score);
         self::assertSame('', $identification->public_ip->ip);

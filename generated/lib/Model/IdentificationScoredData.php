@@ -59,7 +59,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $openAPITypes = [
-        'request_id' => 'string',
+        'identification_id' => 'string',
         'visitor_id' => 'string',
         'device_id' => 'string',
         'session_id' => 'string',
@@ -87,7 +87,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
-        'request_id' => 'uuid',
+        'identification_id' => 'uuid',
         'visitor_id' => 'uuid',
         'device_id' => 'uuid',
         'session_id' => 'uuid',
@@ -113,7 +113,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var boolean[]
      */
     protected static array $openAPINullables = [
-        'request_id' => false,
+        'identification_id' => false,
         'visitor_id' => false,
         'device_id' => false,
         'session_id' => false,
@@ -219,7 +219,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $attributeMap = [
-        'request_id' => 'request_id',
+        'identification_id' => 'identification_id',
         'visitor_id' => 'visitor_id',
         'device_id' => 'device_id',
         'session_id' => 'session_id',
@@ -245,7 +245,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $setters = [
-        'request_id' => 'setRequestId',
+        'identification_id' => 'setIdentificationId',
         'visitor_id' => 'setVisitorId',
         'device_id' => 'setDeviceId',
         'session_id' => 'setSessionId',
@@ -271,7 +271,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $getters = [
-        'request_id' => 'getRequestId',
+        'identification_id' => 'getIdentificationId',
         'visitor_id' => 'getVisitorId',
         'device_id' => 'getDeviceId',
         'session_id' => 'getSessionId',
@@ -348,7 +348,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('request_id', $data ?? [], null);
+        $this->setIfExists('identification_id', $data ?? [], null);
         $this->setIfExists('visitor_id', $data ?? [], null);
         $this->setIfExists('device_id', $data ?? [], null);
         $this->setIfExists('session_id', $data ?? [], null);
@@ -395,8 +395,8 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     {
         $invalidProperties = [];
 
-        if ($this->container['request_id'] === null) {
-            $invalidProperties[] = "'request_id' can't be null";
+        if ($this->container['identification_id'] === null) {
+            $invalidProperties[] = "'identification_id' can't be null";
         }
         if ($this->container['visitor_id'] === null) {
             $invalidProperties[] = "'visitor_id' can't be null";
@@ -473,28 +473,28 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
 
 
     /**
-     * Gets request_id
+     * Gets identification_id
      *
      * @return string
      */
-    public function getRequestId()
+    public function getIdentificationId()
     {
-        return $this->container['request_id'];
+        return $this->container['identification_id'];
     }
 
     /**
-     * Sets request_id
+     * Sets identification_id
      *
-     * @param string $request_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed request ID.
+     * @param string $identification_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed request ID.
      *
      * @return self
      */
-    public function setRequestId($request_id)
+    public function setIdentificationId($identification_id)
     {
-        if (is_null($request_id)) {
-            throw new \InvalidArgumentException('non-nullable request_id cannot be null');
+        if (is_null($identification_id)) {
+            throw new \InvalidArgumentException('non-nullable identification_id cannot be null');
         }
-        $this->container['request_id'] = $request_id;
+        $this->container['identification_id'] = $identification_id;
 
         return $this;
     }
