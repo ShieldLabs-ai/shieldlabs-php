@@ -17,6 +17,7 @@ use ShieldLabs\Internal\Transport;
 use ShieldLabs\Internal\UserAgent;
 use ShieldLabs\Internal\Validate;
 use ShieldLabs\Internal\Warning;
+use ShieldLabs\Resource\Entities;
 use ShieldLabs\Resource\History;
 use ShieldLabs\Resource\Identifications;
 
@@ -31,7 +32,7 @@ use ShieldLabs\Resource\Identifications;
  */
 final class ShieldLabs
 {
-    public const VERSION = '1.0.0';
+    public const VERSION = '1.2.0';
     public const DEFAULT_BASE_URL = 'https://account.shieldlabs.ai';
     public const DEFAULT_TIMEOUT = 10.0;
     public const DEFAULT_MAX_RETRIES = 2;
@@ -43,6 +44,9 @@ final class ShieldLabs
 
     /** Verdict for one request ID, with wait-for-verdict polling. */
     public readonly Identifications $identifications;
+
+    /** Domain-scoped entity History lists and cards. */
+    public readonly Entities $entities;
 
     /**
      * Options:
@@ -111,6 +115,7 @@ final class ShieldLabs
         );
         $this->history = new History($transport);
         $this->identifications = new Identifications($this->history, $clock);
+        $this->entities = new Entities($transport);
     }
 
     /**

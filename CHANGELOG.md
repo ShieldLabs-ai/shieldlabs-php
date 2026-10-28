@@ -4,7 +4,7 @@ All notable changes to this package are documented in this file. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the package
 follows [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.2.0] - 2026-10-29
 
 ### Changed
 
@@ -12,6 +12,7 @@ follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Domain-scoped entity History on `$client->entities`: `list` for `identifications` and `user`, and `get` for identifications, user, visitor, device and ip. Paths are `/api/v1/domains/{uuid}/history/...`. Lists do not send `include_total` and do not expose a page total. The legacy `history->search` client is unchanged.
 - `sync.sh` downloads the OpenAPI description and `generate.sh` rebuilds `generated/` from it. The supported client is unchanged.
 
 ## [1.0.0] - 2026-09-30
@@ -88,4 +89,5 @@ earlier preview package and its API.
 
 - The preview `ShieldLabs\Client` class and the `shieldlabs/shieldlabs` package name.
 
+[1.2.0]: https://github.com/ShieldLabs-ai/shieldlabs-php/compare/v1.0.0...v1.2.0
 [1.0.0]: https://github.com/ShieldLabs-ai/shieldlabs-php/releases/tag/v1.0.0
