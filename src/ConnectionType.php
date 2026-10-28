@@ -14,7 +14,8 @@ final class ConnectionType
     public const VPN = 'vpn';
     public const PROXY = 'proxy';
     public const TOR = 'tor';
-    public const PRIVACY_RELAY = 'privacy_relay';
+    public const PRIVACY_RELAY = 'private_relay';
+    public const PRIVACY_RELAY_LEGACY = 'privacy_relay';
     public const BROWSER_VPN_PROXY = 'browser_vpn_proxy';
     public const UNKNOWN = 'unknown';
 

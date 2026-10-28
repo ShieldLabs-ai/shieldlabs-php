@@ -15,7 +15,7 @@ final class DetectionFlags implements \JsonSerializable
     public const KEYS = [
         'vpn', 'proxy', 'private_relay', 'check_incomplete', 'network_check_incomplete', 'os_not_detected',
         'timezone_mismatch', 'javascript_disabled', 'os_mismatch', 'ip_mismatch', 'latency_test',
-        'anti_detect_browser', 'device_spoofing', 'banned_ip', 'incognito', 'search_bot', 'ai_bot',
+        'anti_detect_browser', 'device_spoofing', 'rate_limited', 'incognito', 'search_bot', 'ai_bot',
         'browser_automation', 'ai_browser', 'tor',
     ];
 
@@ -33,7 +33,7 @@ final class DetectionFlags implements \JsonSerializable
         public readonly bool $latency_test = false,
         public readonly bool $anti_detect_browser = false,
         public readonly bool $device_spoofing = false,
-        public readonly bool $banned_ip = false,
+        public readonly bool $rate_limited = false,
         public readonly bool $incognito = false,
         public readonly bool $search_bot = false,
         public readonly bool $ai_bot = false,
@@ -65,7 +65,7 @@ final class DetectionFlags implements \JsonSerializable
             latency_test: $value('latency_test', 'ws_tcp_latency'),
             anti_detect_browser: $value('anti_detect_browser'),
             device_spoofing: $value('device_spoofing'),
-            banned_ip: $value('banned_ip', 'rate_limited'),
+            rate_limited: $value('rate_limited', 'banned_ip'),
             incognito: $value('incognito'),
             search_bot: $value('search_bot'),
             ai_bot: $value('ai_bot'),
@@ -119,7 +119,7 @@ final class DetectionFlags implements \JsonSerializable
             'latency_test' => $this->latency_test,
             'anti_detect_browser' => $this->anti_detect_browser,
             'device_spoofing' => $this->device_spoofing,
-            'banned_ip' => $this->banned_ip,
+            'rate_limited' => $this->rate_limited,
             'incognito' => $this->incognito,
             'search_bot' => $this->search_bot,
             'ai_bot' => $this->ai_bot,
