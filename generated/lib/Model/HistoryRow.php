@@ -100,7 +100,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => 'bool',
         'is_incognito' => 'bool',
         'is_search_bot' => 'bool',
-        'is_suspicious_paid_click' => 'bool',
         'entry_url' => 'string',
         'utm_source' => 'string',
         'utm_medium' => 'string',
@@ -163,7 +162,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => null,
         'is_incognito' => null,
         'is_search_bot' => null,
-        'is_suspicious_paid_click' => null,
         'entry_url' => null,
         'utm_source' => null,
         'utm_medium' => null,
@@ -224,7 +222,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => false,
         'is_incognito' => false,
         'is_search_bot' => false,
-        'is_suspicious_paid_click' => false,
         'entry_url' => false,
         'utm_source' => false,
         'utm_medium' => false,
@@ -365,7 +362,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => 'is_browser_automation',
         'is_incognito' => 'is_incognito',
         'is_search_bot' => 'is_search_bot',
-        'is_suspicious_paid_click' => 'is_suspicious_paid_click',
         'entry_url' => 'entry_url',
         'utm_source' => 'utm_source',
         'utm_medium' => 'utm_medium',
@@ -426,7 +422,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => 'setIsBrowserAutomation',
         'is_incognito' => 'setIsIncognito',
         'is_search_bot' => 'setIsSearchBot',
-        'is_suspicious_paid_click' => 'setIsSuspiciousPaidClick',
         'entry_url' => 'setEntryUrl',
         'utm_source' => 'setUtmSource',
         'utm_medium' => 'setUtmMedium',
@@ -487,7 +482,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => 'getIsBrowserAutomation',
         'is_incognito' => 'getIsIncognito',
         'is_search_bot' => 'getIsSearchBot',
-        'is_suspicious_paid_click' => 'getIsSuspiciousPaidClick',
         'entry_url' => 'getEntryUrl',
         'utm_source' => 'getUtmSource',
         'utm_medium' => 'getUtmMedium',
@@ -599,7 +593,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('is_browser_automation', $data ?? [], null);
         $this->setIfExists('is_incognito', $data ?? [], null);
         $this->setIfExists('is_search_bot', $data ?? [], null);
-        $this->setIfExists('is_suspicious_paid_click', $data ?? [], null);
         $this->setIfExists('entry_url', $data ?? [], null);
         $this->setIfExists('utm_source', $data ?? [], null);
         $this->setIfExists('utm_medium', $data ?? [], null);
@@ -1900,32 +1893,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         return $this;
     }
 
-    /**
-     * Gets is_suspicious_paid_click
-     *
-     * @return bool|null
-     */
-    public function getIsSuspiciousPaidClick()
-    {
-        return $this->container['is_suspicious_paid_click'];
-    }
 
-    /**
-     * Sets is_suspicious_paid_click
-     *
-     * @param bool|null $is_suspicious_paid_click Same meaning as `detection_flags.suspicious_paid_click`. Omitted when `false`.
-     *
-     * @return self
-     */
-    public function setIsSuspiciousPaidClick($is_suspicious_paid_click)
-    {
-        if (is_null($is_suspicious_paid_click)) {
-            throw new \InvalidArgumentException('non-nullable is_suspicious_paid_click cannot be null');
-        }
-        $this->container['is_suspicious_paid_click'] = $is_suspicious_paid_click;
-
-        return $this;
-    }
 
     /**
      * Gets entry_url
