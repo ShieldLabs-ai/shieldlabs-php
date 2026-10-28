@@ -869,8 +869,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         return $this;
     }
 
-
-
     /**
      * Gets javascript_disabled
      *

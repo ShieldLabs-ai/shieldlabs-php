@@ -1893,8 +1893,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         return $this;
     }
 
-
-
     /**
      * Gets entry_url
      *
