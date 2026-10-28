@@ -74,7 +74,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'bool',
         'incognito' => 'bool',
         'search_bot' => 'bool',
-        'suspicious_paid_click' => 'bool',
         'javascript_disabled' => 'bool',
         'stun_not_checked' => 'bool',
         'check_incomplete' => 'bool'
@@ -103,7 +102,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => null,
         'incognito' => null,
         'search_bot' => null,
-        'suspicious_paid_click' => null,
         'javascript_disabled' => null,
         'stun_not_checked' => null,
         'check_incomplete' => null
@@ -130,7 +128,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => false,
         'incognito' => false,
         'search_bot' => false,
-        'suspicious_paid_click' => false,
         'javascript_disabled' => false,
         'stun_not_checked' => false,
         'check_incomplete' => false
@@ -237,7 +234,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'ip_mismatch',
         'incognito' => 'incognito',
         'search_bot' => 'search_bot',
-        'suspicious_paid_click' => 'suspicious_paid_click',
         'javascript_disabled' => 'javascript_disabled',
         'stun_not_checked' => 'stun_not_checked',
         'check_incomplete' => 'check_incomplete'
@@ -264,7 +260,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'setIpMismatch',
         'incognito' => 'setIncognito',
         'search_bot' => 'setSearchBot',
-        'suspicious_paid_click' => 'setSuspiciousPaidClick',
         'javascript_disabled' => 'setJavascriptDisabled',
         'stun_not_checked' => 'setStunNotChecked',
         'check_incomplete' => 'setCheckIncomplete'
@@ -291,7 +286,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'getIpMismatch',
         'incognito' => 'getIncognito',
         'search_bot' => 'getSearchBot',
-        'suspicious_paid_click' => 'getSuspiciousPaidClick',
         'javascript_disabled' => 'getJavascriptDisabled',
         'stun_not_checked' => 'getStunNotChecked',
         'check_incomplete' => 'getCheckIncomplete'
@@ -369,7 +363,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('ip_mismatch', $data ?? [], null);
         $this->setIfExists('incognito', $data ?? [], null);
         $this->setIfExists('search_bot', $data ?? [], null);
-        $this->setIfExists('suspicious_paid_click', $data ?? [], null);
         $this->setIfExists('javascript_disabled', $data ?? [], null);
         $this->setIfExists('stun_not_checked', $data ?? [], null);
         $this->setIfExists('check_incomplete', $data ?? [], null);
@@ -446,9 +439,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         }
         if ($this->container['search_bot'] === null) {
             $invalidProperties[] = "'search_bot' can't be null";
-        }
-        if ($this->container['suspicious_paid_click'] === null) {
-            $invalidProperties[] = "'suspicious_paid_click' can't be null";
         }
         if ($this->container['javascript_disabled'] === null) {
             $invalidProperties[] = "'javascript_disabled' can't be null";
@@ -875,33 +865,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable search_bot cannot be null');
         }
         $this->container['search_bot'] = $search_bot;
-
-        return $this;
-    }
-
-    /**
-     * Gets suspicious_paid_click
-     *
-     * @return bool
-     */
-    public function getSuspiciousPaidClick()
-    {
-        return $this->container['suspicious_paid_click'];
-    }
-
-    /**
-     * Sets suspicious_paid_click
-     *
-     * @param bool $suspicious_paid_click The visit came from a paid ad click (Google Ads, Meta, TikTok, Microsoft Ads, LinkedIn, Pinterest or X) and the Risk Score is 60 or more (the 999 marker included).
-     *
-     * @return self
-     */
-    public function setSuspiciousPaidClick($suspicious_paid_click)
-    {
-        if (is_null($suspicious_paid_click)) {
-            throw new \InvalidArgumentException('non-nullable suspicious_paid_click cannot be null');
-        }
-        $this->container['suspicious_paid_click'] = $suspicious_paid_click;
 
         return $this;
     }
