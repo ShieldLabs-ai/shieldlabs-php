@@ -33,7 +33,7 @@ final class RetryPolicyTest extends TestCase
 
     private static function request(): RequestInterface
     {
-        return new Request('GET', 'https://account.shieldlabs.ai/api/v1/history/ip/198.51.100.23');
+        return new Request('GET', 'https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/198.51.100.23');
     }
 
     public function testBacksOffExponentiallyWithJitter(): void
@@ -259,8 +259,8 @@ final class RetryPolicyTest extends TestCase
     public function testTreatsATimeoutWhileReadingTheBodyAsATimeout(): void
     {
         $http = (new MockHttpClient())->queue(
-            $this->unreadable(200, 'Unable to read stream contents: Idle timeout reached for "https://account.shieldlabs.ai/api/v1/history/ip/198.51.100.23".'),
-            $this->unreadable(200, 'Unable to read stream contents: Max duration was reached for "https://account.shieldlabs.ai/api/v1/history/ip/198.51.100.23".'),
+            $this->unreadable(200, 'Unable to read stream contents: Idle timeout reached for "https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/198.51.100.23".'),
+            $this->unreadable(200, 'Unable to read stream contents: Max duration was reached for "https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/198.51.100.23".'),
             MockHttpClient::emptyPage(),
         );
         $clock = new FakeClock();

@@ -36,7 +36,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * HistoryRow Class Doc Comment
  *
  * @category Class
- * @description One identification as stored, in its latest version. It describes the same identification as a webhook &#x60;data&#x60; object, with different field names:  | Webhook &#x60;data&#x60; | History row | |---|---| | &#x60;risk_score&#x60; | &#x60;score&#x60; | | &#x60;signals&#x60; | &#x60;score_details&#x60; (JSON-encoded string, zero weights included) | | &#x60;detection_flags&#x60; | the &#x60;is_*&#x60; columns and &#x60;check_incomplete&#x60; (each column names its flag) | | &#x60;detection_flags.browser_vpn_proxy&#x60; | derive it: &#x60;connection_type &#x3D;&#x3D; \&quot;browser_vpn_proxy\&quot;&#x60; | | &#x60;domain&#x60; | &#x60;site_domain&#x60; when present, otherwise &#x60;domain&#x60; | | &#x60;public_ip&#x60; | &#x60;ip&#x60; (&#x60;0.0.0.0&#x60; instead of &#x60;\&quot;\&quot;&#x60;) and &#x60;country&#x60; | | &#x60;local_ip&#x60; | &#x60;webrtc_leak_ip&#x60; and &#x60;webrtc_leak_country&#x60; when &#x60;webrtc_leak_source&#x60; is set and not &#x60;none&#x60;, otherwise &#x60;web_rtc_ip&#x60; and &#x60;web_rtc_country&#x60; | | &#x60;traffic_source&#x60; | &#x60;traffic_channel&#x60;, &#x60;referrer_domain&#x60;, &#x60;entry_url&#x60;, &#x60;click_id_type&#x60;, &#x60;utm_*&#x60; (omitted when empty) | | &#x60;observed_at&#x60; (when scoring finished) | &#x60;created_at&#x60; (when the identification was made) |  The &#x60;ip_mismatch&#x60; flag has no column. Rows also carry diagnostic network fields (TCP, MTU and STUN measurements) that are not part of the stable contract: ignore fields you do not know.
+ * @description One identification as stored, in its latest version. It describes the same identification as a webhook &#x60;data&#x60; object, with different field names:  | Webhook &#x60;data&#x60; | History row | |---|---| | &#x60;risk_score&#x60; | &#x60;score&#x60; | | &#x60;signals&#x60; | not included in the current public History response | | &#x60;detection_flags&#x60; | &#x60;detection_flags&#x60;, the same 20 keys and meanings as the scored webhook. The flat fields below repeat those values under History names | | &#x60;domain&#x60; | &#x60;site_domain&#x60; when present, otherwise &#x60;domain&#x60; | | &#x60;public_ip&#x60; | &#x60;ip&#x60; (&#x60;0.0.0.0&#x60; instead of &#x60;\&quot;\&quot;&#x60;) and &#x60;country&#x60; | | &#x60;local_ip&#x60; | not included in the current public History response | | &#x60;traffic_source&#x60; | &#x60;traffic_channel&#x60;, &#x60;referrer_domain&#x60;, &#x60;entry_url&#x60;, &#x60;click_id_type&#x60;, &#x60;utm_*&#x60; (omitted when empty) | | &#x60;observed_at&#x60; (when scoring finished) | &#x60;created_at&#x60; (when the identification was made) |  Current responses omit score details and low-level network diagnostics. The optional diagnostic properties below describe historical responses; they are not required. Ignore fields you do not know.
  * @package  ShieldLabs\Generated
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -59,6 +59,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $openAPITypes = [
+        'client_identity' => '\ShieldLabs\Generated\Model\ClientIdentity',
         'identification_id' => 'string',
         'session_id' => 'string',
         'cookie_id' => 'string',
@@ -87,10 +88,8 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_vpn' => 'bool',
         'is_tor' => 'bool',
         'is_proxy' => 'bool',
-        'is_datacenter' => 'bool',
-        'is_abuser' => 'bool',
         'is_privacy_relay' => 'bool',
-        'is_stun_not_checked' => 'bool',
+        'network_check_incomplete' => 'bool',
         'check_incomplete' => 'bool',
         'is_antidetect' => 'bool',
         'is_os_mismatch' => 'bool',
@@ -100,6 +99,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => 'bool',
         'is_incognito' => 'bool',
         'is_search_bot' => 'bool',
+        'detection_flags' => '\ShieldLabs\Generated\Model\DetectionFlags',
         'entry_url' => 'string',
         'utm_source' => 'string',
         'utm_medium' => 'string',
@@ -110,7 +110,13 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'traffic_channel_group' => 'string',
         'traffic_reason' => 'string',
         'referrer_domain' => 'string',
-        'click_id_type' => 'string'
+        'click_id_type' => 'string',
+        'ip_mismatch' => 'bool',
+        'latency_test' => 'bool',
+        'device_spoofing' => 'bool',
+        'rate_limited' => 'bool',
+        'ai_bot' => 'bool',
+        'ai_browser' => 'bool'
     ];
 
     /**
@@ -121,6 +127,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
+        'client_identity' => null,
         'identification_id' => 'uuid',
         'session_id' => 'uuid',
         'cookie_id' => 'uuid',
@@ -149,10 +156,8 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_vpn' => null,
         'is_tor' => null,
         'is_proxy' => null,
-        'is_datacenter' => null,
-        'is_abuser' => null,
         'is_privacy_relay' => null,
-        'is_stun_not_checked' => null,
+        'network_check_incomplete' => null,
         'check_incomplete' => null,
         'is_antidetect' => null,
         'is_os_mismatch' => null,
@@ -162,6 +167,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => null,
         'is_incognito' => null,
         'is_search_bot' => null,
+        'detection_flags' => null,
         'entry_url' => null,
         'utm_source' => null,
         'utm_medium' => null,
@@ -172,7 +178,13 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'traffic_channel_group' => null,
         'traffic_reason' => null,
         'referrer_domain' => null,
-        'click_id_type' => null
+        'click_id_type' => null,
+        'ip_mismatch' => null,
+        'latency_test' => null,
+        'device_spoofing' => null,
+        'rate_limited' => null,
+        'ai_bot' => null,
+        'ai_browser' => null
     ];
 
     /**
@@ -181,6 +193,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var boolean[]
      */
     protected static array $openAPINullables = [
+        'client_identity' => false,
         'identification_id' => false,
         'session_id' => false,
         'cookie_id' => false,
@@ -209,10 +222,8 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_vpn' => false,
         'is_tor' => false,
         'is_proxy' => false,
-        'is_datacenter' => false,
-        'is_abuser' => false,
         'is_privacy_relay' => false,
-        'is_stun_not_checked' => false,
+        'network_check_incomplete' => false,
         'check_incomplete' => false,
         'is_antidetect' => false,
         'is_os_mismatch' => false,
@@ -222,6 +233,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => false,
         'is_incognito' => false,
         'is_search_bot' => false,
+        'detection_flags' => false,
         'entry_url' => false,
         'utm_source' => false,
         'utm_medium' => false,
@@ -232,7 +244,13 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'traffic_channel_group' => false,
         'traffic_reason' => false,
         'referrer_domain' => false,
-        'click_id_type' => false
+        'click_id_type' => false,
+        'ip_mismatch' => false,
+        'latency_test' => false,
+        'device_spoofing' => false,
+        'rate_limited' => false,
+        'ai_bot' => false,
+        'ai_browser' => false
     ];
 
     /**
@@ -321,6 +339,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
+        'client_identity' => 'client_identity',
         'identification_id' => 'identification_id',
         'session_id' => 'session_id',
         'cookie_id' => 'cookie_id',
@@ -349,10 +368,8 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_vpn' => 'is_vpn',
         'is_tor' => 'is_tor',
         'is_proxy' => 'is_proxy',
-        'is_datacenter' => 'is_datacenter',
-        'is_abuser' => 'is_abuser',
         'is_privacy_relay' => 'is_privacy_relay',
-        'is_stun_not_checked' => 'is_stun_not_checked',
+        'network_check_incomplete' => 'network_check_incomplete',
         'check_incomplete' => 'check_incomplete',
         'is_antidetect' => 'is_antidetect',
         'is_os_mismatch' => 'is_os_mismatch',
@@ -362,6 +379,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => 'is_browser_automation',
         'is_incognito' => 'is_incognito',
         'is_search_bot' => 'is_search_bot',
+        'detection_flags' => 'detection_flags',
         'entry_url' => 'entry_url',
         'utm_source' => 'utm_source',
         'utm_medium' => 'utm_medium',
@@ -372,7 +390,13 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'traffic_channel_group' => 'traffic_channel_group',
         'traffic_reason' => 'traffic_reason',
         'referrer_domain' => 'referrer_domain',
-        'click_id_type' => 'click_id_type'
+        'click_id_type' => 'click_id_type',
+        'ip_mismatch' => 'ip_mismatch',
+        'latency_test' => 'latency_test',
+        'device_spoofing' => 'device_spoofing',
+        'rate_limited' => 'rate_limited',
+        'ai_bot' => 'ai_bot',
+        'ai_browser' => 'ai_browser'
     ];
 
     /**
@@ -381,6 +405,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
+        'client_identity' => 'setClientIdentity',
         'identification_id' => 'setIdentificationId',
         'session_id' => 'setSessionId',
         'cookie_id' => 'setCookieId',
@@ -409,10 +434,8 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_vpn' => 'setIsVpn',
         'is_tor' => 'setIsTor',
         'is_proxy' => 'setIsProxy',
-        'is_datacenter' => 'setIsDatacenter',
-        'is_abuser' => 'setIsAbuser',
         'is_privacy_relay' => 'setIsPrivacyRelay',
-        'is_stun_not_checked' => 'setIsStunNotChecked',
+        'network_check_incomplete' => 'setNetworkCheckIncomplete',
         'check_incomplete' => 'setCheckIncomplete',
         'is_antidetect' => 'setIsAntidetect',
         'is_os_mismatch' => 'setIsOsMismatch',
@@ -422,6 +445,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => 'setIsBrowserAutomation',
         'is_incognito' => 'setIsIncognito',
         'is_search_bot' => 'setIsSearchBot',
+        'detection_flags' => 'setDetectionFlags',
         'entry_url' => 'setEntryUrl',
         'utm_source' => 'setUtmSource',
         'utm_medium' => 'setUtmMedium',
@@ -432,7 +456,13 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'traffic_channel_group' => 'setTrafficChannelGroup',
         'traffic_reason' => 'setTrafficReason',
         'referrer_domain' => 'setReferrerDomain',
-        'click_id_type' => 'setClickIdType'
+        'click_id_type' => 'setClickIdType',
+        'ip_mismatch' => 'setIpMismatch',
+        'latency_test' => 'setLatencyTest',
+        'device_spoofing' => 'setDeviceSpoofing',
+        'rate_limited' => 'setRateLimited',
+        'ai_bot' => 'setAiBot',
+        'ai_browser' => 'setAiBrowser'
     ];
 
     /**
@@ -441,6 +471,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
+        'client_identity' => 'getClientIdentity',
         'identification_id' => 'getIdentificationId',
         'session_id' => 'getSessionId',
         'cookie_id' => 'getCookieId',
@@ -469,10 +500,8 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_vpn' => 'getIsVpn',
         'is_tor' => 'getIsTor',
         'is_proxy' => 'getIsProxy',
-        'is_datacenter' => 'getIsDatacenter',
-        'is_abuser' => 'getIsAbuser',
         'is_privacy_relay' => 'getIsPrivacyRelay',
-        'is_stun_not_checked' => 'getIsStunNotChecked',
+        'network_check_incomplete' => 'getNetworkCheckIncomplete',
         'check_incomplete' => 'getCheckIncomplete',
         'is_antidetect' => 'getIsAntidetect',
         'is_os_mismatch' => 'getIsOsMismatch',
@@ -482,6 +511,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'is_browser_automation' => 'getIsBrowserAutomation',
         'is_incognito' => 'getIsIncognito',
         'is_search_bot' => 'getIsSearchBot',
+        'detection_flags' => 'getDetectionFlags',
         'entry_url' => 'getEntryUrl',
         'utm_source' => 'getUtmSource',
         'utm_medium' => 'getUtmMedium',
@@ -492,7 +522,13 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'traffic_channel_group' => 'getTrafficChannelGroup',
         'traffic_reason' => 'getTrafficReason',
         'referrer_domain' => 'getReferrerDomain',
-        'click_id_type' => 'getClickIdType'
+        'click_id_type' => 'getClickIdType',
+        'ip_mismatch' => 'getIpMismatch',
+        'latency_test' => 'getLatencyTest',
+        'device_spoofing' => 'getDeviceSpoofing',
+        'rate_limited' => 'getRateLimited',
+        'ai_bot' => 'getAiBot',
+        'ai_browser' => 'getAiBrowser'
     ];
 
     /**
@@ -552,6 +588,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(?array $data = null)
     {
+        $this->setIfExists('client_identity', $data ?? [], null);
         $this->setIfExists('identification_id', $data ?? [], null);
         $this->setIfExists('session_id', $data ?? [], null);
         $this->setIfExists('cookie_id', $data ?? [], null);
@@ -580,10 +617,8 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('is_vpn', $data ?? [], null);
         $this->setIfExists('is_tor', $data ?? [], null);
         $this->setIfExists('is_proxy', $data ?? [], null);
-        $this->setIfExists('is_datacenter', $data ?? [], null);
-        $this->setIfExists('is_abuser', $data ?? [], null);
         $this->setIfExists('is_privacy_relay', $data ?? [], null);
-        $this->setIfExists('is_stun_not_checked', $data ?? [], null);
+        $this->setIfExists('network_check_incomplete', $data ?? [], null);
         $this->setIfExists('check_incomplete', $data ?? [], null);
         $this->setIfExists('is_antidetect', $data ?? [], null);
         $this->setIfExists('is_os_mismatch', $data ?? [], null);
@@ -593,6 +628,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('is_browser_automation', $data ?? [], null);
         $this->setIfExists('is_incognito', $data ?? [], null);
         $this->setIfExists('is_search_bot', $data ?? [], null);
+        $this->setIfExists('detection_flags', $data ?? [], null);
         $this->setIfExists('entry_url', $data ?? [], null);
         $this->setIfExists('utm_source', $data ?? [], null);
         $this->setIfExists('utm_medium', $data ?? [], null);
@@ -604,6 +640,12 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('traffic_reason', $data ?? [], null);
         $this->setIfExists('referrer_domain', $data ?? [], null);
         $this->setIfExists('click_id_type', $data ?? [], null);
+        $this->setIfExists('ip_mismatch', $data ?? [], null);
+        $this->setIfExists('latency_test', $data ?? [], null);
+        $this->setIfExists('device_spoofing', $data ?? [], null);
+        $this->setIfExists('rate_limited', $data ?? [], null);
+        $this->setIfExists('ai_bot', $data ?? [], null);
+        $this->setIfExists('ai_browser', $data ?? [], null);
     }
 
     /**
@@ -679,9 +721,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
             $invalidProperties[] = "invalid value for 'score', must be bigger than or equal to 0.";
         }
 
-        if ($this->container['score_details'] === null) {
-            $invalidProperties[] = "'score_details' can't be null";
-        }
         if ($this->container['created_at'] === null) {
             $invalidProperties[] = "'created_at' can't be null";
         }
@@ -692,27 +731,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['ver'] === null) {
             $invalidProperties[] = "'ver' can't be null";
         }
-        if ($this->container['web_rtc_ip'] === null) {
-            $invalidProperties[] = "'web_rtc_ip' can't be null";
-        }
-        if ($this->container['web_rtc_country'] === null) {
-            $invalidProperties[] = "'web_rtc_country' can't be null";
-        }
-        if ($this->container['web_rtc_connection_type'] === null) {
-            $invalidProperties[] = "'web_rtc_connection_type' can't be null";
-        }
-        if ($this->container['webrtc_leak_ip'] === null) {
-            $invalidProperties[] = "'webrtc_leak_ip' can't be null";
-        }
-        if ($this->container['webrtc_leak_country'] === null) {
-            $invalidProperties[] = "'webrtc_leak_country' can't be null";
-        }
-        if ($this->container['webrtc_leak_connection_type'] === null) {
-            $invalidProperties[] = "'webrtc_leak_connection_type' can't be null";
-        }
-        if ($this->container['webrtc_leak_source'] === null) {
-            $invalidProperties[] = "'webrtc_leak_source' can't be null";
-        }
         if ($this->container['is_vpn'] === null) {
             $invalidProperties[] = "'is_vpn' can't be null";
         }
@@ -722,17 +740,11 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['is_proxy'] === null) {
             $invalidProperties[] = "'is_proxy' can't be null";
         }
-        if ($this->container['is_datacenter'] === null) {
-            $invalidProperties[] = "'is_datacenter' can't be null";
-        }
-        if ($this->container['is_abuser'] === null) {
-            $invalidProperties[] = "'is_abuser' can't be null";
-        }
         if ($this->container['is_privacy_relay'] === null) {
             $invalidProperties[] = "'is_privacy_relay' can't be null";
         }
-        if ($this->container['is_stun_not_checked'] === null) {
-            $invalidProperties[] = "'is_stun_not_checked' can't be null";
+        if ($this->container['network_check_incomplete'] === null) {
+            $invalidProperties[] = "'network_check_incomplete' can't be null";
         }
         if ($this->container['check_incomplete'] === null) {
             $invalidProperties[] = "'check_incomplete' can't be null";
@@ -761,6 +773,27 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['is_search_bot'] === null) {
             $invalidProperties[] = "'is_search_bot' can't be null";
         }
+        if ($this->container['detection_flags'] === null) {
+            $invalidProperties[] = "'detection_flags' can't be null";
+        }
+        if ($this->container['ip_mismatch'] === null) {
+            $invalidProperties[] = "'ip_mismatch' can't be null";
+        }
+        if ($this->container['latency_test'] === null) {
+            $invalidProperties[] = "'latency_test' can't be null";
+        }
+        if ($this->container['device_spoofing'] === null) {
+            $invalidProperties[] = "'device_spoofing' can't be null";
+        }
+        if ($this->container['rate_limited'] === null) {
+            $invalidProperties[] = "'rate_limited' can't be null";
+        }
+        if ($this->container['ai_bot'] === null) {
+            $invalidProperties[] = "'ai_bot' can't be null";
+        }
+        if ($this->container['ai_browser'] === null) {
+            $invalidProperties[] = "'ai_browser' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -777,6 +810,33 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
+     * Gets client_identity
+     *
+     * @return \ShieldLabs\Generated\Model\ClientIdentity|null
+     */
+    public function getClientIdentity()
+    {
+        return $this->container['client_identity'];
+    }
+
+    /**
+     * Sets client_identity
+     *
+     * @param \ShieldLabs\Generated\Model\ClientIdentity|null $client_identity client_identity
+     *
+     * @return self
+     */
+    public function setClientIdentity($client_identity)
+    {
+        if (is_null($client_identity)) {
+            throw new \InvalidArgumentException('non-nullable client_identity cannot be null');
+        }
+        $this->container['client_identity'] = $client_identity;
+
+        return $this;
+    }
+
+    /**
      * Gets identification_id
      *
      * @return string
@@ -789,7 +849,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets identification_id
      *
-     * @param string $identification_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed request ID.
+     * @param string $identification_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed Identification ID.
      *
      * @return self
      */
@@ -1140,7 +1200,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets connection_type
      *
-     * @param string $connection_type How the visitor connected. Known values: - `direct`: a regular connection; - `mobile`: a mobile carrier network; - `vpn`: a VPN; - `proxy`: a proxy, datacenter or hosting network (search-engine crawlers are reported here too); - `tor`: the Tor network; - `privacy_relay`: a privacy relay such as iCloud Private Relay; - `browser_vpn_proxy`: a VPN or proxy built into the browser or one of its extensions; - `unknown`: not enough data.  The value can say `vpn` while `detection_flags.vpn` is `false` (IP intelligence classified the network, but the scored VPN check did not fire). Branch on `detection_flags` for decisions. The set is open: keep values added in later versions and treat them as `unknown`.
+     * @param string $connection_type How the visitor connected. Known values: - `direct`: a regular connection; - `mobile`: a mobile carrier network; - `vpn`: a VPN; - `proxy`: a proxy, datacenter or hosting network (search-engine crawlers are reported here too); - `tor`: the Tor network; - `private_relay`: a privacy relay such as iCloud Private Relay. Older visits may say `privacy_relay`; - `browser_vpn_proxy`: a VPN or proxy built into the browser or one of its extensions; - `unknown`: not enough data.  The value can say `vpn` while `detection_flags.vpn` is `false` (IP intelligence classified the network, but the scored VPN check did not fire). Branch on `detection_flags` for decisions. The set is open: keep values added in later versions and treat them as `unknown`.
      *
      * @return self
      */
@@ -1167,7 +1227,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets score
      *
-     * @param int $score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"rate_limited\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; request IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
+     * @param int $score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"rate_limited\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; Identification IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
      *
      * @return self
      */
@@ -1189,7 +1249,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets score_details
      *
-     * @return string
+     * @return string|null
      */
     public function getScoreDetails()
     {
@@ -1199,7 +1259,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets score_details
      *
-     * @param string $score_details The entries behind `score` as a JSON-encoded **string** holding an array of `{\"Value\": <integer>, \"Description\": <string>}`. Parse it before use. Scored entries come first, followed by informational entries with `Value` 0, which can be long. Empty string when no details were stored.  The webhook `signals` are the entries with a non-zero `Value`, in the same order, with each description turned into a signal name (for example `Is proxy` becomes `proxy`). Descriptions are free text for display: never branch on them.
+     * @param string|null $score_details The entries behind `score` as a JSON-encoded **string** holding an array of `{\"Value\": <integer>, \"Description\": <string>}`. Parse it before use. Scored entries come first, followed by informational entries with `Value` 0, which can be long. Empty string when no details were stored.  The webhook `signals` are the entries with a non-zero `Value`, in the same order, with each description turned into a signal name (for example `Is proxy` becomes `proxy`). Descriptions are free text for display: never branch on them.
      *
      * @return self
      */
@@ -1275,7 +1335,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets web_rtc_ip
      *
-     * @return string
+     * @return string|null
      */
     public function getWebRtcIp()
     {
@@ -1285,7 +1345,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets web_rtc_ip
      *
-     * @param string $web_rtc_ip Local IP address observed by the ShieldLabs network check; `0.0.0.0` when none.
+     * @param string|null $web_rtc_ip Local IP address observed by the ShieldLabs network check; `0.0.0.0` when none.
      *
      * @return self
      */
@@ -1302,7 +1362,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets web_rtc_country
      *
-     * @return string
+     * @return string|null
      */
     public function getWebRtcCountry()
     {
@@ -1312,7 +1372,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets web_rtc_country
      *
-     * @param string $web_rtc_country Country of `web_rtc_ip`, or an empty string.
+     * @param string|null $web_rtc_country Country of `web_rtc_ip`, or an empty string.
      *
      * @return self
      */
@@ -1329,7 +1389,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets web_rtc_connection_type
      *
-     * @return string
+     * @return string|null
      */
     public function getWebRtcConnectionType()
     {
@@ -1339,7 +1399,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets web_rtc_connection_type
      *
-     * @param string $web_rtc_connection_type Connection class of `web_rtc_ip`, or an empty string.
+     * @param string|null $web_rtc_connection_type Connection class of `web_rtc_ip`, or an empty string.
      *
      * @return self
      */
@@ -1356,7 +1416,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets webrtc_leak_ip
      *
-     * @return string
+     * @return string|null
      */
     public function getWebrtcLeakIp()
     {
@@ -1366,7 +1426,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets webrtc_leak_ip
      *
-     * @param string $webrtc_leak_ip Local network address leaked by the browser; `0.0.0.0` when none.
+     * @param string|null $webrtc_leak_ip Local network address leaked by the browser; `0.0.0.0` when none.
      *
      * @return self
      */
@@ -1383,7 +1443,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets webrtc_leak_country
      *
-     * @return string
+     * @return string|null
      */
     public function getWebrtcLeakCountry()
     {
@@ -1393,7 +1453,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets webrtc_leak_country
      *
-     * @param string $webrtc_leak_country Country of `webrtc_leak_ip`, or an empty string.
+     * @param string|null $webrtc_leak_country Country of `webrtc_leak_ip`, or an empty string.
      *
      * @return self
      */
@@ -1410,7 +1470,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets webrtc_leak_connection_type
      *
-     * @return string
+     * @return string|null
      */
     public function getWebrtcLeakConnectionType()
     {
@@ -1420,7 +1480,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets webrtc_leak_connection_type
      *
-     * @param string $webrtc_leak_connection_type Connection class of `webrtc_leak_ip`, or an empty string.
+     * @param string|null $webrtc_leak_connection_type Connection class of `webrtc_leak_ip`, or an empty string.
      *
      * @return self
      */
@@ -1437,7 +1497,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets webrtc_leak_source
      *
-     * @return string
+     * @return string|null
      */
     public function getWebrtcLeakSource()
     {
@@ -1447,7 +1507,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets webrtc_leak_source
      *
-     * @param string $webrtc_leak_source Which check found the local network leak. Known values: `scanner`, `shield`, `none` and the empty string. `none` or an empty string when there is no leak; the webhook `local_ip` then uses `web_rtc_ip`. The set is open: keep values added in later versions.
+     * @param string|null $webrtc_leak_source Which check found the local network leak. Known values: `scanner`, `shield`, `none` and the empty string. `none` or an empty string when there is no leak; the webhook `local_ip` then uses `web_rtc_ip`. The set is open: keep values added in later versions.
      *
      * @return self
      */
@@ -1543,60 +1603,6 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-     * Gets is_datacenter
-     *
-     * @return bool
-     */
-    public function getIsDatacenter()
-    {
-        return $this->container['is_datacenter'];
-    }
-
-    /**
-     * Sets is_datacenter
-     *
-     * @param bool $is_datacenter Same meaning as `detection_flags.datacenter_ip`.
-     *
-     * @return self
-     */
-    public function setIsDatacenter($is_datacenter)
-    {
-        if (is_null($is_datacenter)) {
-            throw new \InvalidArgumentException('non-nullable is_datacenter cannot be null');
-        }
-        $this->container['is_datacenter'] = $is_datacenter;
-
-        return $this;
-    }
-
-    /**
-     * Gets is_abuser
-     *
-     * @return bool
-     */
-    public function getIsAbuser()
-    {
-        return $this->container['is_abuser'];
-    }
-
-    /**
-     * Sets is_abuser
-     *
-     * @param bool $is_abuser Same meaning as `detection_flags.abuser`.
-     *
-     * @return self
-     */
-    public function setIsAbuser($is_abuser)
-    {
-        if (is_null($is_abuser)) {
-            throw new \InvalidArgumentException('non-nullable is_abuser cannot be null');
-        }
-        $this->container['is_abuser'] = $is_abuser;
-
-        return $this;
-    }
-
-    /**
      * Gets is_privacy_relay
      *
      * @return bool
@@ -1609,7 +1615,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_privacy_relay
      *
-     * @param bool $is_privacy_relay Same meaning as `detection_flags.privacy_relay`.
+     * @param bool $is_privacy_relay Same meaning as `detection_flags.private_relay`.
      *
      * @return self
      */
@@ -1624,28 +1630,28 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-     * Gets is_stun_not_checked
+     * Gets network_check_incomplete
      *
      * @return bool
      */
-    public function getIsStunNotChecked()
+    public function getNetworkCheckIncomplete()
     {
-        return $this->container['is_stun_not_checked'];
+        return $this->container['network_check_incomplete'];
     }
 
     /**
-     * Sets is_stun_not_checked
+     * Sets network_check_incomplete
      *
-     * @param bool $is_stun_not_checked Same meaning as `detection_flags.stun_not_checked`.
+     * @param bool $network_check_incomplete Same meaning as `detection_flags.network_check_incomplete`.
      *
      * @return self
      */
-    public function setIsStunNotChecked($is_stun_not_checked)
+    public function setNetworkCheckIncomplete($network_check_incomplete)
     {
-        if (is_null($is_stun_not_checked)) {
-            throw new \InvalidArgumentException('non-nullable is_stun_not_checked cannot be null');
+        if (is_null($network_check_incomplete)) {
+            throw new \InvalidArgumentException('non-nullable network_check_incomplete cannot be null');
         }
-        $this->container['is_stun_not_checked'] = $is_stun_not_checked;
+        $this->container['network_check_incomplete'] = $network_check_incomplete;
 
         return $this;
     }
@@ -1663,7 +1669,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets check_incomplete
      *
-     * @param bool $check_incomplete Same meaning as `detection_flags.check_incomplete`. Always `false` for search-engine crawlers.
+     * @param bool $check_incomplete Same meaning as `detection_flags.check_incomplete`. Always `false` for a search-engine crawler, an AI bot, or an AI browser.
      *
      * @return self
      */
@@ -1798,7 +1804,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_js_disabled
      *
-     * @param bool $is_js_disabled Same meaning as `detection_flags.javascript_disabled`. Always `false` for search-engine crawlers.
+     * @param bool $is_js_disabled Same meaning as `detection_flags.javascript_disabled`. Always `false` for a search-engine crawler, an AI bot, or an AI browser.
      *
      * @return self
      */
@@ -1852,7 +1858,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_incognito
      *
-     * @param bool $is_incognito Same meaning as `detection_flags.incognito`. Always `false` for search-engine crawlers.
+     * @param bool $is_incognito Same meaning as `detection_flags.incognito`. Always `false` for a search-engine crawler, an AI bot, or an AI browser.
      *
      * @return self
      */
@@ -1889,6 +1895,33 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable is_search_bot cannot be null');
         }
         $this->container['is_search_bot'] = $is_search_bot;
+
+        return $this;
+    }
+
+    /**
+     * Gets detection_flags
+     *
+     * @return \ShieldLabs\Generated\Model\DetectionFlags
+     */
+    public function getDetectionFlags()
+    {
+        return $this->container['detection_flags'];
+    }
+
+    /**
+     * Sets detection_flags
+     *
+     * @param \ShieldLabs\Generated\Model\DetectionFlags $detection_flags detection_flags
+     *
+     * @return self
+     */
+    public function setDetectionFlags($detection_flags)
+    {
+        if (is_null($detection_flags)) {
+            throw new \InvalidArgumentException('non-nullable detection_flags cannot be null');
+        }
+        $this->container['detection_flags'] = $detection_flags;
 
         return $this;
     }
@@ -2186,6 +2219,168 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable click_id_type cannot be null');
         }
         $this->container['click_id_type'] = $click_id_type;
+
+        return $this;
+    }
+
+    /**
+     * Gets ip_mismatch
+     *
+     * @return bool
+     */
+    public function getIpMismatch()
+    {
+        return $this->container['ip_mismatch'];
+    }
+
+    /**
+     * Sets ip_mismatch
+     *
+     * @param bool $ip_mismatch Same meaning as `detection_flags.ip_mismatch`.
+     *
+     * @return self
+     */
+    public function setIpMismatch($ip_mismatch)
+    {
+        if (is_null($ip_mismatch)) {
+            throw new \InvalidArgumentException('non-nullable ip_mismatch cannot be null');
+        }
+        $this->container['ip_mismatch'] = $ip_mismatch;
+
+        return $this;
+    }
+
+    /**
+     * Gets latency_test
+     *
+     * @return bool
+     */
+    public function getLatencyTest()
+    {
+        return $this->container['latency_test'];
+    }
+
+    /**
+     * Sets latency_test
+     *
+     * @param bool $latency_test Same meaning as `detection_flags.latency_test`.
+     *
+     * @return self
+     */
+    public function setLatencyTest($latency_test)
+    {
+        if (is_null($latency_test)) {
+            throw new \InvalidArgumentException('non-nullable latency_test cannot be null');
+        }
+        $this->container['latency_test'] = $latency_test;
+
+        return $this;
+    }
+
+    /**
+     * Gets device_spoofing
+     *
+     * @return bool
+     */
+    public function getDeviceSpoofing()
+    {
+        return $this->container['device_spoofing'];
+    }
+
+    /**
+     * Sets device_spoofing
+     *
+     * @param bool $device_spoofing Same meaning as `detection_flags.device_spoofing`.
+     *
+     * @return self
+     */
+    public function setDeviceSpoofing($device_spoofing)
+    {
+        if (is_null($device_spoofing)) {
+            throw new \InvalidArgumentException('non-nullable device_spoofing cannot be null');
+        }
+        $this->container['device_spoofing'] = $device_spoofing;
+
+        return $this;
+    }
+
+    /**
+     * Gets rate_limited
+     *
+     * @return bool
+     */
+    public function getRateLimited()
+    {
+        return $this->container['rate_limited'];
+    }
+
+    /**
+     * Sets rate_limited
+     *
+     * @param bool $rate_limited Same meaning as `detection_flags.rate_limited`. Older payloads used banned_ip.
+     *
+     * @return self
+     */
+    public function setRateLimited($rate_limited)
+    {
+        if (is_null($rate_limited)) {
+            throw new \InvalidArgumentException('non-nullable rate_limited cannot be null');
+        }
+        $this->container['rate_limited'] = $rate_limited;
+
+        return $this;
+    }
+
+    /**
+     * Gets ai_bot
+     *
+     * @return bool
+     */
+    public function getAiBot()
+    {
+        return $this->container['ai_bot'];
+    }
+
+    /**
+     * Sets ai_bot
+     *
+     * @param bool $ai_bot Same meaning as `detection_flags.ai_bot`.
+     *
+     * @return self
+     */
+    public function setAiBot($ai_bot)
+    {
+        if (is_null($ai_bot)) {
+            throw new \InvalidArgumentException('non-nullable ai_bot cannot be null');
+        }
+        $this->container['ai_bot'] = $ai_bot;
+
+        return $this;
+    }
+
+    /**
+     * Gets ai_browser
+     *
+     * @return bool
+     */
+    public function getAiBrowser()
+    {
+        return $this->container['ai_browser'];
+    }
+
+    /**
+     * Sets ai_browser
+     *
+     * @param bool $ai_browser Same meaning as `detection_flags.ai_browser`.
+     *
+     * @return self
+     */
+    public function setAiBrowser($ai_browser)
+    {
+        if (is_null($ai_browser)) {
+            throw new \InvalidArgumentException('non-nullable ai_browser cannot be null');
+        }
+        $this->container['ai_browser'] = $ai_browser;
 
         return $this;
     }

@@ -76,7 +76,10 @@ function markIdentificationIdUsed(string $identificationId): bool
 $json = json_decode((string) file_get_contents('php://input'), true);
 $identificationId = $_POST['identificationId'] ?? (is_array($json) ? ($json['identificationId'] ?? null) : null);
 
-$shieldlabs = new ShieldLabs(['api_key' => 'sec_your_private_key']); // or new ShieldLabs() to read SHIELDLABS_API_KEY
+$shieldlabs = new ShieldLabs([
+    'api_key' => 'sec_your_private_key', // or omit it to read SHIELDLABS_API_KEY
+    'domain_id' => '11111111-1111-4111-8111-111111111111', // public domain UUID from domains()
+]);
 
 try {
     // Polls the History API until the verdict is stored (usually 1-3 seconds after
@@ -242,14 +245,14 @@ use ShieldLabs\LookupType;
 
 $page = $shieldlabs->history->search(LookupType::UserHid, $userHid, ['limit' => 50]);
 $page->data;  // list of Identification, newest first
-$page->total; // rows for this User HID across all pages
+$page->total; // compatibility count; current cards have no global total
 ```
 
 Lookup types: `ip` (dotted IPv4), `user_hid`, `visitor_id`, `identification_id`, `device_id`, `session_id` and `cookie_id`. The SDK checks every lookup before sending it: an unknown type, a malformed UUID, an IPv6 address, an empty User HID or a `limit` outside 1-100 throws `ValidationException` and sends nothing.
 
 A User HID is sent as one URL path segment in canonical form, so values with `@`, `+`, `=` or spaces (an email address, a base64 string) match exactly. A value that contains `/`, and the values `.` and `..`, cannot be searched and throw `ValidationException`. User HIDs from `UserHid::fromUserId()` are 64 hex characters and always work.
 
-`history->iterate()` returns a lazy generator over every row. It pages with `offset`, skips rows it already returned (paging while new rows arrive can repeat a row) and stops at the total, at an empty page or after `max_items` rows (with `'max_items' => 0` it yields nothing and sends no request):
+`history->iterate()` retains the legacy normalized iteration interface. Current identifier endpoints return one entity card; use the entity list below for cursor pagination.
 
 ```php
 // How many accounts has this device been used with?
@@ -426,6 +429,26 @@ Enums: `LookupType`, `RiskBand` (`Trusted`, `Suspicious`, `Dangerous`, `RateLimi
 - Any PSR-18 client (Guzzle 7, Symfony HttpClient and others), or the built-in cURL client.
 - Webhook schema version `2026-06-01`. Unknown fields, event types and schema versions are accepted; new signal names arrive as plain strings.
 - Semantic Versioning: breaking changes only in a new major version.
+
+### Current entity lists
+
+```php
+$page = $client->history->list('user', ['query' => ['ids' => [$accountHid]]]);
+foreach ($page->data as $card) {
+    // Original entity card, including risk.state and aggregate fields.
+}
+if ($page->next_page_token !== null) {
+    $next = $client->history->list('user', ['query' => [
+        'ids' => [$accountHid], 'page_token' => $page->next_page_token,
+    ]]);
+}
+```
+
+Entity lists support `identifications` and `user`. `EntityPage.data` preserves the API records unchanged, including unavailable risk and signal states, null fields and aggregate counts. `next_page_token` is opaque: reuse it with the same resource and filters. There is no global `total` in this page model.
+
+The compatibility `identifications.get` / `identifications->get` / `Identifications.Get` normalizes a scored identification card and retains the original card in `raw` / `Raw`. An unavailable or invalid entity Risk Score raises an API/model error; it is never converted to zero. Unavailable weighted signal details remain empty. Use entity records when availability state is needed.
+
+Legacy identifier search and iteration helpers retain their old normalized shape. The current `/{resource}/{resource_id}` endpoint returns one entity card; it is not an identification-history feed. Use the entity list and its cursor for current list pagination. Legacy `total` is only a compatibility fallback to the number of returned records when the API omits it.
 
 ## Development
 

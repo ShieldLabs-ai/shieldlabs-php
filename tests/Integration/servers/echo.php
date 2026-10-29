@@ -43,7 +43,7 @@ if ($path === '/echo') {
     echo json_encode(['error' => $uri]);
 } elseif ($path === '/redirect') {
     header('Location: http://127.0.0.1:1/elsewhere', true, 302);
-} elseif (str_starts_with($path, '/api/v1/history/')) {
+} elseif (str_contains($path, '/history/')) {
     if (($headers['authorization'] ?? '') !== 'Bearer sec_abcd1234-efgh5678-ijkl9012') {
         http_response_code(401);
         header('Content-Type: text/plain; charset=utf-8');

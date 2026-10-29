@@ -33,6 +33,7 @@ final class ExampleServerTest extends TestCase
         self::$api = new PhpServer(__DIR__ . '/servers/mock-api.php');
         self::$app = new PhpServer(\dirname(__DIR__, 2) . '/examples/server.php', [
             'SHIELDLABS_API_KEY' => Clients::API_KEY,
+            'SHIELDLABS_DOMAIN_ID' => Clients::DOMAIN_ID,
             'SHIELDLABS_API_BASE_URL' => self::$api->url . '/api',
             'SHIELDLABS_WEBHOOK_SECRET' => 'whsec_previous_secret_value, ' . self::SECRET,
         ]);
@@ -43,6 +44,7 @@ final class ExampleServerTest extends TestCase
             \dirname(__DIR__, 2) . '/examples/server.php',
             [
                 'SHIELDLABS_API_KEY' => 'sec_your_private_key',
+                'SHIELDLABS_DOMAIN_ID' => Clients::DOMAIN_ID,
                 'SHIELDLABS_API_BASE_URL' => self::$api->url,
                 'SHIELDLABS_WEBHOOK_SECRET' => 'whsec_your_signing_secret',
             ],

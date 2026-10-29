@@ -36,7 +36,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * IdentificationScoredData Class Doc Comment
  *
  * @category Class
- * @description The scored identification. Every key is always present (no key is ever omitted); only &#x60;user_hid&#x60; can be &#x60;null&#x60;.
+ * @description Final identification. risk_score is this scan only. Version 2026-10-13 uses signals for score contributions, including fired signals of weight 0, detection_flags for 20 public signals, and hre for account results. Older bodies remain accepted.
  * @package  ShieldLabs\Generated
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -59,6 +59,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $openAPITypes = [
+        'client_identity' => '\ShieldLabs\Generated\Model\WebhookClientIdentity',
         'identification_id' => 'string',
         'visitor_id' => 'string',
         'device_id' => 'string',
@@ -75,8 +76,15 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'traffic_source' => '\ShieldLabs\Generated\Model\TrafficSource',
         'risk_score' => 'int',
         'signals' => '\ShieldLabs\Generated\Model\Signal[]',
-        'detection_flags' => '\ShieldLabs\Generated\Model\DetectionFlags',
-        'observed_at' => '\DateTime'
+        'detection_flags' => '\ShieldLabs\Generated\Model\IdentificationScoredDataDetectionFlags',
+        'observed_at' => '\DateTime',
+        'result_version' => 'string',
+        'scoring_version' => 'string',
+        'risk_events' => '\ShieldLabs\Generated\Model\RiskEvent[]',
+        'hre' => '\ShieldLabs\Generated\Model\HRE',
+        'search_bot_owner' => 'string',
+        'ai_bot_owner' => 'string',
+        'ai_browser_owner' => 'string'
     ];
 
     /**
@@ -87,6 +95,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @psalm-var array<string, string|null>
      */
     protected static $openAPIFormats = [
+        'client_identity' => null,
         'identification_id' => 'uuid',
         'visitor_id' => 'uuid',
         'device_id' => 'uuid',
@@ -104,7 +113,14 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'risk_score' => null,
         'signals' => null,
         'detection_flags' => null,
-        'observed_at' => 'date-time'
+        'observed_at' => 'date-time',
+        'result_version' => null,
+        'scoring_version' => null,
+        'risk_events' => null,
+        'hre' => null,
+        'search_bot_owner' => null,
+        'ai_bot_owner' => null,
+        'ai_browser_owner' => null
     ];
 
     /**
@@ -113,6 +129,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var boolean[]
      */
     protected static array $openAPINullables = [
+        'client_identity' => false,
         'identification_id' => false,
         'visitor_id' => false,
         'device_id' => false,
@@ -130,7 +147,14 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'risk_score' => false,
         'signals' => false,
         'detection_flags' => false,
-        'observed_at' => false
+        'observed_at' => false,
+        'result_version' => false,
+        'scoring_version' => false,
+        'risk_events' => false,
+        'hre' => false,
+        'search_bot_owner' => false,
+        'ai_bot_owner' => false,
+        'ai_browser_owner' => false
     ];
 
     /**
@@ -219,6 +243,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $attributeMap = [
+        'client_identity' => 'client_identity',
         'identification_id' => 'identification_id',
         'visitor_id' => 'visitor_id',
         'device_id' => 'device_id',
@@ -236,7 +261,14 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'risk_score' => 'risk_score',
         'signals' => 'signals',
         'detection_flags' => 'detection_flags',
-        'observed_at' => 'observed_at'
+        'observed_at' => 'observed_at',
+        'result_version' => 'result_version',
+        'scoring_version' => 'scoring_version',
+        'risk_events' => 'risk_events',
+        'hre' => 'hre',
+        'search_bot_owner' => 'search_bot_owner',
+        'ai_bot_owner' => 'ai_bot_owner',
+        'ai_browser_owner' => 'ai_browser_owner'
     ];
 
     /**
@@ -245,6 +277,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $setters = [
+        'client_identity' => 'setClientIdentity',
         'identification_id' => 'setIdentificationId',
         'visitor_id' => 'setVisitorId',
         'device_id' => 'setDeviceId',
@@ -262,7 +295,14 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'risk_score' => 'setRiskScore',
         'signals' => 'setSignals',
         'detection_flags' => 'setDetectionFlags',
-        'observed_at' => 'setObservedAt'
+        'observed_at' => 'setObservedAt',
+        'result_version' => 'setResultVersion',
+        'scoring_version' => 'setScoringVersion',
+        'risk_events' => 'setRiskEvents',
+        'hre' => 'setHre',
+        'search_bot_owner' => 'setSearchBotOwner',
+        'ai_bot_owner' => 'setAiBotOwner',
+        'ai_browser_owner' => 'setAiBrowserOwner'
     ];
 
     /**
@@ -271,6 +311,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $getters = [
+        'client_identity' => 'getClientIdentity',
         'identification_id' => 'getIdentificationId',
         'visitor_id' => 'getVisitorId',
         'device_id' => 'getDeviceId',
@@ -288,7 +329,14 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         'risk_score' => 'getRiskScore',
         'signals' => 'getSignals',
         'detection_flags' => 'getDetectionFlags',
-        'observed_at' => 'getObservedAt'
+        'observed_at' => 'getObservedAt',
+        'result_version' => 'getResultVersion',
+        'scoring_version' => 'getScoringVersion',
+        'risk_events' => 'getRiskEvents',
+        'hre' => 'getHre',
+        'search_bot_owner' => 'getSearchBotOwner',
+        'ai_bot_owner' => 'getAiBotOwner',
+        'ai_browser_owner' => 'getAiBrowserOwner'
     ];
 
     /**
@@ -348,6 +396,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
      */
     public function __construct(?array $data = null)
     {
+        $this->setIfExists('client_identity', $data ?? [], null);
         $this->setIfExists('identification_id', $data ?? [], null);
         $this->setIfExists('visitor_id', $data ?? [], null);
         $this->setIfExists('device_id', $data ?? [], null);
@@ -366,6 +415,13 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         $this->setIfExists('signals', $data ?? [], null);
         $this->setIfExists('detection_flags', $data ?? [], null);
         $this->setIfExists('observed_at', $data ?? [], null);
+        $this->setIfExists('result_version', $data ?? [], null);
+        $this->setIfExists('scoring_version', $data ?? [], null);
+        $this->setIfExists('risk_events', $data ?? [], null);
+        $this->setIfExists('hre', $data ?? [], null);
+        $this->setIfExists('search_bot_owner', $data ?? [], null);
+        $this->setIfExists('ai_bot_owner', $data ?? [], null);
+        $this->setIfExists('ai_browser_owner', $data ?? [], null);
     }
 
     /**
@@ -457,6 +513,10 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
             $invalidProperties[] = "invalid value for 'observed_at', must be conform to the pattern /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$/.";
         }
 
+        if (!is_null($this->container['result_version']) && (mb_strlen($this->container['result_version']) < 1)) {
+            $invalidProperties[] = "invalid value for 'result_version', the character length must be bigger than or equal to 1.";
+        }
+
         return $invalidProperties;
     }
 
@@ -473,6 +533,33 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
 
 
     /**
+     * Gets client_identity
+     *
+     * @return \ShieldLabs\Generated\Model\WebhookClientIdentity|null
+     */
+    public function getClientIdentity()
+    {
+        return $this->container['client_identity'];
+    }
+
+    /**
+     * Sets client_identity
+     *
+     * @param \ShieldLabs\Generated\Model\WebhookClientIdentity|null $client_identity Optional best-effort attribution. May be omitted or null; every nested field is also optional and nullable. Integrations must work without these values.
+     *
+     * @return self
+     */
+    public function setClientIdentity($client_identity)
+    {
+        if (is_null($client_identity)) {
+            throw new \InvalidArgumentException('non-nullable client_identity cannot be null');
+        }
+        $this->container['client_identity'] = $client_identity;
+
+        return $this;
+    }
+
+    /**
      * Gets identification_id
      *
      * @return string
@@ -485,7 +572,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets identification_id
      *
-     * @param string $identification_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed request ID.
+     * @param string $identification_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed Identification ID.
      *
      * @return self
      */
@@ -735,7 +822,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets connection_type
      *
-     * @param string $connection_type How the visitor connected. Known values: - `direct`: a regular connection; - `mobile`: a mobile carrier network; - `vpn`: a VPN; - `proxy`: a proxy, datacenter or hosting network (search-engine crawlers are reported here too); - `tor`: the Tor network; - `privacy_relay`: a privacy relay such as iCloud Private Relay; - `browser_vpn_proxy`: a VPN or proxy built into the browser or one of its extensions; - `unknown`: not enough data.  The value can say `vpn` while `detection_flags.vpn` is `false` (IP intelligence classified the network, but the scored VPN check did not fire). Branch on `detection_flags` for decisions. The set is open: keep values added in later versions and treat them as `unknown`.
+     * @param string $connection_type How the visitor connected. Known values: - `direct`: a regular connection; - `mobile`: a mobile carrier network; - `vpn`: a VPN; - `proxy`: a proxy, datacenter or hosting network (search-engine crawlers are reported here too); - `tor`: the Tor network; - `private_relay`: a privacy relay such as iCloud Private Relay. Older visits may say `privacy_relay`; - `browser_vpn_proxy`: a VPN or proxy built into the browser or one of its extensions; - `unknown`: not enough data.  The value can say `vpn` while `detection_flags.vpn` is `false` (IP intelligence classified the network, but the scored VPN check did not fire). Branch on `detection_flags` for decisions. The set is open: keep values added in later versions and treat them as `unknown`.
      *
      * @return self
      */
@@ -870,7 +957,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets risk_score
      *
-     * @param int $risk_score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"rate_limited\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; request IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
+     * @param int $risk_score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"rate_limited\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; Identification IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
      *
      * @return self
      */
@@ -919,7 +1006,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Gets detection_flags
      *
-     * @return \ShieldLabs\Generated\Model\DetectionFlags
+     * @return \ShieldLabs\Generated\Model\IdentificationScoredDataDetectionFlags
      */
     public function getDetectionFlags()
     {
@@ -929,7 +1016,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets detection_flags
      *
-     * @param \ShieldLabs\Generated\Model\DetectionFlags $detection_flags detection_flags
+     * @param \ShieldLabs\Generated\Model\IdentificationScoredDataDetectionFlags $detection_flags detection_flags
      *
      * @return self
      */
@@ -956,7 +1043,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets observed_at
      *
-     * @param \DateTime $observed_at When scoring finished and the event was built (not the page view time); identical to the envelope `created_at`. RFC 3339 in UTC with up to 9 fractional digits.
+     * @param \DateTime $observed_at Original snapshot scan clock, distinct from envelope created_at. RFC 3339 in UTC with up to 9 fractional digits.
      *
      * @return self
      */
@@ -971,6 +1058,206 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
         }
 
         $this->container['observed_at'] = $observed_at;
+
+        return $this;
+    }
+
+    /**
+     * Gets result_version
+     *
+     * @return string|null
+     * @deprecated
+     */
+    public function getResultVersion()
+    {
+        return $this->container['result_version'];
+    }
+
+    /**
+     * Sets result_version
+     *
+     * @param string|null $result_version Legacy through 2026-10-08 only; omitted by current emitters.
+     *
+     * @return self
+     * @deprecated
+     */
+    public function setResultVersion($result_version)
+    {
+        if (is_null($result_version)) {
+            throw new \InvalidArgumentException('non-nullable result_version cannot be null');
+        }
+
+        if ((mb_strlen($result_version) < 1)) {
+            throw new \InvalidArgumentException('invalid length for $result_version when calling IdentificationScoredData., must be bigger than or equal to 1.');
+        }
+
+        $this->container['result_version'] = $result_version;
+
+        return $this;
+    }
+
+    /**
+     * Gets scoring_version
+     *
+     * @return string|null
+     * @deprecated
+     */
+    public function getScoringVersion()
+    {
+        return $this->container['scoring_version'];
+    }
+
+    /**
+     * Sets scoring_version
+     *
+     * @param string|null $scoring_version Legacy through 2026-10-08 only; omitted by current emitters.
+     *
+     * @return self
+     * @deprecated
+     */
+    public function setScoringVersion($scoring_version)
+    {
+        if (is_null($scoring_version)) {
+            throw new \InvalidArgumentException('non-nullable scoring_version cannot be null');
+        }
+        $this->container['scoring_version'] = $scoring_version;
+
+        return $this;
+    }
+
+    /**
+     * Gets risk_events
+     *
+     * @return \ShieldLabs\Generated\Model\RiskEvent[]|null
+     * @deprecated
+     */
+    public function getRiskEvents()
+    {
+        return $this->container['risk_events'];
+    }
+
+    /**
+     * Sets risk_events
+     *
+     * @param \ShieldLabs\Generated\Model\RiskEvent[]|null $risk_events Legacy 2026-10-06 only; absent from current scored events.
+     *
+     * @return self
+     * @deprecated
+     */
+    public function setRiskEvents($risk_events)
+    {
+        if (is_null($risk_events)) {
+            throw new \InvalidArgumentException('non-nullable risk_events cannot be null');
+        }
+        $this->container['risk_events'] = $risk_events;
+
+        return $this;
+    }
+
+    /**
+     * Gets hre
+     *
+     * @return \ShieldLabs\Generated\Model\HRE|null
+     */
+    public function getHre()
+    {
+        return $this->container['hre'];
+    }
+
+    /**
+     * Sets hre
+     *
+     * @param \ShieldLabs\Generated\Model\HRE|null $hre hre
+     *
+     * @return self
+     */
+    public function setHre($hre)
+    {
+        if (is_null($hre)) {
+            throw new \InvalidArgumentException('non-nullable hre cannot be null');
+        }
+        $this->container['hre'] = $hre;
+
+        return $this;
+    }
+
+    /**
+     * Gets search_bot_owner
+     *
+     * @return string|null
+     */
+    public function getSearchBotOwner()
+    {
+        return $this->container['search_bot_owner'];
+    }
+
+    /**
+     * Sets search_bot_owner
+     *
+     * @param string|null $search_bot_owner Owner label from accepted search-bot detection; omitted when unknown or inactive.
+     *
+     * @return self
+     */
+    public function setSearchBotOwner($search_bot_owner)
+    {
+        if (is_null($search_bot_owner)) {
+            throw new \InvalidArgumentException('non-nullable search_bot_owner cannot be null');
+        }
+        $this->container['search_bot_owner'] = $search_bot_owner;
+
+        return $this;
+    }
+
+    /**
+     * Gets ai_bot_owner
+     *
+     * @return string|null
+     */
+    public function getAiBotOwner()
+    {
+        return $this->container['ai_bot_owner'];
+    }
+
+    /**
+     * Sets ai_bot_owner
+     *
+     * @param string|null $ai_bot_owner Provider company label from accepted AI-bot detection; omitted when unknown or inactive.
+     *
+     * @return self
+     */
+    public function setAiBotOwner($ai_bot_owner)
+    {
+        if (is_null($ai_bot_owner)) {
+            throw new \InvalidArgumentException('non-nullable ai_bot_owner cannot be null');
+        }
+        $this->container['ai_bot_owner'] = $ai_bot_owner;
+
+        return $this;
+    }
+
+    /**
+     * Gets ai_browser_owner
+     *
+     * @return string|null
+     */
+    public function getAiBrowserOwner()
+    {
+        return $this->container['ai_browser_owner'];
+    }
+
+    /**
+     * Sets ai_browser_owner
+     *
+     * @param string|null $ai_browser_owner Owner label from accepted AI-browser detection; omitted when unknown or inactive.
+     *
+     * @return self
+     */
+    public function setAiBrowserOwner($ai_browser_owner)
+    {
+        if (is_null($ai_browser_owner)) {
+            throw new \InvalidArgumentException('non-nullable ai_browser_owner cannot be null');
+        }
+        $this->container['ai_browser_owner'] = $ai_browser_owner;
 
         return $this;
     }

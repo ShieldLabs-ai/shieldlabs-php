@@ -52,7 +52,7 @@ final class IdentificationsGetTest extends TestCase
 
         self::assertSame(self::REQUEST_ID, $identification?->identification_id);
         self::assertSame(
-            'https://account.shieldlabs.ai/api/v1/history/identification_id/' . self::REQUEST_ID . '?limit=1&offset=0',
+            'https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/identifications/' . self::REQUEST_ID . '?limit=1',
             (string) $http->lastRequest()->getUri(),
         );
         self::assertSame([], $clock->sleeps);
@@ -88,7 +88,7 @@ final class IdentificationsGetTest extends TestCase
 
         Clients::history($http)->identifications->get(strtoupper(self::REQUEST_ID));
 
-        self::assertStringContainsString('/identification_id/' . self::REQUEST_ID . '?', (string) $http->lastRequest()->getUri());
+        self::assertStringContainsString('/history/identifications/' . self::REQUEST_ID . '?', (string) $http->lastRequest()->getUri());
     }
 
     public function testPollsWithTheBackoffScheduleUntilTheRowAppears(): void
