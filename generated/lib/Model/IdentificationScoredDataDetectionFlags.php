@@ -69,7 +69,6 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
         'latency_test' => 'bool',
         'ws_tcp_latency' => 'bool',
         'banned_ip' => 'bool',
-        'rate_limited' => 'bool',
         'check_incomplete' => 'bool',
         'os_not_detected' => 'bool',
         'timezone_mismatch' => 'bool',
@@ -107,7 +106,6 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
         'latency_test' => null,
         'ws_tcp_latency' => null,
         'banned_ip' => null,
-        'rate_limited' => null,
         'check_incomplete' => null,
         'os_not_detected' => null,
         'timezone_mismatch' => null,
@@ -143,7 +141,6 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
         'latency_test' => false,
         'ws_tcp_latency' => false,
         'banned_ip' => false,
-        'rate_limited' => false,
         'check_incomplete' => false,
         'os_not_detected' => false,
         'timezone_mismatch' => false,
@@ -259,7 +256,6 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
         'latency_test' => 'latency_test',
         'ws_tcp_latency' => 'ws_tcp_latency',
         'banned_ip' => 'banned_ip',
-        'rate_limited' => 'rate_limited',
         'check_incomplete' => 'check_incomplete',
         'os_not_detected' => 'os_not_detected',
         'timezone_mismatch' => 'timezone_mismatch',
@@ -295,7 +291,6 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
         'latency_test' => 'setLatencyTest',
         'ws_tcp_latency' => 'setWsTcpLatency',
         'banned_ip' => 'setBannedIp',
-        'rate_limited' => 'setRateLimited',
         'check_incomplete' => 'setCheckIncomplete',
         'os_not_detected' => 'setOsNotDetected',
         'timezone_mismatch' => 'setTimezoneMismatch',
@@ -331,7 +326,6 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
         'latency_test' => 'getLatencyTest',
         'ws_tcp_latency' => 'getWsTcpLatency',
         'banned_ip' => 'getBannedIp',
-        'rate_limited' => 'getRateLimited',
         'check_incomplete' => 'getCheckIncomplete',
         'os_not_detected' => 'getOsNotDetected',
         'timezone_mismatch' => 'getTimezoneMismatch',
@@ -418,7 +412,7 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
         $this->setIfExists('latency_test', $data ?? [], null);
         $this->setIfExists('ws_tcp_latency', $data ?? [], null);
         $this->setIfExists('banned_ip', $data ?? [], null);
-        $this->setIfExists('rate_limited', $data ?? [], null);
+        $this->setIfExists('banned_ip', $data ?? [], null);
         $this->setIfExists('check_incomplete', $data ?? [], null);
         $this->setIfExists('os_not_detected', $data ?? [], null);
         $this->setIfExists('timezone_mismatch', $data ?? [], null);
@@ -751,28 +745,28 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
     }
 
     /**
-     * Gets rate_limited
+     * Gets banned_ip
      *
      * @return bool|null
      */
     public function getRateLimited()
     {
-        return $this->container['rate_limited'];
+        return $this->container['banned_ip'];
     }
 
     /**
-     * Sets rate_limited
+     * Sets banned_ip
      *
-     * @param bool|null $rate_limited rate_limited
+     * @param bool|null $banned_ip banned_ip
      *
      * @return self
      */
-    public function setRateLimited($rate_limited)
+    public function setRateLimited($banned_ip)
     {
-        if (is_null($rate_limited)) {
-            throw new \InvalidArgumentException('non-nullable rate_limited cannot be null');
+        if (is_null($banned_ip)) {
+            throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');
         }
-        $this->container['rate_limited'] = $rate_limited;
+        $this->container['banned_ip'] = $banned_ip;
 
         return $this;
     }

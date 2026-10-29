@@ -20,7 +20,7 @@ final class Normalizer
     public const FLAG_KEYS = [
         'vpn', 'proxy', 'private_relay', 'check_incomplete', 'network_check_incomplete', 'os_not_detected',
         'timezone_mismatch', 'javascript_disabled', 'os_mismatch', 'ip_mismatch', 'latency_test',
-        'anti_detect_browser', 'device_spoofing', 'rate_limited', 'incognito', 'search_bot', 'ai_bot',
+        'anti_detect_browser', 'device_spoofing', 'banned_ip', 'incognito', 'search_bot', 'ai_bot',
         'browser_automation', 'ai_browser', 'tor',
     ];
 
@@ -41,7 +41,6 @@ final class Normalizer
         'latency_test' => 'is_latency_test',
         'anti_detect_browser' => 'is_antidetect',
         'device_spoofing' => 'is_device_spoof',
-        'rate_limited' => 'is_rate_limited',
         'banned_ip' => 'is_rate_limited',
         'incognito' => 'is_incognito',
         'search_bot' => 'is_search_bot',
@@ -66,7 +65,7 @@ final class Normalizer
         'Browser VPN/Proxy' => 'vpn',
         'Browser Automation' => 'browser_automation',
         'Port scan routed via proxy (antidetect browser pattern)' => 'proxy_routed_antidetect',
-        'User has been banned 1H, to many requests' => 'rate_limited',
+        'User has been banned 1H, to many requests' => 'banned_ip',
     ];
 
     private const PREFIX_SLUGS = [
@@ -301,7 +300,6 @@ final class Normalizer
             'private_relay' => 'privacy_relay',
             'network_check_incomplete' => 'stun_not_checked',
             'latency_test' => 'ws_tcp_latency',
-            'rate_limited' => 'banned_ip',
         ];
         foreach (self::FLAG_KEYS as $key) {
             $legacy = $legacyFlags[$key] ?? '';

@@ -16,7 +16,7 @@ enum EvaluationReason: string
     /** The identification is older than the freshness window (max_age). */
     case Stale = 'stale';
     /** The score is the rate-limit marker (above 100). */
-    case RateLimited = 'rate_limited';
+    case RateLimited = 'banned_ip';
     /** The device ID is the all-zero UUID: no usable device signals. */
     case NoDeviceSignals = 'no_device_signals';
     /** One of the blocking detection flags is set. */

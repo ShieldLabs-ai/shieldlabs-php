@@ -185,7 +185,7 @@ Branch on the score, the band and the flags. Signal names are an open set and we
 | 1 | No identification | `missing` |
 | 2 | `is_replay($identificationId)` returns true (the SDK stores nothing itself) | `replayed` |
 | 3 | Older than `max_age` seconds, by `observed_at` | `stale` |
-| 4 | Score above 100 | `rate_limited` |
+| 4 | Score above 100 | `banned_ip` |
 | 5 | Device ID is the all-zero UUID (no usable device signals) | `no_device_signals` |
 | 6 | A flag from `block_flags` is set | `blocked_flag` (the flag is in `$evaluation->flag`) |
 | 7 | The band is in `block_bands` | `blocked_band` |

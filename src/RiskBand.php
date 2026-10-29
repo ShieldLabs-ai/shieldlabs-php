@@ -14,7 +14,7 @@ enum RiskBand: string
     case Trusted = 'trusted';
     case Suspicious = 'suspicious';
     case Dangerous = 'dangerous';
-    case RateLimited = 'rate_limited';
+    case RateLimited = 'banned_ip';
 
     public static function fromScore(int $score): self
     {

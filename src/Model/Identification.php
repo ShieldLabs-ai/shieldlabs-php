@@ -90,7 +90,7 @@ final class Identification implements \JsonSerializable
             $normalized['observed_at'] = Normalizer::parseRfc3339($row['created_at'] ?? null) ?? Normalizer::parseHistoryTime($row['created_at'] ?? null);
             $signals = $row['signals'] ?? null;
             $names = \is_array($signals) && ($signals['state'] ?? null) === 'ok' && \is_array($signals['items'] ?? null) ? $signals['items'] : [];
-            $aliases = ['rate_limited' => 'banned_ip', 'private_relay' => 'privacy_relay', 'network_check_incomplete' => 'stun_not_checked', 'latency_test' => 'ws_tcp_latency'];
+            $aliases = ['private_relay' => 'privacy_relay', 'network_check_incomplete' => 'stun_not_checked', 'latency_test' => 'ws_tcp_latency'];
             foreach ($normalized['detection_flags'] as $key => $value) {
                 $normalized['detection_flags'][$key] = \in_array($key, $names, true) || \in_array($aliases[$key] ?? $key, $names, true);
             }

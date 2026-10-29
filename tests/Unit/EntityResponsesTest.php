@@ -20,7 +20,7 @@ final class EntityResponsesTest extends TestCase
         return ['type' => 'identification', 'id' => self::ID,
             'created_at' => '2026-10-29T09:00:00.123Z',
             'risk' => ['state' => 'ok', 'score' => 30, 'band' => 'suspicious'],
-            'signals' => ['state' => 'ok', 'items' => ['vpn', 'rate_limited']],
+            'signals' => ['state' => 'ok', 'items' => ['vpn', 'banned_ip']],
             'public_ip' => '203.0.113.24', 'traffic' => ['channel' => 'paid', 'utm_source' => 'google']];
     }
 
@@ -38,7 +38,7 @@ final class EntityResponsesTest extends TestCase
             self::assertSame('203.0.113.24', $result->public_ip->ip);
             self::assertSame('google', $result->traffic_source->utm_source);
             self::assertTrue($result->detection_flags->vpn);
-            self::assertTrue($result->detection_flags->rate_limited);
+            self::assertTrue($result->detection_flags->banned_ip);
             self::assertSame([], $result->signals);
             self::assertSame($card, $result->raw);
         }
