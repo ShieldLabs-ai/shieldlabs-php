@@ -18,6 +18,7 @@ final class HistoryPage implements \IteratorAggregate, \Countable
     public function __construct(
         public readonly array $data,
         public readonly int $total,
+        public readonly ?string $next_page_token = null,
     ) {}
 
     /**
@@ -28,6 +29,9 @@ final class HistoryPage implements \IteratorAggregate, \Countable
     public static function fromArray(array $body): self
     {
         $rows = $body['data'] ?? null;
+        if (\is_array($rows) && \is_string($rows['type'] ?? null)) {
+            $rows = [$rows];
+        }
         $data = [];
         if (\is_array($rows)) {
             foreach ($rows as $row) {
@@ -41,7 +45,9 @@ final class HistoryPage implements \IteratorAggregate, \Countable
             $total = (int) $total;
         }
 
-        return new self($data, \is_int($total) ? $total : \count($data));
+        $token = $body['next_page_token'] ?? null;
+
+        return new self($data, \is_int($total) ? $total : \count($data), \is_string($token) ? $token : null);
     }
 
     /**

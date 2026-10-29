@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ShieldLabs\Model;
 
+use ShieldLabs\Exception\ApiException;
 use ShieldLabs\Internal\Normalizer;
 use ShieldLabs\Internal\Time;
 use ShieldLabs\RiskBand;
@@ -66,6 +67,37 @@ final class Identification implements \JsonSerializable
      */
     public static function fromHistoryRow(array $row): self
     {
+        if (\is_string($row['type'] ?? null)) {
+            $risk = \is_array($row['risk'] ?? null) ? $row['risk'] : [];
+            $score = $risk['score'] ?? null;
+            if (($risk['state'] ?? null) !== 'ok' || !\is_int($score) || $score < 0 || $score > 100) {
+                throw new ApiException('Risk Score is unavailable or invalid in this entity card; entity lists preserve its availability state.', 200, $row);
+            }
+            $legacy = $row;
+            $legacy['identification_id'] = $row['id'] ?? null;
+            $legacy['score'] = $score;
+            $legacy['ip'] = $row['public_ip'] ?? null;
+            $legacy['web_rtc_ip'] = $row['local_ip'] ?? null;
+            $legacy['web_rtc_country'] = $row['local_country'] ?? null;
+            $traffic = $row['traffic'] ?? null;
+            if (\is_array($traffic)) {
+                foreach (['referrer_domain', 'entry_url', 'click_id_type', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as $key) {
+                    $legacy[$key] = $traffic[$key] ?? null;
+                }
+                $legacy['traffic_channel'] = $traffic['channel'] ?? null;
+            }
+            $normalized = Normalizer::fromHistoryRow($legacy);
+            $normalized['observed_at'] = Normalizer::parseRfc3339($row['created_at'] ?? null) ?? Normalizer::parseHistoryTime($row['created_at'] ?? null);
+            $signals = $row['signals'] ?? null;
+            $names = \is_array($signals) && ($signals['state'] ?? null) === 'ok' && \is_array($signals['items'] ?? null) ? $signals['items'] : [];
+            $aliases = ['rate_limited' => 'banned_ip', 'private_relay' => 'privacy_relay', 'network_check_incomplete' => 'stun_not_checked', 'latency_test' => 'ws_tcp_latency'];
+            foreach ($normalized['detection_flags'] as $key => $value) {
+                $normalized['detection_flags'][$key] = \in_array($key, $names, true) || \in_array($aliases[$key] ?? $key, $names, true);
+            }
+
+            return self::fromNormalized($normalized, $row);
+        }
+
         return self::fromNormalized(Normalizer::fromHistoryRow($row), $row);
     }
 

@@ -11,6 +11,7 @@ use ShieldLabs\Internal\Options;
 use ShieldLabs\Internal\Transport;
 use ShieldLabs\Internal\Validate;
 use ShieldLabs\LookupType;
+use ShieldLabs\Model\EntityPage;
 use ShieldLabs\Model\HistoryPage;
 use ShieldLabs\Model\Identification;
 
@@ -60,7 +61,7 @@ final class History
      *
      * @param array{limit?: int, query?: array<string, int|string|array<int, string>>} $options
      */
-    public function list(string $resource, array $options = []): HistoryPage
+    public function list(string $resource, array $options = []): EntityPage
     {
         Options::assertKnown($options, ['limit', 'query'], 'history->list()');
         if ($resource !== 'identifications' && $resource !== 'user') {
@@ -72,7 +73,7 @@ final class History
             throw new ApiException('The History API returned an unexpected response body.', 200, $body);
         }
 
-        return HistoryPage::fromArray($body);
+        return EntityPage::fromArray($body);
     }
 
     /**
