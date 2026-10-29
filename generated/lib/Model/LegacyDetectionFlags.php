@@ -412,7 +412,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
         $this->setIfExists('latency_test', $data ?? [], null);
         $this->setIfExists('ws_tcp_latency', $data ?? [], null);
         $this->setIfExists('banned_ip', $data ?? [], null);
-        $this->setIfExists('banned_ip', $data ?? [], null);
         $this->setIfExists('ai_bot', $data ?? [], null);
         $this->setIfExists('ai_browser', $data ?? [], null);
         $this->setIfExists('os_mismatch2', $data ?? [], null);
@@ -1096,33 +1095,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
      * @return self
      */
     public function setBannedIp($banned_ip)
-    {
-        if (is_null($banned_ip)) {
-            throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');
-        }
-        $this->container['banned_ip'] = $banned_ip;
-
-        return $this;
-    }
-
-    /**
-     * Gets banned_ip
-     *
-     * @return bool|null
-     */
-    public function getRateLimited()
-    {
-        return $this->container['banned_ip'];
-    }
-
-    /**
-     * Sets banned_ip
-     *
-     * @param bool|null $banned_ip Previous public name of the banned-IP flag. Current 2026-10-13 payloads use banned_ip.
-     *
-     * @return self
-     */
-    public function setRateLimited($banned_ip)
     {
         if (is_null($banned_ip)) {
             throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');

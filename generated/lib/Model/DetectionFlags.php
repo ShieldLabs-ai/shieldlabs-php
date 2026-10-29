@@ -266,7 +266,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'latency_test' => 'setLatencyTest',
         'anti_detect_browser' => 'setAntiDetectBrowser',
         'device_spoofing' => 'setDeviceSpoofing',
-        'banned_ip' => 'setRateLimited',
+        'banned_ip' => 'setBannedIp',
         'incognito' => 'setIncognito',
         'search_bot' => 'setSearchBot',
         'ai_bot' => 'setAiBot',
@@ -294,7 +294,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'latency_test' => 'getLatencyTest',
         'anti_detect_browser' => 'getAntiDetectBrowser',
         'device_spoofing' => 'getDeviceSpoofing',
-        'banned_ip' => 'getRateLimited',
+        'banned_ip' => 'getBannedIp',
         'incognito' => 'getIncognito',
         'search_bot' => 'getSearchBot',
         'ai_bot' => 'getAiBot',
@@ -840,7 +840,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return bool
      */
-    public function getRateLimited()
+    public function getBannedIp()
     {
         return $this->container['banned_ip'];
     }
@@ -852,7 +852,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return self
      */
-    public function setRateLimited($banned_ip)
+    public function setBannedIp($banned_ip)
     {
         if (is_null($banned_ip)) {
             throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');

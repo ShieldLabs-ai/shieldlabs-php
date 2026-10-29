@@ -412,7 +412,6 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
         $this->setIfExists('latency_test', $data ?? [], null);
         $this->setIfExists('ws_tcp_latency', $data ?? [], null);
         $this->setIfExists('banned_ip', $data ?? [], null);
-        $this->setIfExists('banned_ip', $data ?? [], null);
         $this->setIfExists('check_incomplete', $data ?? [], null);
         $this->setIfExists('os_not_detected', $data ?? [], null);
         $this->setIfExists('timezone_mismatch', $data ?? [], null);
@@ -735,33 +734,6 @@ class IdentificationScoredDataDetectionFlags implements ModelInterface, ArrayAcc
      * @return self
      */
     public function setBannedIp($banned_ip)
-    {
-        if (is_null($banned_ip)) {
-            throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');
-        }
-        $this->container['banned_ip'] = $banned_ip;
-
-        return $this;
-    }
-
-    /**
-     * Gets banned_ip
-     *
-     * @return bool|null
-     */
-    public function getRateLimited()
-    {
-        return $this->container['banned_ip'];
-    }
-
-    /**
-     * Sets banned_ip
-     *
-     * @param bool|null $banned_ip banned_ip
-     *
-     * @return self
-     */
-    public function setRateLimited($banned_ip)
     {
         if (is_null($banned_ip)) {
             throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');

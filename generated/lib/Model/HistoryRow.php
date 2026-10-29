@@ -460,7 +460,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'setIpMismatch',
         'latency_test' => 'setLatencyTest',
         'device_spoofing' => 'setDeviceSpoofing',
-        'banned_ip' => 'setRateLimited',
+        'banned_ip' => 'setBannedIp',
         'ai_bot' => 'setAiBot',
         'ai_browser' => 'setAiBrowser'
     ];
@@ -526,7 +526,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'getIpMismatch',
         'latency_test' => 'getLatencyTest',
         'device_spoofing' => 'getDeviceSpoofing',
-        'banned_ip' => 'getRateLimited',
+        'banned_ip' => 'getBannedIp',
         'ai_bot' => 'getAiBot',
         'ai_browser' => 'getAiBrowser'
     ];
@@ -2309,7 +2309,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return bool
      */
-    public function getRateLimited()
+    public function getBannedIp()
     {
         return $this->container['banned_ip'];
     }
@@ -2321,7 +2321,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return self
      */
-    public function setRateLimited($banned_ip)
+    public function setBannedIp($banned_ip)
     {
         if (is_null($banned_ip)) {
             throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');
