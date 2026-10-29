@@ -27,7 +27,7 @@ final class HistorySearchTest extends TestCase
         $request = $http->lastRequest();
         self::assertSame('GET', $request->getMethod());
         self::assertSame(
-            'https://account.shieldlabs.ai/api/v1/history/device_id/ac7c303d-971b-41d1-8e25-cd5b46b46aed?limit=50&offset=0',
+            'https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/device/ac7c303d-971b-41d1-8e25-cd5b46b46aed?limit=50',
             (string) $request->getUri(),
         );
         self::assertSame('Bearer ' . Clients::API_KEY, $request->getHeaderLine('Authorization'));
@@ -42,19 +42,15 @@ final class HistorySearchTest extends TestCase
 
         Clients::history($http)->history->search('ip', '203.0.113.24');
 
-        self::assertSame('https://account.shieldlabs.ai/api/v1/history/ip/203.0.113.24?limit=20&offset=0', (string) $http->lastRequest()->getUri());
+        self::assertSame('https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/203.0.113.24?limit=20', (string) $http->lastRequest()->getUri());
     }
 
     public function testEscapesTheUserHidAsOnePathSegment(): void
     {
         $http = (new MockHttpClient())->always(MockHttpClient::emptyPage());
 
+        $this->expectException(ValidationException::class);
         Clients::history($http)->history->search(LookupType::UserHid, 'Team A:42 ✓?', ['limit' => 100, 'offset' => 200]);
-
-        self::assertSame(
-            'https://account.shieldlabs.ai/api/v1/history/user_hid/Team%20A:42%20%E2%9C%93%3F?limit=100&offset=200',
-            (string) $http->lastRequest()->getUri(),
-        );
     }
 
     /**
@@ -90,7 +86,7 @@ final class HistorySearchTest extends TestCase
 
         self::assertCount(2, $http->requests);
         foreach ($http->requests as $request) {
-            self::assertSame('/api/v1/history/user_hid/' . $segment, $request->getUri()->getPath());
+            self::assertSame('/api/v1/domains/11111111-1111-4111-8111-111111111111/history/user/' . $segment, $request->getUri()->getPath());
         }
     }
 
@@ -115,7 +111,7 @@ final class HistorySearchTest extends TestCase
 
         Clients::history($http)->history->search(LookupType::UserHid, $userHid);
 
-        self::assertSame('/api/v1/history/user_hid/' . $expected, $http->lastRequest()->getUri()->getPath());
+        self::assertSame('/api/v1/domains/11111111-1111-4111-8111-111111111111/history/user/' . $expected, $http->lastRequest()->getUri()->getPath());
         self::assertSame(\strlen($plain) + 3 * (255 - \strlen($plain)), \strlen($expected));
     }
 
@@ -125,7 +121,7 @@ final class HistorySearchTest extends TestCase
 
         Clients::history($http)->history->search(LookupType::UserHid, 'anonymous');
 
-        self::assertStringContainsString('/user_hid/anonymous?', (string) $http->lastRequest()->getUri());
+        self::assertStringContainsString('/history/user/anonymous?', (string) $http->lastRequest()->getUri());
     }
 
     public function testAcceptsTheNilUuidAndAnyVersion(): void
@@ -134,10 +130,14 @@ final class HistorySearchTest extends TestCase
         $client = Clients::history($http);
 
         $client->history->search(LookupType::VisitorId, '00000000-0000-0000-0000-000000000000');
-        $client->history->search(LookupType::SessionId, 'bde0e249-20d8-5544-838c-ed9a0b6d7a36');
-        $client->history->search(LookupType::CookieId, '4449bb58-590c-144c-ae1f-d1ddc768dbdd');
+        $client->history->search(LookupType::VisitorId, 'bde0e249-20d8-5544-838c-ed9a0b6d7a36');
+        try {
+            $client->history->search(LookupType::SessionId, '4449bb58-590c-144c-ae1f-d1ddc768dbdd');
+            $this->fail('session_id is not a History resource');
+        } catch (ValidationException) {
+        }
 
-        self::assertCount(3, $http->requests);
+        self::assertCount(2, $http->requests);
     }
 
     /**
@@ -191,19 +191,19 @@ final class HistorySearchTest extends TestCase
      */
     public static function baseUrls(): iterable
     {
-        yield 'origin' => ['https://account.shieldlabs.ai', 'https://account.shieldlabs.ai/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'trailing slash' => ['https://account.shieldlabs.ai/', 'https://account.shieldlabs.ai/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'api suffix' => ['https://account.shieldlabs.ai/api', 'https://account.shieldlabs.ai/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'api suffix with slash' => ['https://dev.account.shieldlabs.ai/api/', 'https://dev.account.shieldlabs.ai/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'path prefix' => ['https://proxy.example.com/shieldlabs/api', 'https://proxy.example.com/shieldlabs/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'host named api' => ['https://api', 'https://api/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'local port' => ['http://127.0.0.1:8080', 'http://127.0.0.1:8080/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'other loopback address' => ['http://127.0.0.2/api', 'http://127.0.0.2/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'localhost' => ['http://localhost:8080/', 'http://localhost:8080/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'subdomain of localhost' => ['http://mock.localhost', 'http://mock.localhost/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'IPv6 loopback' => ['http://[::1]:8080/api', 'http://[::1]:8080/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'IPv6 loopback, long form' => ['http://[0:0:0:0:0:0:0:1]', 'http://[0:0:0:0:0:0:0:1]/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
-        yield 'uppercase scheme' => ['HTTPS://account.shieldlabs.ai', 'https://account.shieldlabs.ai/api/v1/history/ip/192.0.2.1?limit=20&offset=0'];
+        yield 'origin' => ['https://account.shieldlabs.ai', 'https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'trailing slash' => ['https://account.shieldlabs.ai/', 'https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'api suffix' => ['https://account.shieldlabs.ai/api', 'https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'api suffix with slash' => ['https://dev.account.shieldlabs.ai/api/', 'https://dev.account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'path prefix' => ['https://proxy.example.com/shieldlabs/api', 'https://proxy.example.com/shieldlabs/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'host named api' => ['https://api', 'https://api/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'local port' => ['http://127.0.0.1:8080', 'http://127.0.0.1:8080/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'other loopback address' => ['http://127.0.0.2/api', 'http://127.0.0.2/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'localhost' => ['http://localhost:8080/', 'http://localhost:8080/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'subdomain of localhost' => ['http://mock.localhost', 'http://mock.localhost/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'IPv6 loopback' => ['http://[::1]:8080/api', 'http://[::1]:8080/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'IPv6 loopback, long form' => ['http://[0:0:0:0:0:0:0:1]', 'http://[0:0:0:0:0:0:0:1]/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
+        yield 'uppercase scheme' => ['HTTPS://account.shieldlabs.ai', 'https://account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20'];
     }
 
     #[DataProvider('baseUrls')]
@@ -270,7 +270,7 @@ final class HistorySearchTest extends TestCase
             Clients::history($http, null, $options)->history->search(LookupType::Ip, '192.0.2.1');
         });
 
-        self::assertSame('http://shieldlabs-mock:8080/api/v1/history/ip/192.0.2.1?limit=20&offset=0', (string) $http->lastRequest()->getUri());
+        self::assertSame('http://shieldlabs-mock:8080/api/v1/domains/11111111-1111-4111-8111-111111111111/history/ip/192.0.2.1?limit=20', (string) $http->lastRequest()->getUri());
         self::assertCount(1, $log->warnings(), 'warned once');
         self::assertStringContainsString('uses plain http', $log->warnings()[0]);
         self::assertStringNotContainsString(Clients::API_KEY, $log->contents);
@@ -294,7 +294,7 @@ final class HistorySearchTest extends TestCase
         try {
             $http = (new MockHttpClient())->always(MockHttpClient::emptyPage());
             Clients::history($http)->history->search(LookupType::Ip, '192.0.2.1');
-            self::assertStringStartsWith('https://dev.account.shieldlabs.ai/api/v1/history/', (string) $http->lastRequest()->getUri());
+            self::assertStringStartsWith('https://dev.account.shieldlabs.ai/api/v1/domains/11111111-1111-4111-8111-111111111111/history/', (string) $http->lastRequest()->getUri());
         } finally {
             putenv('SHIELDLABS_API_BASE_URL');
         }
@@ -306,7 +306,7 @@ final class HistorySearchTest extends TestCase
         try {
             $http = (new MockHttpClient())->always(MockHttpClient::emptyPage());
             Clients::history($http, null, ['base_url' => 'http://127.0.0.1:9'])->history->search(LookupType::Ip, '192.0.2.1');
-            self::assertStringStartsWith('http://127.0.0.1:9/api/v1/history/', (string) $http->lastRequest()->getUri());
+            self::assertStringStartsWith('http://127.0.0.1:9/api/v1/domains/11111111-1111-4111-8111-111111111111/history/', (string) $http->lastRequest()->getUri());
         } finally {
             putenv('SHIELDLABS_API_BASE_URL');
         }

@@ -75,7 +75,13 @@ class HistoryAPIApi
 
     /** @var string[] $contentTypes **/
     public const contentTypes = [
-        'searchHistory' => [
+        'getHistoryEntity' => [
+            'application/json',
+        ],
+        'listDomains' => [
+            'application/json',
+        ],
+        'listHistoryEntities' => [
             'application/json',
         ],
     ];
@@ -127,56 +133,124 @@ class HistoryAPIApi
     }
 
     /**
-     * Operation searchHistory
+     * Operation getHistoryEntity
      *
-     * Search identifications
+     * Read one History entity
      *
      * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
      * if needed, use the 'variables' parameter to pass variables to the host.
      * URL: https://account.shieldlabs.ai
      *
-     * @param  string $search_type Identifier to search by. These values are supported (&#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;): - &#x60;identification_id&#x60;: one identification (read a verdict); - &#x60;device_id&#x60;: every identification of one device; - &#x60;user_hid&#x60;: every identification of one account; - &#x60;visitor_id&#x60;: every identification of one visitor; - &#x60;ip&#x60;: every identification from one public IPv4 address; - &#x60;session_id&#x60;: every identification of one visit; - &#x60;cookie_id&#x60;: every identification with one browser cookie.  The server does not reject other values: it ignores them and returns the latest identifications of the whole domain, so restrict the value on your side. (required)
-     * @param  string $value Value of the identifier, validated on your side before sending: - &#x60;identification_id&#x60;, &#x60;device_id&#x60;, &#x60;visitor_id&#x60;, &#x60;session_id&#x60;, &#x60;cookie_id&#x60;: a UUID of any version,   the nil UUID included, matching   &#x60;^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$&#x60;. Send it   lowercase. - &#x60;ip&#x60;: a dotted IPv4 address. IPv6 addresses cannot be searched. - &#x60;user_hid&#x60;: the exact, case-sensitive User HID as one path segment, encoded the way the   server reads it: send the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and   percent-encode every other byte of the UTF-8 value as uppercase &#x60;%XX&#x60;, including   &#x60;! &#39; ( ) *&#x60;, spaces and &#x60;%&#x60; itself. The server compares any other encoding literally, so   &#x60;%40&#x60; instead of &#x60;@&#x60;, or lowercase hex digits, return an empty page instead of the matching   rows. Many HTTP clients and generated clients escape &#x60;$ &amp; + , : ; &#x3D; @&#x60; in path values: build   this path yourself when yours does. A User HID that contains &#x60;/&#x60; cannot be searched, and most   HTTP clients cannot send &#x60;.&#x60; or &#x60;..&#x60; because they remove them as dot segments; the pattern   rejects these values. Hex-encoded hashes need no escaping at all.  The server does not validate the value: a malformed UUID or IPv4 address gets a &#x60;500&#x60;. (required)
-     * @param  int|null $limit Maximum number of identifications to return, from 1 to 100. The server replaces any other value (and a non-numeric one) with 20 instead of clamping it, so validate it on your side. (optional, default to 20)
-     * @param  int|null $offset Number of identifications to skip, for paging. The server treats negative or non-numeric values as 0. Rows are ordered by &#x60;created_at&#x60; only, so paging while new identifications arrive can repeat or skip rows: deduplicate on &#x60;identification_id&#x60;. (optional, default to 0)
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. A card exists for identifications, user, visitor, device and ip. (required)
+     * @param  string $resource_id Record id. UUID for identifications, visitor and device. User HID text for user. IPv4 for ip. Send a User HID as one path segment: the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and every other byte as uppercase &#x60;%XX&#x60;. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
+     * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
+     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
+     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['searchHistory'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
      *
      * @throws \ShieldLabs\Generated\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \ShieldLabs\Generated\Model\HistoryPage|string|string|\ShieldLabs\Generated\Model\ErrorBody|\ShieldLabs\Generated\Model\ErrorBody|string|string
+     * @return \ShieldLabs\Generated\Model\GetHistoryEntity200Response|string
      */
-    public function searchHistory($search_type, $value, $limit = 20, $offset = 0, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['searchHistory'][0])
+    public function getHistoryEntity($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
     {
-        list($response) = $this->searchHistoryWithHttpInfo($search_type, $value, $limit, $offset, $hostIndex, $variables, $contentType);
+        list($response) = $this->getHistoryEntityWithHttpInfo($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $rate_limited, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $relation, $relation_limit, $relation_page_token, $hostIndex, $variables, $contentType);
         return $response;
     }
 
     /**
-     * Operation searchHistoryWithHttpInfo
+     * Operation getHistoryEntityWithHttpInfo
      *
-     * Search identifications
+     * Read one History entity
      *
      * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
      * if needed, use the 'variables' parameter to pass variables to the host.
      * URL: https://account.shieldlabs.ai
      *
-     * @param  string $search_type Identifier to search by. These values are supported (&#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;): - &#x60;identification_id&#x60;: one identification (read a verdict); - &#x60;device_id&#x60;: every identification of one device; - &#x60;user_hid&#x60;: every identification of one account; - &#x60;visitor_id&#x60;: every identification of one visitor; - &#x60;ip&#x60;: every identification from one public IPv4 address; - &#x60;session_id&#x60;: every identification of one visit; - &#x60;cookie_id&#x60;: every identification with one browser cookie.  The server does not reject other values: it ignores them and returns the latest identifications of the whole domain, so restrict the value on your side. (required)
-     * @param  string $value Value of the identifier, validated on your side before sending: - &#x60;identification_id&#x60;, &#x60;device_id&#x60;, &#x60;visitor_id&#x60;, &#x60;session_id&#x60;, &#x60;cookie_id&#x60;: a UUID of any version,   the nil UUID included, matching   &#x60;^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$&#x60;. Send it   lowercase. - &#x60;ip&#x60;: a dotted IPv4 address. IPv6 addresses cannot be searched. - &#x60;user_hid&#x60;: the exact, case-sensitive User HID as one path segment, encoded the way the   server reads it: send the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and   percent-encode every other byte of the UTF-8 value as uppercase &#x60;%XX&#x60;, including   &#x60;! &#39; ( ) *&#x60;, spaces and &#x60;%&#x60; itself. The server compares any other encoding literally, so   &#x60;%40&#x60; instead of &#x60;@&#x60;, or lowercase hex digits, return an empty page instead of the matching   rows. Many HTTP clients and generated clients escape &#x60;$ &amp; + , : ; &#x3D; @&#x60; in path values: build   this path yourself when yours does. A User HID that contains &#x60;/&#x60; cannot be searched, and most   HTTP clients cannot send &#x60;.&#x60; or &#x60;..&#x60; because they remove them as dot segments; the pattern   rejects these values. Hex-encoded hashes need no escaping at all.  The server does not validate the value: a malformed UUID or IPv4 address gets a &#x60;500&#x60;. (required)
-     * @param  int|null $limit Maximum number of identifications to return, from 1 to 100. The server replaces any other value (and a non-numeric one) with 20 instead of clamping it, so validate it on your side. (optional, default to 20)
-     * @param  int|null $offset Number of identifications to skip, for paging. The server treats negative or non-numeric values as 0. Rows are ordered by &#x60;created_at&#x60; only, so paging while new identifications arrive can repeat or skip rows: deduplicate on &#x60;identification_id&#x60;. (optional, default to 0)
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. A card exists for identifications, user, visitor, device and ip. (required)
+     * @param  string $resource_id Record id. UUID for identifications, visitor and device. User HID text for user. IPv4 for ip. Send a User HID as one path segment: the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and every other byte as uppercase &#x60;%XX&#x60;. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
+     * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
+     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
+     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['searchHistory'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
      *
      * @throws \ShieldLabs\Generated\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \ShieldLabs\Generated\Model\HistoryPage|string|string|\ShieldLabs\Generated\Model\ErrorBody|\ShieldLabs\Generated\Model\ErrorBody|string|string, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \ShieldLabs\Generated\Model\GetHistoryEntity200Response|string, HTTP status code, HTTP response headers (array of strings)
      */
-    public function searchHistoryWithHttpInfo($search_type, $value, $limit = 20, $offset = 0, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['searchHistory'][0])
+    public function getHistoryEntityWithHttpInfo($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
     {
-        $request = $this->searchHistoryRequest($search_type, $value, $limit, $offset, $hostIndex, $variables, $contentType);
+        $request = $this->getHistoryEntityRequest($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $rate_limited, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $relation, $relation_limit, $relation_page_token, $hostIndex, $variables, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -204,7 +278,1312 @@ class HistoryAPIApi
             switch($statusCode) {
                 case 200:
                     return $this->handleResponseWithDataType(
-                        '\ShieldLabs\Generated\Model\HistoryPage',
+                        '\ShieldLabs\Generated\Model\GetHistoryEntity200Response',
+                        $request,
+                        $response,
+                    );
+                case 401:
+                    return $this->handleResponseWithDataType(
+                        'string',
+                        $request,
+                        $response,
+                    );
+            }
+
+            
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\ShieldLabs\Generated\Model\GetHistoryEntity200Response',
+                $request,
+                $response,
+            );
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\ShieldLabs\Generated\Model\GetHistoryEntity200Response',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 401:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        'string',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+            }
+        
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation getHistoryEntityAsync
+     *
+     * Read one History entity
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. A card exists for identifications, user, visitor, device and ip. (required)
+     * @param  string $resource_id Record id. UUID for identifications, visitor and device. User HID text for user. IPv4 for ip. Send a User HID as one path segment: the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and every other byte as uppercase &#x60;%XX&#x60;. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
+     * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
+     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
+     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function getHistoryEntityAsync($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
+    {
+        return $this->getHistoryEntityAsyncWithHttpInfo($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $rate_limited, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $relation, $relation_limit, $relation_page_token, $hostIndex, $variables, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation getHistoryEntityAsyncWithHttpInfo
+     *
+     * Read one History entity
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. A card exists for identifications, user, visitor, device and ip. (required)
+     * @param  string $resource_id Record id. UUID for identifications, visitor and device. User HID text for user. IPv4 for ip. Send a User HID as one path segment: the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and every other byte as uppercase &#x60;%XX&#x60;. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
+     * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
+     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
+     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function getHistoryEntityAsyncWithHttpInfo($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
+    {
+        $returnType = '\ShieldLabs\Generated\Model\GetHistoryEntity200Response';
+        $request = $this->getHistoryEntityRequest($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $rate_limited, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $relation, $relation_limit, $relation_page_token, $hostIndex, $variables, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'getHistoryEntity'
+     *
+    * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+    * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. A card exists for identifications, user, visitor, device and ip. (required)
+     * @param  string $resource_id Record id. UUID for identifications, visitor and device. User HID text for user. IPv4 for ip. Send a User HID as one path segment: the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and every other byte as uppercase &#x60;%XX&#x60;. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
+     * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
+     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
+     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function getHistoryEntityRequest($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
+    {
+
+        // verify the required parameter 'domain_id' is set
+        if ($domain_id === null || (is_array($domain_id) && count($domain_id) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $domain_id when calling getHistoryEntity'
+            );
+        }
+
+        // verify the required parameter 'resource' is set
+        if ($resource === null || (is_array($resource) && count($resource) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $resource when calling getHistoryEntity'
+            );
+        }
+
+        // verify the required parameter 'resource_id' is set
+        if ($resource_id === null || (is_array($resource_id) && count($resource_id) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $resource_id when calling getHistoryEntity'
+            );
+        }
+        if (strlen($resource_id) < 1) {
+            throw new \InvalidArgumentException('invalid length for "$resource_id" when calling HistoryAPIApi.getHistoryEntity, must be bigger than or equal to 1.');
+        }
+        if (!preg_match("/^(?:[^\/.][^\/]*|\\.[^\/.][^\/]*|\\.\\.[^\/]+)$/", $resource_id)) {
+            throw new \InvalidArgumentException("invalid value for \"resource_id\" when calling HistoryAPIApi.getHistoryEntity, must conform to the pattern /^(?:[^\/.][^\/]*|\\.[^\/.][^\/]*|\\.\\.[^\/]+)$/.");
+        }
+        
+        if ($limit !== null && $limit > 100) {
+            throw new \InvalidArgumentException('invalid value for "$limit" when calling HistoryAPIApi.getHistoryEntity, must be smaller than or equal to 100.');
+        }
+        if ($limit !== null && $limit < 1) {
+            throw new \InvalidArgumentException('invalid value for "$limit" when calling HistoryAPIApi.getHistoryEntity, must be bigger than or equal to 1.');
+        }
+        
+
+
+
+
+
+        if ($hre_min_accounts !== null && $hre_min_accounts > 99) {
+            throw new \InvalidArgumentException('invalid value for "$hre_min_accounts" when calling HistoryAPIApi.getHistoryEntity, must be smaller than or equal to 99.');
+        }
+        if ($hre_min_accounts !== null && $hre_min_accounts < 3) {
+            throw new \InvalidArgumentException('invalid value for "$hre_min_accounts" when calling HistoryAPIApi.getHistoryEntity, must be bigger than or equal to 3.');
+        }
+        
+        if ($hre_min_devices !== null && $hre_min_devices > 99) {
+            throw new \InvalidArgumentException('invalid value for "$hre_min_devices" when calling HistoryAPIApi.getHistoryEntity, must be smaller than or equal to 99.');
+        }
+        if ($hre_min_devices !== null && $hre_min_devices < 4) {
+            throw new \InvalidArgumentException('invalid value for "$hre_min_devices" when calling HistoryAPIApi.getHistoryEntity, must be bigger than or equal to 4.');
+        }
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        if ($relation_limit !== null && $relation_limit > 100) {
+            throw new \InvalidArgumentException('invalid value for "$relation_limit" when calling HistoryAPIApi.getHistoryEntity, must be smaller than or equal to 100.');
+        }
+        if ($relation_limit !== null && $relation_limit < 1) {
+            throw new \InvalidArgumentException('invalid value for "$relation_limit" when calling HistoryAPIApi.getHistoryEntity, must be bigger than or equal to 1.');
+        }
+        
+
+
+        $resourcePath = '/api/v1/domains/{domain_id}/history/{resource}/{resource_id}';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $limit,
+            'limit', // param base name
+            'integer', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $page_token,
+            'page_token', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $from,
+            'from', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $to,
+            'to', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $snapshot,
+            'snapshot', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $risk_bands,
+            'risk_bands', // param base name
+            'array', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $hre_min_accounts,
+            'hre_min_accounts', // param base name
+            'integer', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $hre_min_devices,
+            'hre_min_devices', // param base name
+            'integer', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_vpn,
+            'is_vpn', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_tor,
+            'is_tor', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_proxy,
+            'is_proxy', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_privacy_relay,
+            'is_privacy_relay', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $network_check_incomplete,
+            'network_check_incomplete', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $check_incomplete,
+            'check_incomplete', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_antidetect,
+            'is_antidetect', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_os_mismatch,
+            'is_os_mismatch', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_os_not_detected,
+            'is_os_not_detected', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_timezone_mismatch,
+            'is_timezone_mismatch', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_js_disabled,
+            'is_js_disabled', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_browser_automation,
+            'is_browser_automation', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_incognito,
+            'is_incognito', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_search_bot,
+            'is_search_bot', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $ip_mismatch,
+            'ip_mismatch', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $latency_test,
+            'latency_test', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $device_spoofing,
+            'device_spoofing', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $rate_limited,
+            'rate_limited', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $ai_bot,
+            'ai_bot', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $ai_browser,
+            'ai_browser', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $risk_signals,
+            'risk_signals', // param base name
+            'array', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $source,
+            'source', // param base name
+            'array', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $campaign,
+            'campaign', // param base name
+            'array', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $device_id_source,
+            'device_id_source', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $relation,
+            'relation', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $relation_limit,
+            'relation_limit', // param base name
+            'integer', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $relation_page_token,
+            'relation_page_token', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+
+
+        // path params
+        if ($domain_id !== null) {
+            $resourcePath = str_replace(
+                '{domain_id}',
+                ObjectSerializer::toPathValue($domain_id),
+                $resourcePath
+            );
+        }
+        // path params
+        if ($resource !== null) {
+            $resourcePath = str_replace(
+                '{resource}',
+                ObjectSerializer::toPathValue($resource),
+                $resourcePath
+            );
+        }
+        // path params
+        if ($resource_id !== null) {
+            $resourcePath = str_replace(
+                '{resource_id}',
+                ObjectSerializer::toPathValue($resource_id),
+                $resourcePath
+            );
+        }
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'text/plain', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires Bearer (sec_xxxxxxxx-xxxxxxxx-xxxxxxxx) authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        # Preserve the original behavior of server indexing.
+        if ($hostIndex === null) {
+            $hostIndex = $this->hostIndex;
+        }
+
+        $hostSettings = $this->getHostSettingsForgetHistoryEntity();
+
+        if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
+            throw new \InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
+        }
+        $operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'GET',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Returns an array of host settings for Operation getHistoryEntity
+     *
+     * @return array an array of host settings
+     */
+    protected function getHostSettingsForgetHistoryEntity(): array
+    {
+        return [
+            [
+                "url" => "https://account.shieldlabs.ai",
+                "description" => "History API",
+            ]
+        ];
+    }
+
+    /**
+     * Operation listDomains
+     *
+     * List domains for this key
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listDomains'] to see the possible values for this operation
+     *
+     * @throws \ShieldLabs\Generated\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return \ShieldLabs\Generated\Model\ListDomains200Response|string|\ShieldLabs\Generated\Model\ErrorBody|\ShieldLabs\Generated\Model\ErrorBody|string|string
+     */
+    public function listDomains(?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listDomains'][0])
+    {
+        list($response) = $this->listDomainsWithHttpInfo($hostIndex, $variables, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation listDomainsWithHttpInfo
+     *
+     * List domains for this key
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listDomains'] to see the possible values for this operation
+     *
+     * @throws \ShieldLabs\Generated\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return array of \ShieldLabs\Generated\Model\ListDomains200Response|string|\ShieldLabs\Generated\Model\ErrorBody|\ShieldLabs\Generated\Model\ErrorBody|string|string, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function listDomainsWithHttpInfo(?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listDomains'][0])
+    {
+        $request = $this->listDomainsRequest($hostIndex, $variables, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\ShieldLabs\Generated\Model\ListDomains200Response',
+                        $request,
+                        $response,
+                    );
+                case 401:
+                    return $this->handleResponseWithDataType(
+                        'string',
+                        $request,
+                        $response,
+                    );
+                case 429:
+                    return $this->handleResponseWithDataType(
+                        '\ShieldLabs\Generated\Model\ErrorBody',
+                        $request,
+                        $response,
+                    );
+                case 500:
+                    return $this->handleResponseWithDataType(
+                        '\ShieldLabs\Generated\Model\ErrorBody',
+                        $request,
+                        $response,
+                    );
+                case 502:
+                    return $this->handleResponseWithDataType(
+                        'string',
+                        $request,
+                        $response,
+                    );
+                case 504:
+                    return $this->handleResponseWithDataType(
+                        'string',
+                        $request,
+                        $response,
+                    );
+            }
+
+            
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\ShieldLabs\Generated\Model\ListDomains200Response',
+                $request,
+                $response,
+            );
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\ShieldLabs\Generated\Model\ListDomains200Response',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 401:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        'string',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 429:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\ShieldLabs\Generated\Model\ErrorBody',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 500:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\ShieldLabs\Generated\Model\ErrorBody',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 502:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        'string',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 504:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        'string',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+            }
+        
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation listDomainsAsync
+     *
+     * List domains for this key
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listDomains'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function listDomainsAsync(?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listDomains'][0])
+    {
+        return $this->listDomainsAsyncWithHttpInfo($hostIndex, $variables, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation listDomainsAsyncWithHttpInfo
+     *
+     * List domains for this key
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listDomains'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function listDomainsAsyncWithHttpInfo(?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listDomains'][0])
+    {
+        $returnType = '\ShieldLabs\Generated\Model\ListDomains200Response';
+        $request = $this->listDomainsRequest($hostIndex, $variables, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'listDomains'
+     *
+    * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+    * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listDomains'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function listDomainsRequest(?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listDomains'][0])
+    {
+
+
+        $resourcePath = '/api/v1/domains';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'text/plain', 'text/html', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires Bearer (sec_xxxxxxxx-xxxxxxxx-xxxxxxxx) authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        # Preserve the original behavior of server indexing.
+        if ($hostIndex === null) {
+            $hostIndex = $this->hostIndex;
+        }
+
+        $hostSettings = $this->getHostSettingsForlistDomains();
+
+        if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
+            throw new \InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
+        }
+        $operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'GET',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Returns an array of host settings for Operation listDomains
+     *
+     * @return array an array of host settings
+     */
+    protected function getHostSettingsForlistDomains(): array
+    {
+        return [
+            [
+                "url" => "https://account.shieldlabs.ai",
+                "description" => "History API",
+            ]
+        ];
+    }
+
+    /**
+     * Operation listHistoryEntities
+     *
+     * List History entities
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. Lists are enabled for identifications and user only. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listHistoryEntities'] to see the possible values for this operation
+     *
+     * @throws \ShieldLabs\Generated\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return \ShieldLabs\Generated\Model\ListHistoryEntities200Response|string|string|\ShieldLabs\Generated\Model\ErrorBody|\ShieldLabs\Generated\Model\ErrorBody|string|string
+     */
+    public function listHistoryEntities($domain_id, $resource, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $ids = null, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listHistoryEntities'][0])
+    {
+        list($response) = $this->listHistoryEntitiesWithHttpInfo($domain_id, $resource, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $ids, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $rate_limited, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $hostIndex, $variables, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation listHistoryEntitiesWithHttpInfo
+     *
+     * List History entities
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: https://account.shieldlabs.ai
+     *
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. Lists are enabled for identifications and user only. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listHistoryEntities'] to see the possible values for this operation
+     *
+     * @throws \ShieldLabs\Generated\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return array of \ShieldLabs\Generated\Model\ListHistoryEntities200Response|string|string|\ShieldLabs\Generated\Model\ErrorBody|\ShieldLabs\Generated\Model\ErrorBody|string|string, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function listHistoryEntitiesWithHttpInfo($domain_id, $resource, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $ids = null, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listHistoryEntities'][0])
+    {
+        $request = $this->listHistoryEntitiesRequest($domain_id, $resource, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $ids, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $rate_limited, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $hostIndex, $variables, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\ShieldLabs\Generated\Model\ListHistoryEntities200Response',
                         $request,
                         $response,
                     );
@@ -262,7 +1641,7 @@ class HistoryAPIApi
             }
 
             return $this->handleResponseWithDataType(
-                '\ShieldLabs\Generated\Model\HistoryPage',
+                '\ShieldLabs\Generated\Model\ListHistoryEntities200Response',
                 $request,
                 $response,
             );
@@ -271,7 +1650,7 @@ class HistoryAPIApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\ShieldLabs\Generated\Model\HistoryPage',
+                        '\ShieldLabs\Generated\Model\ListHistoryEntities200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -332,28 +1711,58 @@ class HistoryAPIApi
     }
 
     /**
-     * Operation searchHistoryAsync
+     * Operation listHistoryEntitiesAsync
      *
-     * Search identifications
+     * List History entities
      *
      * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
      * if needed, use the 'variables' parameter to pass variables to the host.
      * URL: https://account.shieldlabs.ai
      *
-     * @param  string $search_type Identifier to search by. These values are supported (&#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;): - &#x60;identification_id&#x60;: one identification (read a verdict); - &#x60;device_id&#x60;: every identification of one device; - &#x60;user_hid&#x60;: every identification of one account; - &#x60;visitor_id&#x60;: every identification of one visitor; - &#x60;ip&#x60;: every identification from one public IPv4 address; - &#x60;session_id&#x60;: every identification of one visit; - &#x60;cookie_id&#x60;: every identification with one browser cookie.  The server does not reject other values: it ignores them and returns the latest identifications of the whole domain, so restrict the value on your side. (required)
-     * @param  string $value Value of the identifier, validated on your side before sending: - &#x60;identification_id&#x60;, &#x60;device_id&#x60;, &#x60;visitor_id&#x60;, &#x60;session_id&#x60;, &#x60;cookie_id&#x60;: a UUID of any version,   the nil UUID included, matching   &#x60;^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$&#x60;. Send it   lowercase. - &#x60;ip&#x60;: a dotted IPv4 address. IPv6 addresses cannot be searched. - &#x60;user_hid&#x60;: the exact, case-sensitive User HID as one path segment, encoded the way the   server reads it: send the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and   percent-encode every other byte of the UTF-8 value as uppercase &#x60;%XX&#x60;, including   &#x60;! &#39; ( ) *&#x60;, spaces and &#x60;%&#x60; itself. The server compares any other encoding literally, so   &#x60;%40&#x60; instead of &#x60;@&#x60;, or lowercase hex digits, return an empty page instead of the matching   rows. Many HTTP clients and generated clients escape &#x60;$ &amp; + , : ; &#x3D; @&#x60; in path values: build   this path yourself when yours does. A User HID that contains &#x60;/&#x60; cannot be searched, and most   HTTP clients cannot send &#x60;.&#x60; or &#x60;..&#x60; because they remove them as dot segments; the pattern   rejects these values. Hex-encoded hashes need no escaping at all.  The server does not validate the value: a malformed UUID or IPv4 address gets a &#x60;500&#x60;. (required)
-     * @param  int|null $limit Maximum number of identifications to return, from 1 to 100. The server replaces any other value (and a non-numeric one) with 20 instead of clamping it, so validate it on your side. (optional, default to 20)
-     * @param  int|null $offset Number of identifications to skip, for paging. The server treats negative or non-numeric values as 0. Rows are ordered by &#x60;created_at&#x60; only, so paging while new identifications arrive can repeat or skip rows: deduplicate on &#x60;identification_id&#x60;. (optional, default to 0)
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. Lists are enabled for identifications and user only. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['searchHistory'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listHistoryEntities'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function searchHistoryAsync($search_type, $value, $limit = 20, $offset = 0, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['searchHistory'][0])
+    public function listHistoryEntitiesAsync($domain_id, $resource, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $ids = null, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listHistoryEntities'][0])
     {
-        return $this->searchHistoryAsyncWithHttpInfo($search_type, $value, $limit, $offset, $hostIndex, $variables, $contentType)
+        return $this->listHistoryEntitiesAsyncWithHttpInfo($domain_id, $resource, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $ids, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $rate_limited, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $hostIndex, $variables, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -362,29 +1771,59 @@ class HistoryAPIApi
     }
 
     /**
-     * Operation searchHistoryAsyncWithHttpInfo
+     * Operation listHistoryEntitiesAsyncWithHttpInfo
      *
-     * Search identifications
+     * List History entities
      *
      * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
      * if needed, use the 'variables' parameter to pass variables to the host.
      * URL: https://account.shieldlabs.ai
      *
-     * @param  string $search_type Identifier to search by. These values are supported (&#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;): - &#x60;identification_id&#x60;: one identification (read a verdict); - &#x60;device_id&#x60;: every identification of one device; - &#x60;user_hid&#x60;: every identification of one account; - &#x60;visitor_id&#x60;: every identification of one visitor; - &#x60;ip&#x60;: every identification from one public IPv4 address; - &#x60;session_id&#x60;: every identification of one visit; - &#x60;cookie_id&#x60;: every identification with one browser cookie.  The server does not reject other values: it ignores them and returns the latest identifications of the whole domain, so restrict the value on your side. (required)
-     * @param  string $value Value of the identifier, validated on your side before sending: - &#x60;identification_id&#x60;, &#x60;device_id&#x60;, &#x60;visitor_id&#x60;, &#x60;session_id&#x60;, &#x60;cookie_id&#x60;: a UUID of any version,   the nil UUID included, matching   &#x60;^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$&#x60;. Send it   lowercase. - &#x60;ip&#x60;: a dotted IPv4 address. IPv6 addresses cannot be searched. - &#x60;user_hid&#x60;: the exact, case-sensitive User HID as one path segment, encoded the way the   server reads it: send the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and   percent-encode every other byte of the UTF-8 value as uppercase &#x60;%XX&#x60;, including   &#x60;! &#39; ( ) *&#x60;, spaces and &#x60;%&#x60; itself. The server compares any other encoding literally, so   &#x60;%40&#x60; instead of &#x60;@&#x60;, or lowercase hex digits, return an empty page instead of the matching   rows. Many HTTP clients and generated clients escape &#x60;$ &amp; + , : ; &#x3D; @&#x60; in path values: build   this path yourself when yours does. A User HID that contains &#x60;/&#x60; cannot be searched, and most   HTTP clients cannot send &#x60;.&#x60; or &#x60;..&#x60; because they remove them as dot segments; the pattern   rejects these values. Hex-encoded hashes need no escaping at all.  The server does not validate the value: a malformed UUID or IPv4 address gets a &#x60;500&#x60;. (required)
-     * @param  int|null $limit Maximum number of identifications to return, from 1 to 100. The server replaces any other value (and a non-numeric one) with 20 instead of clamping it, so validate it on your side. (optional, default to 20)
-     * @param  int|null $offset Number of identifications to skip, for paging. The server treats negative or non-numeric values as 0. Rows are ordered by &#x60;created_at&#x60; only, so paging while new identifications arrive can repeat or skip rows: deduplicate on &#x60;identification_id&#x60;. (optional, default to 0)
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. Lists are enabled for identifications and user only. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['searchHistory'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listHistoryEntities'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function searchHistoryAsyncWithHttpInfo($search_type, $value, $limit = 20, $offset = 0, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['searchHistory'][0])
+    public function listHistoryEntitiesAsyncWithHttpInfo($domain_id, $resource, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $ids = null, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listHistoryEntities'][0])
     {
-        $returnType = '\ShieldLabs\Generated\Model\HistoryPage';
-        $request = $this->searchHistoryRequest($search_type, $value, $limit, $offset, $hostIndex, $variables, $contentType);
+        $returnType = '\ShieldLabs\Generated\Model\ListHistoryEntities200Response';
+        $request = $this->listHistoryEntitiesRequest($domain_id, $resource, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $ids, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $rate_limited, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $hostIndex, $variables, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -423,59 +1862,122 @@ class HistoryAPIApi
     }
 
     /**
-     * Create request for operation 'searchHistory'
+     * Create request for operation 'listHistoryEntities'
      *
     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
     * if needed, use the 'variables' parameter to pass variables to the host.
      * URL: https://account.shieldlabs.ai
      *
-     * @param  string $search_type Identifier to search by. These values are supported (&#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;): - &#x60;identification_id&#x60;: one identification (read a verdict); - &#x60;device_id&#x60;: every identification of one device; - &#x60;user_hid&#x60;: every identification of one account; - &#x60;visitor_id&#x60;: every identification of one visitor; - &#x60;ip&#x60;: every identification from one public IPv4 address; - &#x60;session_id&#x60;: every identification of one visit; - &#x60;cookie_id&#x60;: every identification with one browser cookie.  The server does not reject other values: it ignores them and returns the latest identifications of the whole domain, so restrict the value on your side. (required)
-     * @param  string $value Value of the identifier, validated on your side before sending: - &#x60;identification_id&#x60;, &#x60;device_id&#x60;, &#x60;visitor_id&#x60;, &#x60;session_id&#x60;, &#x60;cookie_id&#x60;: a UUID of any version,   the nil UUID included, matching   &#x60;^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$&#x60;. Send it   lowercase. - &#x60;ip&#x60;: a dotted IPv4 address. IPv6 addresses cannot be searched. - &#x60;user_hid&#x60;: the exact, case-sensitive User HID as one path segment, encoded the way the   server reads it: send the characters &#x60;A-Z a-z 0-9 - . _ ~ $ &amp; + , : ; &#x3D; @&#x60; unescaped and   percent-encode every other byte of the UTF-8 value as uppercase &#x60;%XX&#x60;, including   &#x60;! &#39; ( ) *&#x60;, spaces and &#x60;%&#x60; itself. The server compares any other encoding literally, so   &#x60;%40&#x60; instead of &#x60;@&#x60;, or lowercase hex digits, return an empty page instead of the matching   rows. Many HTTP clients and generated clients escape &#x60;$ &amp; + , : ; &#x3D; @&#x60; in path values: build   this path yourself when yours does. A User HID that contains &#x60;/&#x60; cannot be searched, and most   HTTP clients cannot send &#x60;.&#x60; or &#x60;..&#x60; because they remove them as dot segments; the pattern   rejects these values. Hex-encoded hashes need no escaping at all.  The server does not validate the value: a malformed UUID or IPv4 address gets a &#x60;500&#x60;. (required)
-     * @param  int|null $limit Maximum number of identifications to return, from 1 to 100. The server replaces any other value (and a non-numeric one) with 20 instead of clamping it, so validate it on your side. (optional, default to 20)
-     * @param  int|null $offset Number of identifications to skip, for paging. The server treats negative or non-numeric values as 0. Rows are ordered by &#x60;created_at&#x60; only, so paging while new identifications arrive can repeat or skip rows: deduplicate on &#x60;identification_id&#x60;. (optional, default to 0)
+     * @param  string $domain_id Public domain UUID of the site whose History is being read. (required)
+     * @param  string $resource History resource. Lists are enabled for identifications and user only. (required)
+     * @param  int|null $limit Maximum records in the page, from 1 through 100. (optional, default to 20)
+     * @param  string|null $page_token Opaque token from the previous page. Omit it on the first page. (optional)
+     * @param  \DateTime|null $from Inclusive RFC3339 start. Send &#x60;to&#x60; as well, or send neither. (optional)
+     * @param  \DateTime|null $to Exclusive RFC3339 end. Send &#x60;from&#x60; as well, or send neither. (optional)
+     * @param  string|null $snapshot Value of the History-Snapshot header. Continues that read. (optional)
+     * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
+     * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
+     * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
+     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_privacy_relay When set, keep only rows whose &#x60;is_privacy_relay&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $network_check_incomplete When set, keep only rows whose &#x60;network_check_incomplete&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $check_incomplete When set, keep only rows whose &#x60;check_incomplete&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_antidetect When set, keep only rows whose &#x60;is_antidetect&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_mismatch When set, keep only rows whose &#x60;is_os_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_os_not_detected When set, keep only rows whose &#x60;is_os_not_detected&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_timezone_mismatch When set, keep only rows whose &#x60;is_timezone_mismatch&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_js_disabled When set, keep only rows whose &#x60;is_js_disabled&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_browser_automation When set, keep only rows whose &#x60;is_browser_automation&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_incognito When set, keep only rows whose &#x60;is_incognito&#x60; equals this value. Always false for search-engine crawlers, matching the row. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $is_search_bot When set, keep only rows whose &#x60;is_search_bot&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ip_mismatch Keep only rows whose &#x60;ip_mismatch&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $latency_test Keep only rows whose &#x60;latency_test&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $device_spoofing Keep only rows whose &#x60;device_spoofing&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $rate_limited When set, keep only rows whose &#x60;rate_limited&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
+     * @param  string|null $ai_bot Keep only rows whose &#x60;ai_bot&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string|null $ai_browser Keep only rows whose &#x60;ai_browser&#x60; equals this value. Omit to leave unconstrained. (optional)
+     * @param  string[]|null $risk_signals Repeat a public signal code. Several codes combine with OR. (optional)
+     * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
+     * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['searchHistory'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listHistoryEntities'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function searchHistoryRequest($search_type, $value, $limit = 20, $offset = 0, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['searchHistory'][0])
+    public function listHistoryEntitiesRequest($domain_id, $resource, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $ids = null, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $rate_limited = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['listHistoryEntities'][0])
     {
 
-        // verify the required parameter 'search_type' is set
-        if ($search_type === null || (is_array($search_type) && count($search_type) === 0)) {
+        // verify the required parameter 'domain_id' is set
+        if ($domain_id === null || (is_array($domain_id) && count($domain_id) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $search_type when calling searchHistory'
+                'Missing the required parameter $domain_id when calling listHistoryEntities'
             );
         }
 
-        // verify the required parameter 'value' is set
-        if ($value === null || (is_array($value) && count($value) === 0)) {
+        // verify the required parameter 'resource' is set
+        if ($resource === null || (is_array($resource) && count($resource) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $value when calling searchHistory'
+                'Missing the required parameter $resource when calling listHistoryEntities'
             );
         }
-        if (strlen($value) < 1) {
-            throw new \InvalidArgumentException('invalid length for "$value" when calling HistoryAPIApi.searchHistory, must be bigger than or equal to 1.');
-        }
-        if (!preg_match("/^(?:[^\/.][^\/]*|\\.[^\/.][^\/]*|\\.\\.[^\/]+)$/", $value)) {
-            throw new \InvalidArgumentException("invalid value for \"value\" when calling HistoryAPIApi.searchHistory, must conform to the pattern /^(?:[^\/.][^\/]*|\\.[^\/.][^\/]*|\\.\\.[^\/]+)$/.");
-        }
-        
+
         if ($limit !== null && $limit > 100) {
-            throw new \InvalidArgumentException('invalid value for "$limit" when calling HistoryAPIApi.searchHistory, must be smaller than or equal to 100.');
+            throw new \InvalidArgumentException('invalid value for "$limit" when calling HistoryAPIApi.listHistoryEntities, must be smaller than or equal to 100.');
         }
         if ($limit !== null && $limit < 1) {
-            throw new \InvalidArgumentException('invalid value for "$limit" when calling HistoryAPIApi.searchHistory, must be bigger than or equal to 1.');
-        }
-        
-        if ($offset !== null && $offset < 0) {
-            throw new \InvalidArgumentException('invalid value for "$offset" when calling HistoryAPIApi.searchHistory, must be bigger than or equal to 0.');
+            throw new \InvalidArgumentException('invalid value for "$limit" when calling HistoryAPIApi.listHistoryEntities, must be bigger than or equal to 1.');
         }
         
 
-        $resourcePath = '/api/v1/history/{search_type}/{value}';
+
+
+
+
+        if ($hre_min_accounts !== null && $hre_min_accounts > 99) {
+            throw new \InvalidArgumentException('invalid value for "$hre_min_accounts" when calling HistoryAPIApi.listHistoryEntities, must be smaller than or equal to 99.');
+        }
+        if ($hre_min_accounts !== null && $hre_min_accounts < 3) {
+            throw new \InvalidArgumentException('invalid value for "$hre_min_accounts" when calling HistoryAPIApi.listHistoryEntities, must be bigger than or equal to 3.');
+        }
+        
+        if ($hre_min_devices !== null && $hre_min_devices > 99) {
+            throw new \InvalidArgumentException('invalid value for "$hre_min_devices" when calling HistoryAPIApi.listHistoryEntities, must be smaller than or equal to 99.');
+        }
+        if ($hre_min_devices !== null && $hre_min_devices < 4) {
+            throw new \InvalidArgumentException('invalid value for "$hre_min_devices" when calling HistoryAPIApi.listHistoryEntities, must be bigger than or equal to 4.');
+        }
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $resourcePath = '/api/v1/domains/{domain_id}/history/{resource}';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -493,9 +1995,279 @@ class HistoryAPIApi
         ) ?? []);
         // query params
         $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $offset,
-            'offset', // param base name
+            $page_token,
+            'page_token', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $from,
+            'from', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $to,
+            'to', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $snapshot,
+            'snapshot', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $risk_bands,
+            'risk_bands', // param base name
+            'array', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $hre_min_accounts,
+            'hre_min_accounts', // param base name
             'integer', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $hre_min_devices,
+            'hre_min_devices', // param base name
+            'integer', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $ids,
+            'ids', // param base name
+            'array', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_vpn,
+            'is_vpn', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_tor,
+            'is_tor', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_proxy,
+            'is_proxy', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_privacy_relay,
+            'is_privacy_relay', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $network_check_incomplete,
+            'network_check_incomplete', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $check_incomplete,
+            'check_incomplete', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_antidetect,
+            'is_antidetect', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_os_mismatch,
+            'is_os_mismatch', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_os_not_detected,
+            'is_os_not_detected', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_timezone_mismatch,
+            'is_timezone_mismatch', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_js_disabled,
+            'is_js_disabled', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_browser_automation,
+            'is_browser_automation', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_incognito,
+            'is_incognito', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $is_search_bot,
+            'is_search_bot', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $ip_mismatch,
+            'ip_mismatch', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $latency_test,
+            'latency_test', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $device_spoofing,
+            'device_spoofing', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $rate_limited,
+            'rate_limited', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $ai_bot,
+            'ai_bot', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $ai_browser,
+            'ai_browser', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $risk_signals,
+            'risk_signals', // param base name
+            'array', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $source,
+            'source', // param base name
+            'array', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $campaign,
+            'campaign', // param base name
+            'array', // openApiType
             'form', // style
             true, // explode
             false // required
@@ -503,18 +2275,18 @@ class HistoryAPIApi
 
 
         // path params
-        if ($search_type !== null) {
+        if ($domain_id !== null) {
             $resourcePath = str_replace(
-                '{search_type}',
-                ObjectSerializer::toPathValue($search_type),
+                '{domain_id}',
+                ObjectSerializer::toPathValue($domain_id),
                 $resourcePath
             );
         }
         // path params
-        if ($value !== null) {
+        if ($resource !== null) {
             $resourcePath = str_replace(
-                '{value}',
-                ObjectSerializer::toPathValue($value),
+                '{resource}',
+                ObjectSerializer::toPathValue($resource),
                 $resourcePath
             );
         }
@@ -572,7 +2344,7 @@ class HistoryAPIApi
             $hostIndex = $this->hostIndex;
         }
 
-        $hostSettings = $this->getHostSettingsForsearchHistory();
+        $hostSettings = $this->getHostSettingsForlistHistoryEntities();
 
         if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
             throw new \InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
@@ -588,11 +2360,11 @@ class HistoryAPIApi
     }
 
     /**
-     * Returns an array of host settings for Operation searchHistory
+     * Returns an array of host settings for Operation listHistoryEntities
      *
      * @return array an array of host settings
      */
-    protected function getHostSettingsForsearchHistory(): array
+    protected function getHostSettingsForlistHistoryEntities(): array
     {
         return [
             [

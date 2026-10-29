@@ -76,7 +76,10 @@ function markIdentificationIdUsed(string $identificationId): bool
 $json = json_decode((string) file_get_contents('php://input'), true);
 $identificationId = $_POST['identificationId'] ?? (is_array($json) ? ($json['identificationId'] ?? null) : null);
 
-$shieldlabs = new ShieldLabs(['api_key' => 'sec_your_private_key']); // or new ShieldLabs() to read SHIELDLABS_API_KEY
+$shieldlabs = new ShieldLabs([
+    'api_key' => 'sec_your_private_key', // or omit it to read SHIELDLABS_API_KEY
+    'domain_id' => '11111111-1111-4111-8111-111111111111', // public domain UUID from domains()
+]);
 
 try {
     // Polls the History API until the verdict is stored (usually 1-3 seconds after

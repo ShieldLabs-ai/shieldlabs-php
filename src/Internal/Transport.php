@@ -58,7 +58,7 @@ final class Transport
     /**
      * GET a path under the base URL and return the decoded JSON body.
      *
-     * @param array<string, int|string> $query
+     * @param array<string, int|string|array<int, int|string>> $query
      * @param int|null                  $maxRetries     retries for this call instead of the configured number
      * @param float|null                $attemptTimeout seconds each attempt may take at most, where the HTTP client allows it
      *
@@ -68,7 +68,7 @@ final class Transport
     {
         $url = $this->baseUrl . $path;
         if ($query !== []) {
-            $url .= '?' . http_build_query($query, '', '&', \PHP_QUERY_RFC3986);
+            $url .= '?' . self::queryString($query);
         }
         $client = $this->clientFor($attemptTimeout);
         $maxRetries ??= $this->maxRetries;
@@ -195,6 +195,25 @@ final class Transport
 
             throw new ApiConnectionException('The response of the ShieldLabs API could not be read: ' . $exception->getMessage(), 0, $exception);
         }
+    }
+
+    /**
+     * @param array<string, int|string|array<int, int|string>> $query
+     */
+    private static function queryString(array $query): string
+    {
+        $pairs = [];
+        foreach ($query as $key => $value) {
+            $items = \is_array($value) ? $value : [$value];
+            foreach ($items as $item) {
+                if (\is_bool($item)) {
+                    $item = $item ? 'true' : 'false';
+                }
+                $pairs[] = rawurlencode((string) $key) . '=' . rawurlencode((string) $item);
+            }
+        }
+
+        return implode('&', $pairs);
     }
 
     private static function isTimeout(ClientExceptionInterface $exception): bool

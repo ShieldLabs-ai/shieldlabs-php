@@ -14,6 +14,7 @@ final class Clients
 {
     public const API_KEY = 'sec_abcd1234-efgh5678-ijkl9012';
     public const SECRET_KEY = '0123456789abcdef0123456789abcdef';
+    public const DOMAIN_ID = '11111111-1111-4111-8111-111111111111';
 
     /**
      * @param array<string, mixed> $options
@@ -23,6 +24,7 @@ final class Clients
         /** @phpstan-ignore argument.type */
         return new ShieldLabs($options + [
             'api_key' => self::API_KEY,
+            'domain_id' => self::DOMAIN_ID,
             'http_client' => $http,
             'clock' => $clock ?? new FakeClock(),
         ]);

@@ -14,7 +14,7 @@ if (!in_array($_SERVER['HTTP_AUTHORIZATION'] ?? '', array_map(static fn(string $
     return;
 }
 $path = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), \PHP_URL_PATH);
-if (preg_match('#^/api/v1/history/identification_id/([0-9a-f-]{36})$#', $path, $match) !== 1) {
+if (preg_match('#^/api/v1/domains/[0-9a-f-]{36}/history/identifications/([0-9a-f-]{36})$#', $path, $match) !== 1) {
     http_response_code(404);
     echo '"not found"';
 

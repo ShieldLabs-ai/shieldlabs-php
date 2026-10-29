@@ -47,6 +47,7 @@ final class ShieldLabs
     /**
      * Options:
      *
+     * - domain_id: public domain UUID from domains(); required for History reads
      * - api_key: Private API Key (visible ASCII characters); when omitted, SHIELDLABS_API_KEY is read from the environment
      * - base_url: origin of the History API (default https://account.shieldlabs.ai, or SHIELDLABS_API_BASE_URL); a trailing "/api" is removed. It must use https; plain http is accepted for localhost, 127.0.0.1 and [::1]
      * - allow_insecure_http: accept a plain http base_url on another host, for a test server (default false); the key then travels unencrypted
@@ -56,6 +57,7 @@ final class ShieldLabs
      * - request_factory: a PSR-17 request factory; discovered by default
      *
      * @param array{
+     *     domain_id?: string|null,
      *     api_key?: string|false|null,
      *     base_url?: string|false|null,
      *     allow_insecure_http?: bool,
@@ -72,7 +74,7 @@ final class ShieldLabs
     {
         Options::assertKnown(
             $options,
-            ['api_key', 'base_url', 'allow_insecure_http', 'timeout', 'max_retries', 'http_client', 'request_factory', 'clock'],
+            ['api_key', 'base_url', 'domain_id', 'allow_insecure_http', 'timeout', 'max_retries', 'http_client', 'request_factory', 'clock'],
             'ShieldLabs',
         );
 
@@ -109,7 +111,11 @@ final class ShieldLabs
             true,
             $clock,
         );
-        $this->history = new History($transport);
+        $domainId = $options['domain_id'] ?? null;
+        if ($domainId !== null && !\is_string($domainId)) {
+            throw new ValidationException('Option "domain_id" must be a string.');
+        }
+        $this->history = new History($transport, \is_string($domainId) ? $domainId : null);
         $this->identifications = new Identifications($this->history, $clock);
     }
 

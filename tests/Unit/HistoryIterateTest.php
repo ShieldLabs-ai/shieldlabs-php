@@ -74,7 +74,7 @@ final class HistoryIterateTest extends TestCase
         $ids = self::ids(Clients::history($http)->history->iterate(LookupType::DeviceId, 'ac7c303d-971b-41d1-8e25-cd5b46b46aed', ['page_size' => 2]));
 
         self::assertSame([self::id(1), self::id(2), self::id(3), self::id(4), self::id(5)], $ids);
-        self::assertSame([['2', '0'], ['2', '2'], ['2', '4']], self::paging($http));
+        self::assertSame([['2', ''], ['2', ''], ['2', '']], self::paging($http));
     }
 
     public function testDeduplicatesRowsRepeatedAcrossPages(): void
@@ -110,7 +110,7 @@ final class HistoryIterateTest extends TestCase
         $http = (new MockHttpClient())->queue(MockHttpClient::emptyPage());
 
         self::assertSame([], self::ids(Clients::history($http)->history->iterate(LookupType::Ip, '198.51.100.7')));
-        self::assertSame([['100', '0']], self::paging($http));
+        self::assertSame([['100', '']], self::paging($http));
     }
 
     public function testStopsAfterMaxItems(): void

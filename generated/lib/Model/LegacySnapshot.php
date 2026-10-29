@@ -481,7 +481,7 @@ class LegacySnapshot implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets identification_id
      *
-     * @param string $identification_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed request ID.
+     * @param string $identification_id Identifies one identification. The browser creates it as a UUID v4 and hands it to your page; it is the join key between the browser, the webhook and the History API. The nil UUID appears only on rate-limit marker rows that arrived with a malformed Identification ID.
      *
      * @return self
      */
@@ -643,7 +643,7 @@ class LegacySnapshot implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets connection_type
      *
-     * @param string $connection_type How the visitor connected. Known values: - `direct`: a regular connection; - `mobile`: a mobile carrier network; - `vpn`: a VPN; - `proxy`: a proxy, datacenter or hosting network (search-engine crawlers are reported here too); - `tor`: the Tor network; - `privacy_relay`: a privacy relay such as iCloud Private Relay; - `browser_vpn_proxy`: a VPN or proxy built into the browser or one of its extensions; - `unknown`: not enough data.  The value can say `vpn` while `detection_flags.vpn` is `false` (IP intelligence classified the network, but the scored VPN check did not fire). Branch on `detection_flags` for decisions. The set is open: keep values added in later versions and treat them as `unknown`.
+     * @param string $connection_type How the visitor connected. Known values: - `direct`: a regular connection; - `mobile`: a mobile carrier network; - `vpn`: a VPN; - `proxy`: a proxy, datacenter or hosting network (search-engine crawlers are reported here too); - `tor`: the Tor network; - `private_relay`: a privacy relay such as iCloud Private Relay. Older visits may say `privacy_relay`; - `browser_vpn_proxy`: a VPN or proxy built into the browser or one of its extensions; - `unknown`: not enough data.  The value can say `vpn` while `detection_flags.vpn` is `false` (IP intelligence classified the network, but the scored VPN check did not fire). Branch on `detection_flags` for decisions. The set is open: keep values added in later versions and treat them as `unknown`.
      *
      * @return self
      */
@@ -886,7 +886,7 @@ class LegacySnapshot implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets score
      *
-     * @param int $score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"rate_limited\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; request IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
+     * @param int $score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"rate_limited\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; Identification IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
      *
      * @return self
      */

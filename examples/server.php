@@ -111,7 +111,13 @@ function shieldlabs(): ShieldLabs
     /** @var ShieldLabs|null $client */
     static $client = null;
 
-    return $client ??= new ShieldLabs(); // reads SHIELDLABS_API_KEY (and SHIELDLABS_API_BASE_URL)
+    $options = [];
+    $domainId = getenv('SHIELDLABS_DOMAIN_ID');
+    if (is_string($domainId) && $domainId !== '') {
+        $options['domain_id'] = $domainId;
+    }
+
+    return $client ??= new ShieldLabs($options); // reads SHIELDLABS_API_KEY (and SHIELDLABS_API_BASE_URL)
 }
 
 function handleSignup(UsedKeys $usedKeys): void

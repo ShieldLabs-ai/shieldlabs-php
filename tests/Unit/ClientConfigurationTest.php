@@ -53,7 +53,7 @@ final class ClientConfigurationTest extends TestCase
         putenv('SHIELDLABS_API_KEY=' . Clients::API_KEY);
         $http = (new MockHttpClient())->always(MockHttpClient::emptyPage());
 
-        (new ShieldLabs(['http_client' => $http]))->history->search(LookupType::Ip, '192.0.2.10');
+        (new ShieldLabs(['domain_id' => Clients::DOMAIN_ID, 'http_client' => $http]))->history->search(LookupType::Ip, '192.0.2.10');
 
         self::assertSame('Bearer ' . Clients::API_KEY, $http->lastRequest()->getHeaderLine('Authorization'));
     }
@@ -63,7 +63,7 @@ final class ClientConfigurationTest extends TestCase
         putenv('SHIELDLABS_API_KEY=' . Clients::API_KEY);
         $http = (new MockHttpClient())->always(MockHttpClient::emptyPage());
 
-        (new ShieldLabs(['api_key' => false, 'base_url' => false, 'http_client' => $http]))->history->search(LookupType::Ip, '192.0.2.10');
+        (new ShieldLabs(['api_key' => false, 'base_url' => false, 'domain_id' => Clients::DOMAIN_ID, 'http_client' => $http]))->history->search(LookupType::Ip, '192.0.2.10');
 
         self::assertSame('Bearer ' . Clients::API_KEY, $http->lastRequest()->getHeaderLine('Authorization'));
         self::assertStringStartsWith('https://account.shieldlabs.ai/api/v1/', (string) $http->lastRequest()->getUri());
@@ -80,7 +80,7 @@ final class ClientConfigurationTest extends TestCase
     {
         $http = (new MockHttpClient())->always(MockHttpClient::emptyPage());
 
-        (new ShieldLabs(['api_key' => ' ' . Clients::API_KEY . "\n", 'http_client' => $http]))->history->search(LookupType::Ip, '192.0.2.10');
+        (new ShieldLabs(['api_key' => ' ' . Clients::API_KEY . "\n", 'domain_id' => Clients::DOMAIN_ID, 'http_client' => $http]))->history->search(LookupType::Ip, '192.0.2.10');
 
         self::assertSame('Bearer ' . Clients::API_KEY, $http->lastRequest()->getHeaderLine('Authorization'));
     }
@@ -131,7 +131,7 @@ final class ClientConfigurationTest extends TestCase
         $http = new MockHttpClient();
 
         foreach ([$factory, $badUri] as $requestFactory) {
-            $client = new ShieldLabs(['api_key' => Clients::API_KEY, 'http_client' => $http, 'request_factory' => $requestFactory]);
+            $client = new ShieldLabs(['api_key' => Clients::API_KEY, 'domain_id' => Clients::DOMAIN_ID, 'http_client' => $http, 'request_factory' => $requestFactory]);
             try {
                 $client->history->search(LookupType::Ip, '192.0.2.10');
                 self::fail('Expected a ValidationException');
@@ -148,7 +148,7 @@ final class ClientConfigurationTest extends TestCase
     {
         $http = (new MockHttpClient())->always(MockHttpClient::emptyPage());
         $log = ErrorLog::during(static function () use ($http): void {
-            $client = new ShieldLabs(['api_key' => '0123456789abcdef0123456789abcdef', 'http_client' => $http]);
+            $client = new ShieldLabs(['api_key' => '0123456789abcdef0123456789abcdef', 'domain_id' => Clients::DOMAIN_ID, 'http_client' => $http]);
             $client->history->search(LookupType::Ip, '192.0.2.10');
         });
 
@@ -252,7 +252,7 @@ final class ClientConfigurationTest extends TestCase
         };
         $http = (new MockHttpClient())->always(MockHttpClient::emptyPage());
 
-        (new ShieldLabs(['api_key' => Clients::API_KEY, 'http_client' => $http, 'request_factory' => $factory]))
+        (new ShieldLabs(['api_key' => Clients::API_KEY, 'domain_id' => Clients::DOMAIN_ID, 'http_client' => $http, 'request_factory' => $factory]))
             ->history->search(LookupType::Ip, '192.0.2.10');
 
         self::assertSame(1, $factory->calls);

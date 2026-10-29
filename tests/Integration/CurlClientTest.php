@@ -176,7 +176,7 @@ final class CurlClientTest extends TestCase
     public function testTheSdkWorksOutOfTheBoxOverRealHttp(): void
     {
         \assert(self::$server !== null);
-        $client = new ShieldLabs(['api_key' => Clients::API_KEY, 'base_url' => self::$server->url . '/api/']);
+        $client = new ShieldLabs(['api_key' => Clients::API_KEY, 'domain_id' => Clients::DOMAIN_ID, 'base_url' => self::$server->url . '/api/']);
 
         $page = $client->history->search(LookupType::DeviceId, 'ac7c303d-971b-41d1-8e25-cd5b46b46aed');
 
@@ -188,7 +188,7 @@ final class CurlClientTest extends TestCase
     public function testTheSdkMapsARealAuthenticationError(): void
     {
         \assert(self::$server !== null);
-        $client = new ShieldLabs(['api_key' => 'sec_zzzz0000-zzzz0000-zzzz0000', 'base_url' => self::$server->url]);
+        $client = new ShieldLabs(['api_key' => 'sec_zzzz0000-zzzz0000-zzzz0000', 'domain_id' => Clients::DOMAIN_ID, 'base_url' => self::$server->url]);
 
         try {
             $client->history->search(LookupType::Ip, '192.0.2.1');
@@ -201,7 +201,7 @@ final class CurlClientTest extends TestCase
     public function testTheSdkSendsUserHidsInCanonicalPathForm(): void
     {
         \assert(self::$server !== null);
-        $client = new ShieldLabs(['api_key' => Clients::API_KEY, 'base_url' => self::$server->url . '/capture', 'max_retries' => 0]);
+        $client = new ShieldLabs(['api_key' => Clients::API_KEY, 'domain_id' => Clients::DOMAIN_ID, 'base_url' => self::$server->url . '/capture', 'max_retries' => 0]);
 
         foreach ([
             ['jane.doe+test@example.com', 'jane.doe+test@example.com'],
@@ -214,7 +214,7 @@ final class CurlClientTest extends TestCase
                 $client->history->search(LookupType::UserHid, $userHid);
                 self::fail('Expected the capture route to answer 400');
             } catch (BadRequestException $exception) {
-                self::assertSame('/capture/api/v1/history/user_hid/' . $segment . '?limit=20&offset=0', $exception->getErrorMessage());
+                self::assertSame('/capture/api/v1/domains/11111111-1111-4111-8111-111111111111/history/user/' . $segment . '?limit=20', $exception->getErrorMessage());
             }
         }
     }
@@ -234,7 +234,7 @@ final class CurlClientTest extends TestCase
 
         try {
             foreach ($cases as $name => [$options, $budget, $expected]) {
-                $client = new ShieldLabs($options + ['api_key' => Clients::API_KEY, 'base_url' => $server->url . '/slowapi']);
+                $client = new ShieldLabs($options + ['api_key' => Clients::API_KEY, 'domain_id' => Clients::DOMAIN_ID, 'base_url' => $server->url . '/slowapi']);
                 $started = microtime(true);
                 try {
                     $client->identifications->get('3b241101-e2bb-4255-8caf-4136c566a962', ['timeout' => $budget]);
@@ -253,7 +253,7 @@ final class CurlClientTest extends TestCase
     public function testTheSdkTimeoutAppliesPerAttempt(): void
     {
         \assert(self::$server !== null);
-        $client = new ShieldLabs(['api_key' => Clients::API_KEY, 'base_url' => self::$server->url . '/slowapi', 'timeout' => 0.3, 'max_retries' => 0]);
+        $client = new ShieldLabs(['api_key' => Clients::API_KEY, 'domain_id' => Clients::DOMAIN_ID, 'base_url' => self::$server->url . '/slowapi', 'timeout' => 0.3, 'max_retries' => 0]);
 
         $this->expectException(ApiTimeoutException::class);
         $client->history->search(LookupType::Ip, '192.0.2.1');

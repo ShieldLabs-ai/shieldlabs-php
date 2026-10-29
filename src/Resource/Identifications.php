@@ -92,7 +92,7 @@ final class Identifications
         $pollInterval = Options::seconds($options, 'poll_interval', self::DEFAULT_POLL_INTERVAL, false);
 
         if (!$wait) {
-            return $this->history->fetch(LookupType::IdentificationId, $identificationId, 1, 0)->data[0] ?? null;
+            return $this->history->fetch(LookupType::IdentificationId, $identificationId, 1)->data[0] ?? null;
         }
 
         $deadline = $this->clock->now() + $timeout;
@@ -101,7 +101,7 @@ final class Identifications
             $attemptTimeout = max($deadline - $this->clock->now(), self::MIN_ATTEMPT_TIMEOUT);
             $error = null;
             try {
-                $page = $this->history->fetch(LookupType::IdentificationId, $identificationId, 1, 0, 0, $attemptTimeout);
+                $page = $this->history->fetch(LookupType::IdentificationId, $identificationId, 1, [], 0, $attemptTimeout);
                 if ($page->data !== []) {
                     return $page->data[0];
                 }

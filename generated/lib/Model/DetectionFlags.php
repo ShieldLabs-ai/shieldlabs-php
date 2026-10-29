@@ -36,7 +36,7 @@ use \ShieldLabs\Generated\ObjectSerializer;
  * DetectionFlags Class Doc Comment
  *
  * @category Class
- * @description Stable yes/no verdicts for the identification. Always all 19 keys. Branch on these flags and on the Risk Score; signal names are for display and logging.  When &#x60;search_bot&#x60; is &#x60;true&#x60;, &#x60;incognito&#x60;, &#x60;check_incomplete&#x60;, &#x60;ip_mismatch&#x60; and &#x60;javascript_disabled&#x60; are always &#x60;false&#x60;.
+ * @description The 20 public detection signals in scored webhook contract 2026-10-13. os_mismatch is true when either OS detector fired. browser_vpn_proxy contributes to vpn and is not its own flag. Groups and owner attribution are separate from this set.
  * @package  ShieldLabs\Generated
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -60,23 +60,25 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $openAPITypes = [
         'vpn' => 'bool',
-        'privacy_relay' => 'bool',
-        'browser_vpn_proxy' => 'bool',
-        'tor' => 'bool',
         'proxy' => 'bool',
-        'datacenter_ip' => 'bool',
-        'abuser' => 'bool',
-        'os_mismatch' => 'bool',
+        'private_relay' => 'bool',
+        'check_incomplete' => 'bool',
+        'network_check_incomplete' => 'bool',
         'os_not_detected' => 'bool',
         'timezone_mismatch' => 'bool',
-        'anti_detect_browser' => 'bool',
-        'browser_automation' => 'bool',
+        'javascript_disabled' => 'bool',
+        'os_mismatch' => 'bool',
         'ip_mismatch' => 'bool',
+        'latency_test' => 'bool',
+        'anti_detect_browser' => 'bool',
+        'device_spoofing' => 'bool',
+        'rate_limited' => 'bool',
         'incognito' => 'bool',
         'search_bot' => 'bool',
-        'javascript_disabled' => 'bool',
-        'stun_not_checked' => 'bool',
-        'check_incomplete' => 'bool'
+        'ai_bot' => 'bool',
+        'browser_automation' => 'bool',
+        'ai_browser' => 'bool',
+        'tor' => 'bool'
     ];
 
     /**
@@ -88,23 +90,25 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $openAPIFormats = [
         'vpn' => null,
-        'privacy_relay' => null,
-        'browser_vpn_proxy' => null,
-        'tor' => null,
         'proxy' => null,
-        'datacenter_ip' => null,
-        'abuser' => null,
-        'os_mismatch' => null,
+        'private_relay' => null,
+        'check_incomplete' => null,
+        'network_check_incomplete' => null,
         'os_not_detected' => null,
         'timezone_mismatch' => null,
-        'anti_detect_browser' => null,
-        'browser_automation' => null,
+        'javascript_disabled' => null,
+        'os_mismatch' => null,
         'ip_mismatch' => null,
+        'latency_test' => null,
+        'anti_detect_browser' => null,
+        'device_spoofing' => null,
+        'rate_limited' => null,
         'incognito' => null,
         'search_bot' => null,
-        'javascript_disabled' => null,
-        'stun_not_checked' => null,
-        'check_incomplete' => null
+        'ai_bot' => null,
+        'browser_automation' => null,
+        'ai_browser' => null,
+        'tor' => null
     ];
 
     /**
@@ -114,23 +118,25 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static array $openAPINullables = [
         'vpn' => false,
-        'privacy_relay' => false,
-        'browser_vpn_proxy' => false,
-        'tor' => false,
         'proxy' => false,
-        'datacenter_ip' => false,
-        'abuser' => false,
-        'os_mismatch' => false,
+        'private_relay' => false,
+        'check_incomplete' => false,
+        'network_check_incomplete' => false,
         'os_not_detected' => false,
         'timezone_mismatch' => false,
-        'anti_detect_browser' => false,
-        'browser_automation' => false,
+        'javascript_disabled' => false,
+        'os_mismatch' => false,
         'ip_mismatch' => false,
+        'latency_test' => false,
+        'anti_detect_browser' => false,
+        'device_spoofing' => false,
+        'rate_limited' => false,
         'incognito' => false,
         'search_bot' => false,
-        'javascript_disabled' => false,
-        'stun_not_checked' => false,
-        'check_incomplete' => false
+        'ai_bot' => false,
+        'browser_automation' => false,
+        'ai_browser' => false,
+        'tor' => false
     ];
 
     /**
@@ -220,23 +226,25 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $attributeMap = [
         'vpn' => 'vpn',
-        'privacy_relay' => 'privacy_relay',
-        'browser_vpn_proxy' => 'browser_vpn_proxy',
-        'tor' => 'tor',
         'proxy' => 'proxy',
-        'datacenter_ip' => 'datacenter_ip',
-        'abuser' => 'abuser',
-        'os_mismatch' => 'os_mismatch',
+        'private_relay' => 'private_relay',
+        'check_incomplete' => 'check_incomplete',
+        'network_check_incomplete' => 'network_check_incomplete',
         'os_not_detected' => 'os_not_detected',
         'timezone_mismatch' => 'timezone_mismatch',
-        'anti_detect_browser' => 'anti_detect_browser',
-        'browser_automation' => 'browser_automation',
+        'javascript_disabled' => 'javascript_disabled',
+        'os_mismatch' => 'os_mismatch',
         'ip_mismatch' => 'ip_mismatch',
+        'latency_test' => 'latency_test',
+        'anti_detect_browser' => 'anti_detect_browser',
+        'device_spoofing' => 'device_spoofing',
+        'rate_limited' => 'rate_limited',
         'incognito' => 'incognito',
         'search_bot' => 'search_bot',
-        'javascript_disabled' => 'javascript_disabled',
-        'stun_not_checked' => 'stun_not_checked',
-        'check_incomplete' => 'check_incomplete'
+        'ai_bot' => 'ai_bot',
+        'browser_automation' => 'browser_automation',
+        'ai_browser' => 'ai_browser',
+        'tor' => 'tor'
     ];
 
     /**
@@ -246,23 +254,25 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $setters = [
         'vpn' => 'setVpn',
-        'privacy_relay' => 'setPrivacyRelay',
-        'browser_vpn_proxy' => 'setBrowserVpnProxy',
-        'tor' => 'setTor',
         'proxy' => 'setProxy',
-        'datacenter_ip' => 'setDatacenterIp',
-        'abuser' => 'setAbuser',
-        'os_mismatch' => 'setOsMismatch',
+        'private_relay' => 'setPrivateRelay',
+        'check_incomplete' => 'setCheckIncomplete',
+        'network_check_incomplete' => 'setNetworkCheckIncomplete',
         'os_not_detected' => 'setOsNotDetected',
         'timezone_mismatch' => 'setTimezoneMismatch',
-        'anti_detect_browser' => 'setAntiDetectBrowser',
-        'browser_automation' => 'setBrowserAutomation',
+        'javascript_disabled' => 'setJavascriptDisabled',
+        'os_mismatch' => 'setOsMismatch',
         'ip_mismatch' => 'setIpMismatch',
+        'latency_test' => 'setLatencyTest',
+        'anti_detect_browser' => 'setAntiDetectBrowser',
+        'device_spoofing' => 'setDeviceSpoofing',
+        'rate_limited' => 'setRateLimited',
         'incognito' => 'setIncognito',
         'search_bot' => 'setSearchBot',
-        'javascript_disabled' => 'setJavascriptDisabled',
-        'stun_not_checked' => 'setStunNotChecked',
-        'check_incomplete' => 'setCheckIncomplete'
+        'ai_bot' => 'setAiBot',
+        'browser_automation' => 'setBrowserAutomation',
+        'ai_browser' => 'setAiBrowser',
+        'tor' => 'setTor'
     ];
 
     /**
@@ -272,23 +282,25 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $getters = [
         'vpn' => 'getVpn',
-        'privacy_relay' => 'getPrivacyRelay',
-        'browser_vpn_proxy' => 'getBrowserVpnProxy',
-        'tor' => 'getTor',
         'proxy' => 'getProxy',
-        'datacenter_ip' => 'getDatacenterIp',
-        'abuser' => 'getAbuser',
-        'os_mismatch' => 'getOsMismatch',
+        'private_relay' => 'getPrivateRelay',
+        'check_incomplete' => 'getCheckIncomplete',
+        'network_check_incomplete' => 'getNetworkCheckIncomplete',
         'os_not_detected' => 'getOsNotDetected',
         'timezone_mismatch' => 'getTimezoneMismatch',
-        'anti_detect_browser' => 'getAntiDetectBrowser',
-        'browser_automation' => 'getBrowserAutomation',
+        'javascript_disabled' => 'getJavascriptDisabled',
+        'os_mismatch' => 'getOsMismatch',
         'ip_mismatch' => 'getIpMismatch',
+        'latency_test' => 'getLatencyTest',
+        'anti_detect_browser' => 'getAntiDetectBrowser',
+        'device_spoofing' => 'getDeviceSpoofing',
+        'rate_limited' => 'getRateLimited',
         'incognito' => 'getIncognito',
         'search_bot' => 'getSearchBot',
-        'javascript_disabled' => 'getJavascriptDisabled',
-        'stun_not_checked' => 'getStunNotChecked',
-        'check_incomplete' => 'getCheckIncomplete'
+        'ai_bot' => 'getAiBot',
+        'browser_automation' => 'getBrowserAutomation',
+        'ai_browser' => 'getAiBrowser',
+        'tor' => 'getTor'
     ];
 
     /**
@@ -349,23 +361,25 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     public function __construct(?array $data = null)
     {
         $this->setIfExists('vpn', $data ?? [], null);
-        $this->setIfExists('privacy_relay', $data ?? [], null);
-        $this->setIfExists('browser_vpn_proxy', $data ?? [], null);
-        $this->setIfExists('tor', $data ?? [], null);
         $this->setIfExists('proxy', $data ?? [], null);
-        $this->setIfExists('datacenter_ip', $data ?? [], null);
-        $this->setIfExists('abuser', $data ?? [], null);
-        $this->setIfExists('os_mismatch', $data ?? [], null);
+        $this->setIfExists('private_relay', $data ?? [], null);
+        $this->setIfExists('check_incomplete', $data ?? [], null);
+        $this->setIfExists('network_check_incomplete', $data ?? [], null);
         $this->setIfExists('os_not_detected', $data ?? [], null);
         $this->setIfExists('timezone_mismatch', $data ?? [], null);
-        $this->setIfExists('anti_detect_browser', $data ?? [], null);
-        $this->setIfExists('browser_automation', $data ?? [], null);
+        $this->setIfExists('javascript_disabled', $data ?? [], null);
+        $this->setIfExists('os_mismatch', $data ?? [], null);
         $this->setIfExists('ip_mismatch', $data ?? [], null);
+        $this->setIfExists('latency_test', $data ?? [], null);
+        $this->setIfExists('anti_detect_browser', $data ?? [], null);
+        $this->setIfExists('device_spoofing', $data ?? [], null);
+        $this->setIfExists('rate_limited', $data ?? [], null);
         $this->setIfExists('incognito', $data ?? [], null);
         $this->setIfExists('search_bot', $data ?? [], null);
-        $this->setIfExists('javascript_disabled', $data ?? [], null);
-        $this->setIfExists('stun_not_checked', $data ?? [], null);
-        $this->setIfExists('check_incomplete', $data ?? [], null);
+        $this->setIfExists('ai_bot', $data ?? [], null);
+        $this->setIfExists('browser_automation', $data ?? [], null);
+        $this->setIfExists('ai_browser', $data ?? [], null);
+        $this->setIfExists('tor', $data ?? [], null);
     }
 
     /**
@@ -398,26 +412,17 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['vpn'] === null) {
             $invalidProperties[] = "'vpn' can't be null";
         }
-        if ($this->container['privacy_relay'] === null) {
-            $invalidProperties[] = "'privacy_relay' can't be null";
-        }
-        if ($this->container['browser_vpn_proxy'] === null) {
-            $invalidProperties[] = "'browser_vpn_proxy' can't be null";
-        }
-        if ($this->container['tor'] === null) {
-            $invalidProperties[] = "'tor' can't be null";
-        }
         if ($this->container['proxy'] === null) {
             $invalidProperties[] = "'proxy' can't be null";
         }
-        if ($this->container['datacenter_ip'] === null) {
-            $invalidProperties[] = "'datacenter_ip' can't be null";
+        if ($this->container['private_relay'] === null) {
+            $invalidProperties[] = "'private_relay' can't be null";
         }
-        if ($this->container['abuser'] === null) {
-            $invalidProperties[] = "'abuser' can't be null";
+        if ($this->container['check_incomplete'] === null) {
+            $invalidProperties[] = "'check_incomplete' can't be null";
         }
-        if ($this->container['os_mismatch'] === null) {
-            $invalidProperties[] = "'os_mismatch' can't be null";
+        if ($this->container['network_check_incomplete'] === null) {
+            $invalidProperties[] = "'network_check_incomplete' can't be null";
         }
         if ($this->container['os_not_detected'] === null) {
             $invalidProperties[] = "'os_not_detected' can't be null";
@@ -425,14 +430,26 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['timezone_mismatch'] === null) {
             $invalidProperties[] = "'timezone_mismatch' can't be null";
         }
-        if ($this->container['anti_detect_browser'] === null) {
-            $invalidProperties[] = "'anti_detect_browser' can't be null";
+        if ($this->container['javascript_disabled'] === null) {
+            $invalidProperties[] = "'javascript_disabled' can't be null";
         }
-        if ($this->container['browser_automation'] === null) {
-            $invalidProperties[] = "'browser_automation' can't be null";
+        if ($this->container['os_mismatch'] === null) {
+            $invalidProperties[] = "'os_mismatch' can't be null";
         }
         if ($this->container['ip_mismatch'] === null) {
             $invalidProperties[] = "'ip_mismatch' can't be null";
+        }
+        if ($this->container['latency_test'] === null) {
+            $invalidProperties[] = "'latency_test' can't be null";
+        }
+        if ($this->container['anti_detect_browser'] === null) {
+            $invalidProperties[] = "'anti_detect_browser' can't be null";
+        }
+        if ($this->container['device_spoofing'] === null) {
+            $invalidProperties[] = "'device_spoofing' can't be null";
+        }
+        if ($this->container['rate_limited'] === null) {
+            $invalidProperties[] = "'rate_limited' can't be null";
         }
         if ($this->container['incognito'] === null) {
             $invalidProperties[] = "'incognito' can't be null";
@@ -440,14 +457,17 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['search_bot'] === null) {
             $invalidProperties[] = "'search_bot' can't be null";
         }
-        if ($this->container['javascript_disabled'] === null) {
-            $invalidProperties[] = "'javascript_disabled' can't be null";
+        if ($this->container['ai_bot'] === null) {
+            $invalidProperties[] = "'ai_bot' can't be null";
         }
-        if ($this->container['stun_not_checked'] === null) {
-            $invalidProperties[] = "'stun_not_checked' can't be null";
+        if ($this->container['browser_automation'] === null) {
+            $invalidProperties[] = "'browser_automation' can't be null";
         }
-        if ($this->container['check_incomplete'] === null) {
-            $invalidProperties[] = "'check_incomplete' can't be null";
+        if ($this->container['ai_browser'] === null) {
+            $invalidProperties[] = "'ai_browser' can't be null";
+        }
+        if ($this->container['tor'] === null) {
+            $invalidProperties[] = "'tor' can't be null";
         }
         return $invalidProperties;
     }
@@ -477,7 +497,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets vpn
      *
-     * @param bool $vpn A VPN was detected (scored `vpn` signal).
+     * @param bool $vpn A VPN was detected, including a VPN or proxy built into the browser. connection_type may still be browser_vpn_proxy.
      *
      * @return self
      */
@@ -487,87 +507,6 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable vpn cannot be null');
         }
         $this->container['vpn'] = $vpn;
-
-        return $this;
-    }
-
-    /**
-     * Gets privacy_relay
-     *
-     * @return bool
-     */
-    public function getPrivacyRelay()
-    {
-        return $this->container['privacy_relay'];
-    }
-
-    /**
-     * Sets privacy_relay
-     *
-     * @param bool $privacy_relay A privacy relay such as iCloud Private Relay was detected.
-     *
-     * @return self
-     */
-    public function setPrivacyRelay($privacy_relay)
-    {
-        if (is_null($privacy_relay)) {
-            throw new \InvalidArgumentException('non-nullable privacy_relay cannot be null');
-        }
-        $this->container['privacy_relay'] = $privacy_relay;
-
-        return $this;
-    }
-
-    /**
-     * Gets browser_vpn_proxy
-     *
-     * @return bool
-     */
-    public function getBrowserVpnProxy()
-    {
-        return $this->container['browser_vpn_proxy'];
-    }
-
-    /**
-     * Sets browser_vpn_proxy
-     *
-     * @param bool $browser_vpn_proxy A VPN or proxy built into the browser or one of its extensions. `true` exactly when `connection_type` is `browser_vpn_proxy`.
-     *
-     * @return self
-     */
-    public function setBrowserVpnProxy($browser_vpn_proxy)
-    {
-        if (is_null($browser_vpn_proxy)) {
-            throw new \InvalidArgumentException('non-nullable browser_vpn_proxy cannot be null');
-        }
-        $this->container['browser_vpn_proxy'] = $browser_vpn_proxy;
-
-        return $this;
-    }
-
-    /**
-     * Gets tor
-     *
-     * @return bool
-     */
-    public function getTor()
-    {
-        return $this->container['tor'];
-    }
-
-    /**
-     * Sets tor
-     *
-     * @param bool $tor The request came through the Tor network.
-     *
-     * @return self
-     */
-    public function setTor($tor)
-    {
-        if (is_null($tor)) {
-            throw new \InvalidArgumentException('non-nullable tor cannot be null');
-        }
-        $this->container['tor'] = $tor;
 
         return $this;
     }
@@ -600,82 +539,82 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-     * Gets datacenter_ip
+     * Gets private_relay
      *
      * @return bool
      */
-    public function getDatacenterIp()
+    public function getPrivateRelay()
     {
-        return $this->container['datacenter_ip'];
+        return $this->container['private_relay'];
     }
 
     /**
-     * Sets datacenter_ip
+     * Sets private_relay
      *
-     * @param bool $datacenter_ip The public IP belongs to a datacenter or hosting range.
+     * @param bool $private_relay A privacy relay such as iCloud Private Relay was detected. Older payloads used privacy_relay.
      *
      * @return self
      */
-    public function setDatacenterIp($datacenter_ip)
+    public function setPrivateRelay($private_relay)
     {
-        if (is_null($datacenter_ip)) {
-            throw new \InvalidArgumentException('non-nullable datacenter_ip cannot be null');
+        if (is_null($private_relay)) {
+            throw new \InvalidArgumentException('non-nullable private_relay cannot be null');
         }
-        $this->container['datacenter_ip'] = $datacenter_ip;
+        $this->container['private_relay'] = $private_relay;
 
         return $this;
     }
 
     /**
-     * Gets abuser
+     * Gets check_incomplete
      *
      * @return bool
      */
-    public function getAbuser()
+    public function getCheckIncomplete()
     {
-        return $this->container['abuser'];
+        return $this->container['check_incomplete'];
     }
 
     /**
-     * Sets abuser
+     * Sets check_incomplete
      *
-     * @param bool $abuser The public IP has a record of abuse in IP intelligence.
+     * @param bool $check_incomplete Part of the browser checks timed out, so the verdict rests on partial data. Informational. Weight 0, and present in signals when true. False for a search-engine crawler, an AI bot, or an AI browser.
      *
      * @return self
      */
-    public function setAbuser($abuser)
+    public function setCheckIncomplete($check_incomplete)
     {
-        if (is_null($abuser)) {
-            throw new \InvalidArgumentException('non-nullable abuser cannot be null');
+        if (is_null($check_incomplete)) {
+            throw new \InvalidArgumentException('non-nullable check_incomplete cannot be null');
         }
-        $this->container['abuser'] = $abuser;
+        $this->container['check_incomplete'] = $check_incomplete;
 
         return $this;
     }
 
     /**
-     * Gets os_mismatch
+     * Gets network_check_incomplete
      *
      * @return bool
      */
-    public function getOsMismatch()
+    public function getNetworkCheckIncomplete()
     {
-        return $this->container['os_mismatch'];
+        return $this->container['network_check_incomplete'];
     }
 
     /**
-     * Sets os_mismatch
+     * Sets network_check_incomplete
      *
-     * @param bool $os_mismatch The operating system seen on the network differs from the one the browser reports.
+     * @param bool $network_check_incomplete The browser network (STUN) check did not complete. Cleared again when a late network result arrives. Older payloads used stun_not_checked.
      *
      * @return self
      */
-    public function setOsMismatch($os_mismatch)
+    public function setNetworkCheckIncomplete($network_check_incomplete)
     {
-        if (is_null($os_mismatch)) {
-            throw new \InvalidArgumentException('non-nullable os_mismatch cannot be null');
+        if (is_null($network_check_incomplete)) {
+            throw new \InvalidArgumentException('non-nullable network_check_incomplete cannot be null');
         }
-        $this->container['os_mismatch'] = $os_mismatch;
+        $this->container['network_check_incomplete'] = $network_check_incomplete;
 
         return $this;
     }
@@ -735,6 +674,114 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
+     * Gets javascript_disabled
+     *
+     * @return bool
+     */
+    public function getJavascriptDisabled()
+    {
+        return $this->container['javascript_disabled'];
+    }
+
+    /**
+     * Sets javascript_disabled
+     *
+     * @param bool $javascript_disabled JavaScript, or the browser APIs the checks need, were unavailable. False for a search-engine crawler, an AI bot, or an AI browser.
+     *
+     * @return self
+     */
+    public function setJavascriptDisabled($javascript_disabled)
+    {
+        if (is_null($javascript_disabled)) {
+            throw new \InvalidArgumentException('non-nullable javascript_disabled cannot be null');
+        }
+        $this->container['javascript_disabled'] = $javascript_disabled;
+
+        return $this;
+    }
+
+    /**
+     * Gets os_mismatch
+     *
+     * @return bool
+     */
+    public function getOsMismatch()
+    {
+        return $this->container['os_mismatch'];
+    }
+
+    /**
+     * Sets os_mismatch
+     *
+     * @param bool $os_mismatch Either operating-system consistency detector fired. The two detectors are not separate public flags.
+     *
+     * @return self
+     */
+    public function setOsMismatch($os_mismatch)
+    {
+        if (is_null($os_mismatch)) {
+            throw new \InvalidArgumentException('non-nullable os_mismatch cannot be null');
+        }
+        $this->container['os_mismatch'] = $os_mismatch;
+
+        return $this;
+    }
+
+    /**
+     * Gets ip_mismatch
+     *
+     * @return bool
+     */
+    public function getIpMismatch()
+    {
+        return $this->container['ip_mismatch'];
+    }
+
+    /**
+     * Sets ip_mismatch
+     *
+     * @param bool $ip_mismatch A qualifying mismatch between the public IP and the browser's network evidence was detected. Nominal weight 45; read the returned Risk Score. False for a search-engine crawler, an AI bot, or an AI browser.
+     *
+     * @return self
+     */
+    public function setIpMismatch($ip_mismatch)
+    {
+        if (is_null($ip_mismatch)) {
+            throw new \InvalidArgumentException('non-nullable ip_mismatch cannot be null');
+        }
+        $this->container['ip_mismatch'] = $ip_mismatch;
+
+        return $this;
+    }
+
+    /**
+     * Gets latency_test
+     *
+     * @return bool
+     */
+    public function getLatencyTest()
+    {
+        return $this->container['latency_test'];
+    }
+
+    /**
+     * Sets latency_test
+     *
+     * @param bool $latency_test The WebSocket-to-TCP latency test fired. Older payloads used ws_tcp_latency.
+     *
+     * @return self
+     */
+    public function setLatencyTest($latency_test)
+    {
+        if (is_null($latency_test)) {
+            throw new \InvalidArgumentException('non-nullable latency_test cannot be null');
+        }
+        $this->container['latency_test'] = $latency_test;
+
+        return $this;
+    }
+
+    /**
      * Gets anti_detect_browser
      *
      * @return bool
@@ -762,55 +809,55 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-     * Gets browser_automation
+     * Gets device_spoofing
      *
      * @return bool
      */
-    public function getBrowserAutomation()
+    public function getDeviceSpoofing()
     {
-        return $this->container['browser_automation'];
+        return $this->container['device_spoofing'];
     }
 
     /**
-     * Sets browser_automation
+     * Sets device_spoofing
      *
-     * @param bool $browser_automation Browser automation was detected, for example a WebDriver-controlled browser.
+     * @param bool $device_spoofing device_spoofing
      *
      * @return self
      */
-    public function setBrowserAutomation($browser_automation)
+    public function setDeviceSpoofing($device_spoofing)
     {
-        if (is_null($browser_automation)) {
-            throw new \InvalidArgumentException('non-nullable browser_automation cannot be null');
+        if (is_null($device_spoofing)) {
+            throw new \InvalidArgumentException('non-nullable device_spoofing cannot be null');
         }
-        $this->container['browser_automation'] = $browser_automation;
+        $this->container['device_spoofing'] = $device_spoofing;
 
         return $this;
     }
 
     /**
-     * Gets ip_mismatch
+     * Gets rate_limited
      *
      * @return bool
      */
-    public function getIpMismatch()
+    public function getRateLimited()
     {
-        return $this->container['ip_mismatch'];
+        return $this->container['rate_limited'];
     }
 
     /**
-     * Sets ip_mismatch
+     * Sets rate_limited
      *
-     * @param bool $ip_mismatch The public IP differs from the local IP found by the browser network check. Informational: it does not add to the score.
+     * @param bool $rate_limited The visitor exceeded the identification rate limit. Older payloads used banned_ip.
      *
      * @return self
      */
-    public function setIpMismatch($ip_mismatch)
+    public function setRateLimited($rate_limited)
     {
-        if (is_null($ip_mismatch)) {
-            throw new \InvalidArgumentException('non-nullable ip_mismatch cannot be null');
+        if (is_null($rate_limited)) {
+            throw new \InvalidArgumentException('non-nullable rate_limited cannot be null');
         }
-        $this->container['ip_mismatch'] = $ip_mismatch;
+        $this->container['rate_limited'] = $rate_limited;
 
         return $this;
     }
@@ -828,7 +875,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets incognito
      *
-     * @param bool $incognito The browser runs in a private window.
+     * @param bool $incognito The browser runs in a private window. False for a search-engine crawler, an AI bot, or an AI browser. Weight 0, and present in signals when true.
      *
      * @return self
      */
@@ -855,7 +902,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets search_bot
      *
-     * @param bool $search_bot A search-engine crawler. Its Risk Score is always 0.
+     * @param bool $search_bot A search-engine crawler. Its Risk Score is always 0. Weight 0, and present in signals when true.
      *
      * @return self
      */
@@ -870,82 +917,109 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-     * Gets javascript_disabled
+     * Gets ai_bot
      *
      * @return bool
      */
-    public function getJavascriptDisabled()
+    public function getAiBot()
     {
-        return $this->container['javascript_disabled'];
+        return $this->container['ai_bot'];
     }
 
     /**
-     * Sets javascript_disabled
+     * Sets ai_bot
      *
-     * @param bool $javascript_disabled JavaScript, or the browser APIs the checks need, were unavailable.
+     * @param bool $ai_bot A recognized AI bot or crawler. Its Risk Score is always 0. ShieldLabs identifies the provider when available. Weight 0, and present in signals when true.
      *
      * @return self
      */
-    public function setJavascriptDisabled($javascript_disabled)
+    public function setAiBot($ai_bot)
     {
-        if (is_null($javascript_disabled)) {
-            throw new \InvalidArgumentException('non-nullable javascript_disabled cannot be null');
+        if (is_null($ai_bot)) {
+            throw new \InvalidArgumentException('non-nullable ai_bot cannot be null');
         }
-        $this->container['javascript_disabled'] = $javascript_disabled;
+        $this->container['ai_bot'] = $ai_bot;
 
         return $this;
     }
 
     /**
-     * Gets stun_not_checked
+     * Gets browser_automation
      *
      * @return bool
      */
-    public function getStunNotChecked()
+    public function getBrowserAutomation()
     {
-        return $this->container['stun_not_checked'];
+        return $this->container['browser_automation'];
     }
 
     /**
-     * Sets stun_not_checked
+     * Sets browser_automation
      *
-     * @param bool $stun_not_checked The browser network (STUN) check did not complete. Cleared again when a late network result arrives.
+     * @param bool $browser_automation Browser automation was detected, for example a WebDriver-controlled browser. Catalogue weight is 90 for task 204 scoring releases; historical result versions may retain the earlier weight 60.
      *
      * @return self
      */
-    public function setStunNotChecked($stun_not_checked)
+    public function setBrowserAutomation($browser_automation)
     {
-        if (is_null($stun_not_checked)) {
-            throw new \InvalidArgumentException('non-nullable stun_not_checked cannot be null');
+        if (is_null($browser_automation)) {
+            throw new \InvalidArgumentException('non-nullable browser_automation cannot be null');
         }
-        $this->container['stun_not_checked'] = $stun_not_checked;
+        $this->container['browser_automation'] = $browser_automation;
 
         return $this;
     }
 
     /**
-     * Gets check_incomplete
+     * Gets ai_browser
      *
      * @return bool
      */
-    public function getCheckIncomplete()
+    public function getAiBrowser()
     {
-        return $this->container['check_incomplete'];
+        return $this->container['ai_browser'];
     }
 
     /**
-     * Sets check_incomplete
+     * Sets ai_browser
      *
-     * @param bool $check_incomplete Part of the browser checks timed out, so the verdict rests on partial data. Informational.
+     * @param bool $ai_browser A recognized AI browser. Its Risk Score is always 0. ShieldLabs identifies the provider when available. Weight 0, and present in signals when true.
      *
      * @return self
      */
-    public function setCheckIncomplete($check_incomplete)
+    public function setAiBrowser($ai_browser)
     {
-        if (is_null($check_incomplete)) {
-            throw new \InvalidArgumentException('non-nullable check_incomplete cannot be null');
+        if (is_null($ai_browser)) {
+            throw new \InvalidArgumentException('non-nullable ai_browser cannot be null');
         }
-        $this->container['check_incomplete'] = $check_incomplete;
+        $this->container['ai_browser'] = $ai_browser;
+
+        return $this;
+    }
+
+    /**
+     * Gets tor
+     *
+     * @return bool
+     */
+    public function getTor()
+    {
+        return $this->container['tor'];
+    }
+
+    /**
+     * Sets tor
+     *
+     * @param bool $tor The request came through the Tor network.
+     *
+     * @return self
+     */
+    public function setTor($tor)
+    {
+        if (is_null($tor)) {
+            throw new \InvalidArgumentException('non-nullable tor cannot be null');
+        }
+        $this->container['tor'] = $tor;
 
         return $this;
     }

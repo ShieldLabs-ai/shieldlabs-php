@@ -538,7 +538,7 @@ class ManagementAPIApi
      * URL: https://api.shieldlabs.ai
      *
      * @param  string $x_shield_domain Your registered domain. The server matches it exactly against the domain registered in the analytics dashboard, so send it normalized: lowercase, without scheme, path, trailing slash or a leading &#x60;www.&#x60; (&#x60;https://www.Example.com/&#x60; becomes &#x60;example.com&#x60;). A missing or wrong value gets a &#x60;401&#x60; with an empty body. (required)
-     * @param  string $type Identifier to search by. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
+     * @param  string $type Identifier to search by. &#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
      * @param  string $value Value of the identifier. UUID types accept a UUID of any version; &#x60;ip&#x60; must be an IP address (an IPv6 address passes validation but then fails with &#x60;400&#x60; and a &#x60;null&#x60; body); &#x60;user_hid&#x60; is free text. (required)
      * @param  int|null $limit Maximum number of identifications, from 1 to 100. Any other value becomes 100. There is no &#x60;offset&#x60;. (optional, default to 100)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
@@ -566,7 +566,7 @@ class ManagementAPIApi
      * URL: https://api.shieldlabs.ai
      *
      * @param  string $x_shield_domain Your registered domain. The server matches it exactly against the domain registered in the analytics dashboard, so send it normalized: lowercase, without scheme, path, trailing slash or a leading &#x60;www.&#x60; (&#x60;https://www.Example.com/&#x60; becomes &#x60;example.com&#x60;). A missing or wrong value gets a &#x60;401&#x60; with an empty body. (required)
-     * @param  string $type Identifier to search by. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
+     * @param  string $type Identifier to search by. &#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
      * @param  string $value Value of the identifier. UUID types accept a UUID of any version; &#x60;ip&#x60; must be an IP address (an IPv6 address passes validation but then fails with &#x60;400&#x60; and a &#x60;null&#x60; body); &#x60;user_hid&#x60; is free text. (required)
      * @param  int|null $limit Maximum number of identifications, from 1 to 100. Any other value becomes 100. There is no &#x60;offset&#x60;. (optional, default to 100)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
@@ -745,7 +745,7 @@ class ManagementAPIApi
      * URL: https://api.shieldlabs.ai
      *
      * @param  string $x_shield_domain Your registered domain. The server matches it exactly against the domain registered in the analytics dashboard, so send it normalized: lowercase, without scheme, path, trailing slash or a leading &#x60;www.&#x60; (&#x60;https://www.Example.com/&#x60; becomes &#x60;example.com&#x60;). A missing or wrong value gets a &#x60;401&#x60; with an empty body. (required)
-     * @param  string $type Identifier to search by. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
+     * @param  string $type Identifier to search by. &#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
      * @param  string $value Value of the identifier. UUID types accept a UUID of any version; &#x60;ip&#x60; must be an IP address (an IPv6 address passes validation but then fails with &#x60;400&#x60; and a &#x60;null&#x60; body); &#x60;user_hid&#x60; is free text. (required)
      * @param  int|null $limit Maximum number of identifications, from 1 to 100. Any other value becomes 100. There is no &#x60;offset&#x60;. (optional, default to 100)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
@@ -776,7 +776,7 @@ class ManagementAPIApi
      * URL: https://api.shieldlabs.ai
      *
      * @param  string $x_shield_domain Your registered domain. The server matches it exactly against the domain registered in the analytics dashboard, so send it normalized: lowercase, without scheme, path, trailing slash or a leading &#x60;www.&#x60; (&#x60;https://www.Example.com/&#x60; becomes &#x60;example.com&#x60;). A missing or wrong value gets a &#x60;401&#x60; with an empty body. (required)
-     * @param  string $type Identifier to search by. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
+     * @param  string $type Identifier to search by. &#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
      * @param  string $value Value of the identifier. UUID types accept a UUID of any version; &#x60;ip&#x60; must be an IP address (an IPv6 address passes validation but then fails with &#x60;400&#x60; and a &#x60;null&#x60; body); &#x60;user_hid&#x60; is free text. (required)
      * @param  int|null $limit Maximum number of identifications, from 1 to 100. Any other value becomes 100. There is no &#x60;offset&#x60;. (optional, default to 100)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
@@ -836,7 +836,7 @@ class ManagementAPIApi
      * URL: https://api.shieldlabs.ai
      *
      * @param  string $x_shield_domain Your registered domain. The server matches it exactly against the domain registered in the analytics dashboard, so send it normalized: lowercase, without scheme, path, trailing slash or a leading &#x60;www.&#x60; (&#x60;https://www.Example.com/&#x60; becomes &#x60;example.com&#x60;). A missing or wrong value gets a &#x60;401&#x60; with an empty body. (required)
-     * @param  string $type Identifier to search by. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
+     * @param  string $type Identifier to search by. &#x60;request_id&#x60; is a legacy alias of &#x60;identification_id&#x60;. Other values get a &#x60;404&#x60; with a bare JSON string such as &#x60;\&quot;auto is not supported\&quot;&#x60;. (required)
      * @param  string $value Value of the identifier. UUID types accept a UUID of any version; &#x60;ip&#x60; must be an IP address (an IPv6 address passes validation but then fails with &#x60;400&#x60; and a &#x60;null&#x60; body); &#x60;user_hid&#x60; is free text. (required)
      * @param  int|null $limit Maximum number of identifications, from 1 to 100. Any other value becomes 100. There is no &#x60;offset&#x60;. (optional, default to 100)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
