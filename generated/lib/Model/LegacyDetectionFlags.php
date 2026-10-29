@@ -81,7 +81,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
         'latency_test' => 'bool',
         'ws_tcp_latency' => 'bool',
         'banned_ip' => 'bool',
-        'rate_limited' => 'bool',
         'ai_bot' => 'bool',
         'ai_browser' => 'bool',
         'os_mismatch2' => 'bool'
@@ -117,7 +116,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
         'latency_test' => null,
         'ws_tcp_latency' => null,
         'banned_ip' => null,
-        'rate_limited' => null,
         'ai_bot' => null,
         'ai_browser' => null,
         'os_mismatch2' => null
@@ -151,7 +149,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
         'latency_test' => false,
         'ws_tcp_latency' => false,
         'banned_ip' => false,
-        'rate_limited' => false,
         'ai_bot' => false,
         'ai_browser' => false,
         'os_mismatch2' => false
@@ -265,7 +262,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
         'latency_test' => 'latency_test',
         'ws_tcp_latency' => 'ws_tcp_latency',
         'banned_ip' => 'banned_ip',
-        'rate_limited' => 'rate_limited',
         'ai_bot' => 'ai_bot',
         'ai_browser' => 'ai_browser',
         'os_mismatch2' => 'os_mismatch2'
@@ -299,7 +295,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
         'latency_test' => 'setLatencyTest',
         'ws_tcp_latency' => 'setWsTcpLatency',
         'banned_ip' => 'setBannedIp',
-        'rate_limited' => 'setRateLimited',
         'ai_bot' => 'setAiBot',
         'ai_browser' => 'setAiBrowser',
         'os_mismatch2' => 'setOsMismatch2'
@@ -333,7 +328,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
         'latency_test' => 'getLatencyTest',
         'ws_tcp_latency' => 'getWsTcpLatency',
         'banned_ip' => 'getBannedIp',
-        'rate_limited' => 'getRateLimited',
         'ai_bot' => 'getAiBot',
         'ai_browser' => 'getAiBrowser',
         'os_mismatch2' => 'getOsMismatch2'
@@ -418,7 +412,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
         $this->setIfExists('latency_test', $data ?? [], null);
         $this->setIfExists('ws_tcp_latency', $data ?? [], null);
         $this->setIfExists('banned_ip', $data ?? [], null);
-        $this->setIfExists('rate_limited', $data ?? [], null);
         $this->setIfExists('ai_bot', $data ?? [], null);
         $this->setIfExists('ai_browser', $data ?? [], null);
         $this->setIfExists('os_mismatch2', $data ?? [], null);
@@ -1097,7 +1090,7 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
     /**
      * Sets banned_ip
      *
-     * @param bool|null $banned_ip Current public name of the banned-IP flag. Payloads from schema 2026-10-13 before the slug rename used rate_limited.
+     * @param bool|null $banned_ip The visitor exceeded the identification rate limit.
      *
      * @return self
      */
@@ -1107,33 +1100,6 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
             throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');
         }
         $this->container['banned_ip'] = $banned_ip;
-
-        return $this;
-    }
-
-    /**
-     * Gets rate_limited
-     *
-     * @return bool|null
-     */
-    public function getRateLimited()
-    {
-        return $this->container['rate_limited'];
-    }
-
-    /**
-     * Sets rate_limited
-     *
-     * @param bool|null $rate_limited Previous public name of the banned-IP flag. Current 2026-10-13 payloads use banned_ip.
-     *
-     * @return self
-     */
-    public function setRateLimited($rate_limited)
-    {
-        if (is_null($rate_limited)) {
-            throw new \InvalidArgumentException('non-nullable rate_limited cannot be null');
-        }
-        $this->container['rate_limited'] = $rate_limited;
 
         return $this;
     }

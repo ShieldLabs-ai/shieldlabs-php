@@ -92,7 +92,7 @@ final class ContractFixturesTest extends TestCase
     {
         self::assertSame($band, Risk::band($score)->value);
         self::assertSame(RiskBand::from($band), RiskBand::fromScore($score));
-        self::assertSame($band === 'rate_limited', Risk::isRateLimited($score));
+        self::assertSame($band === 'banned_ip', Risk::isRateLimited($score));
     }
 
     public function testParsesTheHistoryPage(): void

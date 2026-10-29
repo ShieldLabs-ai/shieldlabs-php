@@ -107,7 +107,7 @@ final class ExampleServerTest extends TestCase
     {
         yield 'dangerous band' => ['22222222-2222-4222-8222-222222222222', 'blocked_band', null];
         yield 'automation flag' => ['33333333-3333-4333-8333-333333333333', 'blocked_flag', 'browser_automation'];
-        yield 'rate-limit marker' => ['44444444-4444-4444-8444-444444444444', 'rate_limited', null];
+        yield 'rate-limit marker' => ['44444444-4444-4444-8444-444444444444', 'banned_ip', null];
         yield 'stale identification' => ['55555555-5555-4555-8555-555555555555', 'stale', null];
     }
 
@@ -182,7 +182,7 @@ final class ExampleServerTest extends TestCase
             [self::TRUSTED, 200, ['ok' => true, 'band' => 'trusted']],
             [self::TRUSTED, 403, ['ok' => false, 'reason' => 'replayed', 'band' => 'trusted', 'flag' => null]],
             ['22222222-2222-4222-8222-222222222222', 403, ['ok' => false, 'reason' => 'blocked_band', 'band' => 'dangerous', 'flag' => null]],
-            ['44444444-4444-4444-8444-444444444444', 403, ['ok' => false, 'reason' => 'rate_limited', 'band' => 'rate_limited', 'flag' => null]],
+            ['44444444-4444-4444-8444-444444444444', 403, ['ok' => false, 'reason' => 'banned_ip', 'band' => 'banned_ip', 'flag' => null]],
             ['not-a-uuid', 400, ['ok' => false, 'error' => 'identificationId must be a UUID']],
         ];
         foreach ($cases as [$identificationId, $status, $expected]) {

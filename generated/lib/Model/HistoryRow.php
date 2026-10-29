@@ -114,7 +114,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'bool',
         'latency_test' => 'bool',
         'device_spoofing' => 'bool',
-        'rate_limited' => 'bool',
+        'banned_ip' => 'bool',
         'ai_bot' => 'bool',
         'ai_browser' => 'bool'
     ];
@@ -182,7 +182,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => null,
         'latency_test' => null,
         'device_spoofing' => null,
-        'rate_limited' => null,
+        'banned_ip' => null,
         'ai_bot' => null,
         'ai_browser' => null
     ];
@@ -248,7 +248,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => false,
         'latency_test' => false,
         'device_spoofing' => false,
-        'rate_limited' => false,
+        'banned_ip' => false,
         'ai_bot' => false,
         'ai_browser' => false
     ];
@@ -394,7 +394,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'ip_mismatch',
         'latency_test' => 'latency_test',
         'device_spoofing' => 'device_spoofing',
-        'rate_limited' => 'rate_limited',
+        'banned_ip' => 'banned_ip',
         'ai_bot' => 'ai_bot',
         'ai_browser' => 'ai_browser'
     ];
@@ -460,7 +460,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'setIpMismatch',
         'latency_test' => 'setLatencyTest',
         'device_spoofing' => 'setDeviceSpoofing',
-        'rate_limited' => 'setRateLimited',
+        'banned_ip' => 'setBannedIp',
         'ai_bot' => 'setAiBot',
         'ai_browser' => 'setAiBrowser'
     ];
@@ -526,7 +526,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         'ip_mismatch' => 'getIpMismatch',
         'latency_test' => 'getLatencyTest',
         'device_spoofing' => 'getDeviceSpoofing',
-        'rate_limited' => 'getRateLimited',
+        'banned_ip' => 'getBannedIp',
         'ai_bot' => 'getAiBot',
         'ai_browser' => 'getAiBrowser'
     ];
@@ -643,7 +643,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('ip_mismatch', $data ?? [], null);
         $this->setIfExists('latency_test', $data ?? [], null);
         $this->setIfExists('device_spoofing', $data ?? [], null);
-        $this->setIfExists('rate_limited', $data ?? [], null);
+        $this->setIfExists('banned_ip', $data ?? [], null);
         $this->setIfExists('ai_bot', $data ?? [], null);
         $this->setIfExists('ai_browser', $data ?? [], null);
     }
@@ -785,8 +785,8 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['device_spoofing'] === null) {
             $invalidProperties[] = "'device_spoofing' can't be null";
         }
-        if ($this->container['rate_limited'] === null) {
-            $invalidProperties[] = "'rate_limited' can't be null";
+        if ($this->container['banned_ip'] === null) {
+            $invalidProperties[] = "'banned_ip' can't be null";
         }
         if ($this->container['ai_bot'] === null) {
             $invalidProperties[] = "'ai_bot' can't be null";
@@ -1227,7 +1227,7 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets score
      *
-     * @param int $score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"rate_limited\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; Identification IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
+     * @param int $score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"banned_ip\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; Identification IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
      *
      * @return self
      */
@@ -2305,28 +2305,28 @@ class HistoryRow implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-     * Gets rate_limited
+     * Gets banned_ip
      *
      * @return bool
      */
-    public function getRateLimited()
+    public function getBannedIp()
     {
-        return $this->container['rate_limited'];
+        return $this->container['banned_ip'];
     }
 
     /**
-     * Sets rate_limited
+     * Sets banned_ip
      *
-     * @param bool $rate_limited Same meaning as `detection_flags.rate_limited`. Older payloads used banned_ip.
+     * @param bool $banned_ip Same meaning as `detection_flags.banned_ip`.
      *
      * @return self
      */
-    public function setRateLimited($rate_limited)
+    public function setBannedIp($banned_ip)
     {
-        if (is_null($rate_limited)) {
-            throw new \InvalidArgumentException('non-nullable rate_limited cannot be null');
+        if (is_null($banned_ip)) {
+            throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');
         }
-        $this->container['rate_limited'] = $rate_limited;
+        $this->container['banned_ip'] = $banned_ip;
 
         return $this;
     }

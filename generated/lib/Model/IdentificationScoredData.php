@@ -957,7 +957,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets risk_score
      *
-     * @param int $risk_score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"rate_limited\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; Identification IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
+     * @param int $risk_score Risk Score from 0 (no risk found) to 100. Search-engine crawlers always score 0.  Risk bands are computed on your side from the score; no band field exists on the wire: - trusted: 0-29 - suspicious: 30-59 - dangerous: 60-100  A value above 100 is not a score. `999` is the rate-limit marker: the visitor's IP went over the ingest rate limit, and the identification carries exactly one signal, `{\"name\":\"banned_ip\",\"weight\":999}`, usually with nil identifiers. Treat every value above 100 as rate limited. One marker is written when the IP goes over the limit; Identification IDs issued while it stays blocked get no row and no webhook, so they stay unverified.  The score usually equals the sum of the signal weights capped at 100, but carried-forward verdicts and corrections make that unreliable: never recompute or validate it yourself.
      *
      * @return self
      */
@@ -989,7 +989,7 @@ class IdentificationScoredData implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets signals
      *
-     * @param \ShieldLabs\Generated\Model\Signal[] $signals Weighted risk signals behind `risk_score`, in scoring order. Can be empty. The rate-limit marker carries exactly one entry, `{\"name\":\"rate_limited\",\"weight\":999}`.
+     * @param \ShieldLabs\Generated\Model\Signal[] $signals Weighted risk signals behind `risk_score`, in scoring order. Can be empty. The rate-limit marker carries exactly one entry, `{\"name\":\"banned_ip\",\"weight\":999}`.
      *
      * @return self
      */

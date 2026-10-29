@@ -47,7 +47,7 @@ final class Risk
      * 1. no identification: `missing` (unverified, never "clean")
      * 2. `is_replay($identificationId)` returns true: `replayed` (the SDK stores nothing itself)
      * 3. older than `max_age` seconds by `observed_at`: `stale`
-     * 4. score above 100 (rate-limit marker): `rate_limited`
+     * 4. score above 100 (rate-limit marker): `banned_ip`
      * 5. all-zero device ID: `no_device_signals`
      * 6. any flag in `block_flags`: `blocked_flag`
      * 7. band in `block_bands`: `blocked_band`

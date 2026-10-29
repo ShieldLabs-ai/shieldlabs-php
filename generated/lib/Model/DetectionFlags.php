@@ -72,7 +72,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'latency_test' => 'bool',
         'anti_detect_browser' => 'bool',
         'device_spoofing' => 'bool',
-        'rate_limited' => 'bool',
+        'banned_ip' => 'bool',
         'incognito' => 'bool',
         'search_bot' => 'bool',
         'ai_bot' => 'bool',
@@ -102,7 +102,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'latency_test' => null,
         'anti_detect_browser' => null,
         'device_spoofing' => null,
-        'rate_limited' => null,
+        'banned_ip' => null,
         'incognito' => null,
         'search_bot' => null,
         'ai_bot' => null,
@@ -130,7 +130,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'latency_test' => false,
         'anti_detect_browser' => false,
         'device_spoofing' => false,
-        'rate_limited' => false,
+        'banned_ip' => false,
         'incognito' => false,
         'search_bot' => false,
         'ai_bot' => false,
@@ -238,7 +238,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'latency_test' => 'latency_test',
         'anti_detect_browser' => 'anti_detect_browser',
         'device_spoofing' => 'device_spoofing',
-        'rate_limited' => 'rate_limited',
+        'banned_ip' => 'banned_ip',
         'incognito' => 'incognito',
         'search_bot' => 'search_bot',
         'ai_bot' => 'ai_bot',
@@ -266,7 +266,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'latency_test' => 'setLatencyTest',
         'anti_detect_browser' => 'setAntiDetectBrowser',
         'device_spoofing' => 'setDeviceSpoofing',
-        'rate_limited' => 'setRateLimited',
+        'banned_ip' => 'setBannedIp',
         'incognito' => 'setIncognito',
         'search_bot' => 'setSearchBot',
         'ai_bot' => 'setAiBot',
@@ -294,7 +294,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         'latency_test' => 'getLatencyTest',
         'anti_detect_browser' => 'getAntiDetectBrowser',
         'device_spoofing' => 'getDeviceSpoofing',
-        'rate_limited' => 'getRateLimited',
+        'banned_ip' => 'getBannedIp',
         'incognito' => 'getIncognito',
         'search_bot' => 'getSearchBot',
         'ai_bot' => 'getAiBot',
@@ -373,7 +373,7 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('latency_test', $data ?? [], null);
         $this->setIfExists('anti_detect_browser', $data ?? [], null);
         $this->setIfExists('device_spoofing', $data ?? [], null);
-        $this->setIfExists('rate_limited', $data ?? [], null);
+        $this->setIfExists('banned_ip', $data ?? [], null);
         $this->setIfExists('incognito', $data ?? [], null);
         $this->setIfExists('search_bot', $data ?? [], null);
         $this->setIfExists('ai_bot', $data ?? [], null);
@@ -448,8 +448,8 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['device_spoofing'] === null) {
             $invalidProperties[] = "'device_spoofing' can't be null";
         }
-        if ($this->container['rate_limited'] === null) {
-            $invalidProperties[] = "'rate_limited' can't be null";
+        if ($this->container['banned_ip'] === null) {
+            $invalidProperties[] = "'banned_ip' can't be null";
         }
         if ($this->container['incognito'] === null) {
             $invalidProperties[] = "'incognito' can't be null";
@@ -836,28 +836,28 @@ class DetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-     * Gets rate_limited
+     * Gets banned_ip
      *
      * @return bool
      */
-    public function getRateLimited()
+    public function getBannedIp()
     {
-        return $this->container['rate_limited'];
+        return $this->container['banned_ip'];
     }
 
     /**
-     * Sets rate_limited
+     * Sets banned_ip
      *
-     * @param bool $rate_limited The visitor exceeded the identification rate limit. Older payloads used banned_ip.
+     * @param bool $banned_ip The visitor exceeded the identification rate limit.
      *
      * @return self
      */
-    public function setRateLimited($rate_limited)
+    public function setBannedIp($banned_ip)
     {
-        if (is_null($rate_limited)) {
-            throw new \InvalidArgumentException('non-nullable rate_limited cannot be null');
+        if (is_null($banned_ip)) {
+            throw new \InvalidArgumentException('non-nullable banned_ip cannot be null');
         }
-        $this->container['rate_limited'] = $rate_limited;
+        $this->container['banned_ip'] = $banned_ip;
 
         return $this;
     }

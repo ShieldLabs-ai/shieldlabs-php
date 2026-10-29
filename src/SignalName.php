@@ -31,7 +31,7 @@ final class SignalName
     /** Negative weight: a late network check corrected an earlier network_check_incomplete. */
     public const STUN_LATE_CORRECTION = 'stun_late_correction';
     /** Marker of the rate-limit ban (weight 999), not a risk signal. */
-    public const RATE_LIMITED = 'rate_limited';
+    public const RATE_LIMITED = 'banned_ip';
 
     private function __construct() {}
 }

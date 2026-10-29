@@ -160,7 +160,7 @@ final class ReadmeSnippetsTest extends TestCase
         self::assertSame([403, $refused('replayed')], self::post($server, 'identificationId=11111111-1111-4111-8111-111111111111', $form));
         self::assertSame([403, $refused('blocked_band')], self::post($server, 'identificationId=22222222-2222-4222-8222-222222222222', $form));
         self::assertSame([403, $refused('blocked_flag')], self::post($server, '{"identificationId":"33333333-3333-4333-8333-333333333333"}', $json));
-        self::assertSame([403, $refused('rate_limited')], self::post($server, '{"identificationId":"44444444-4444-4444-8444-444444444444"}', $json));
+        self::assertSame([403, $refused('banned_ip')], self::post($server, '{"identificationId":"44444444-4444-4444-8444-444444444444"}', $json));
         self::assertSame([403, $refused('stale')], self::post($server, 'identificationId=55555555-5555-4555-8555-555555555555', $form));
         self::assertSame([400, $badRequest], self::post($server, '{"identificationId":"not-a-uuid"}', $json));
         self::assertSame([400, $badRequest], self::post($server, 'identificationId[]=11111111-1111-4111-8111-111111111111', $form));
