@@ -176,9 +176,6 @@ class HistoryAPIApi
      * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
      * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
      * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
-     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
-     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
-     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
@@ -187,9 +184,9 @@ class HistoryAPIApi
      * @throws \InvalidArgumentException
      * @return \ShieldLabs\Generated\Model\GetHistoryEntity200Response|string
      */
-    public function getHistoryEntity($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
+    public function getHistoryEntity($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
     {
-        list($response) = $this->getHistoryEntityWithHttpInfo($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $banned_ip, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $relation, $relation_limit, $relation_page_token, $hostIndex, $variables, $contentType);
+        list($response) = $this->getHistoryEntityWithHttpInfo($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $banned_ip, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $hostIndex, $variables, $contentType);
         return $response;
     }
 
@@ -237,9 +234,6 @@ class HistoryAPIApi
      * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
      * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
      * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
-     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
-     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
-     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
@@ -248,9 +242,9 @@ class HistoryAPIApi
      * @throws \InvalidArgumentException
      * @return array of \ShieldLabs\Generated\Model\GetHistoryEntity200Response|string, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getHistoryEntityWithHttpInfo($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
+    public function getHistoryEntityWithHttpInfo($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
     {
-        $request = $this->getHistoryEntityRequest($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $banned_ip, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $relation, $relation_limit, $relation_page_token, $hostIndex, $variables, $contentType);
+        $request = $this->getHistoryEntityRequest($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $banned_ip, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $hostIndex, $variables, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -379,9 +373,6 @@ class HistoryAPIApi
      * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
      * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
      * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
-     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
-     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
-     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
@@ -389,9 +380,9 @@ class HistoryAPIApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getHistoryEntityAsync($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
+    public function getHistoryEntityAsync($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
     {
-        return $this->getHistoryEntityAsyncWithHttpInfo($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $banned_ip, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $relation, $relation_limit, $relation_page_token, $hostIndex, $variables, $contentType)
+        return $this->getHistoryEntityAsyncWithHttpInfo($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $banned_ip, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $hostIndex, $variables, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -443,9 +434,6 @@ class HistoryAPIApi
      * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
      * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
      * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
-     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
-     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
-     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
@@ -453,10 +441,10 @@ class HistoryAPIApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getHistoryEntityAsyncWithHttpInfo($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
+    public function getHistoryEntityAsyncWithHttpInfo($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
     {
         $returnType = '\ShieldLabs\Generated\Model\GetHistoryEntity200Response';
-        $request = $this->getHistoryEntityRequest($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $banned_ip, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $relation, $relation_limit, $relation_page_token, $hostIndex, $variables, $contentType);
+        $request = $this->getHistoryEntityRequest($domain_id, $resource, $resource_id, $limit, $page_token, $from, $to, $snapshot, $risk_bands, $hre_min_accounts, $hre_min_devices, $is_vpn, $is_tor, $is_proxy, $is_privacy_relay, $network_check_incomplete, $check_incomplete, $is_antidetect, $is_os_mismatch, $is_os_not_detected, $is_timezone_mismatch, $is_js_disabled, $is_browser_automation, $is_incognito, $is_search_bot, $ip_mismatch, $latency_test, $device_spoofing, $banned_ip, $ai_bot, $ai_browser, $risk_signals, $source, $campaign, $device_id_source, $hostIndex, $variables, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -536,9 +524,6 @@ class HistoryAPIApi
      * @param  string[]|null $source Traffic source. Together with campaign, at most 8 values, matched if any value matches. _empty means no referrer. (optional)
      * @param  string[]|null $campaign Campaign name. No campaign matches visits with no campaign. (optional)
      * @param  string|null $device_id_source Device cards only. &#x60;legacy&#x60; or &#x60;fp21_record&#x60;. (optional)
-     * @param  string|null $relation Linked-id page for this card. Identification cards reject this parameter. (optional)
-     * @param  int|null $relation_limit Linked records in one page, from 1 through 100. (optional, default to 20)
-     * @param  string|null $relation_page_token Opaque token from the previous linked-id page. (optional)
      * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
      * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getHistoryEntity'] to see the possible values for this operation
@@ -546,7 +531,7 @@ class HistoryAPIApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function getHistoryEntityRequest($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, $relation = null, $relation_limit = 20, $relation_page_token = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
+    public function getHistoryEntityRequest($domain_id, $resource, $resource_id, $limit = 20, $page_token = null, $from = null, $to = null, $snapshot = null, $risk_bands = null, $hre_min_accounts = 3, $hre_min_devices = 4, $is_vpn = null, $is_tor = null, $is_proxy = null, $is_privacy_relay = null, $network_check_incomplete = null, $check_incomplete = null, $is_antidetect = null, $is_os_mismatch = null, $is_os_not_detected = null, $is_timezone_mismatch = null, $is_js_disabled = null, $is_browser_automation = null, $is_incognito = null, $is_search_bot = null, $ip_mismatch = null, $latency_test = null, $device_spoofing = null, $banned_ip = null, $ai_bot = null, $ai_browser = null, $risk_signals = null, $source = null, $campaign = null, $device_id_source = null, ?int $hostIndex = null, array $variables = [], string $contentType = self::contentTypes['getHistoryEntity'][0])
     {
 
         // verify the required parameter 'domain_id' is set
@@ -625,15 +610,6 @@ class HistoryAPIApi
 
 
 
-
-
-        if ($relation_limit !== null && $relation_limit > 100) {
-            throw new \InvalidArgumentException('invalid value for "$relation_limit" when calling HistoryAPIApi.getHistoryEntity, must be smaller than or equal to 100.');
-        }
-        if ($relation_limit !== null && $relation_limit < 1) {
-            throw new \InvalidArgumentException('invalid value for "$relation_limit" when calling HistoryAPIApi.getHistoryEntity, must be bigger than or equal to 1.');
-        }
-        
 
 
         $resourcePath = '/api/v1/domains/{domain_id}/history/{resource}/{resource_id}';
@@ -926,33 +902,6 @@ class HistoryAPIApi
         $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
             $device_id_source,
             'device_id_source', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $relation,
-            'relation', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $relation_limit,
-            'relation_limit', // param base name
-            'integer', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $relation_page_token,
-            'relation_page_token', // param base name
             'string', // openApiType
             'form', // style
             true, // explode
@@ -1464,7 +1413,7 @@ class HistoryAPIApi
      * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
      * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
      * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
-     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $ids One user id. User list only. A repeated key returns 400. (optional)
      * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
@@ -1521,7 +1470,7 @@ class HistoryAPIApi
      * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
      * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
      * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
-     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $ids One user id. User list only. A repeated key returns 400. (optional)
      * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
@@ -1729,7 +1678,7 @@ class HistoryAPIApi
      * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
      * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
      * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
-     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $ids One user id. User list only. A repeated key returns 400. (optional)
      * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
@@ -1789,7 +1738,7 @@ class HistoryAPIApi
      * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
      * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
      * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
-     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $ids One user id. User list only. A repeated key returns 400. (optional)
      * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
@@ -1878,7 +1827,7 @@ class HistoryAPIApi
      * @param  string[]|null $risk_bands Repeat for trusted, suspicious, or dangerous. (optional)
      * @param  int|null $hre_min_accounts Minimum linked accounts for a high-risk event, from 3 to 99. (optional, default to 3)
      * @param  int|null $hre_min_devices Minimum linked devices for a high-risk event, from 4 to 99. (optional, default to 4)
-     * @param  string[]|null $ids User ids. Repeat the key. User list only, at most 100. (optional)
+     * @param  string|null $ids One user id. User list only. A repeated key returns 400. (optional)
      * @param  string|null $is_vpn When set, keep only rows whose &#x60;is_vpn&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_tor When set, keep only rows whose &#x60;is_tor&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
      * @param  string|null $is_proxy When set, keep only rows whose &#x60;is_proxy&#x60; equals this value. Omit the parameter to leave the flag unconstrained. The only accepted values are &#x60;true&#x60; and &#x60;false&#x60;. (optional)
@@ -1952,7 +1901,13 @@ class HistoryAPIApi
             throw new \InvalidArgumentException('invalid value for "$hre_min_devices" when calling HistoryAPIApi.listHistoryEntities, must be bigger than or equal to 4.');
         }
         
-
+        if ($ids !== null && strlen($ids) > 512) {
+            throw new \InvalidArgumentException('invalid length for "$ids" when calling HistoryAPIApi.listHistoryEntities, must be smaller than or equal to 512.');
+        }
+        if ($ids !== null && strlen($ids) < 1) {
+            throw new \InvalidArgumentException('invalid length for "$ids" when calling HistoryAPIApi.listHistoryEntities, must be bigger than or equal to 1.');
+        }
+        
 
 
 
@@ -2060,7 +2015,7 @@ class HistoryAPIApi
         $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
             $ids,
             'ids', // param base name
-            'array', // openApiType
+            'string', // openApiType
             'form', // style
             true, // explode
             false // required

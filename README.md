@@ -1,5 +1,10 @@
 # ShieldLabs PHP SDK
 
+History user lists accept one `ids` value. `risk_bands`, `risk_signals`, `source` and
+`campaign` remain repeatable. Multiple ids are rejected before HTTP; use one request per user.
+Entity cards do not support relation parameters.
+
+
 Read ShieldLabs identification verdicts on your PHP backend, verify webhooks and turn Risk Scores into decisions.
 
 [![CI](https://github.com/ShieldLabs-ai/shieldlabs-php/actions/workflows/ci.yml/badge.svg)](https://github.com/ShieldLabs-ai/shieldlabs-php/actions/workflows/ci.yml)
