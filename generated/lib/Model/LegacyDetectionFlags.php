@@ -1090,7 +1090,7 @@ class LegacyDetectionFlags implements ModelInterface, ArrayAccess, \JsonSerializ
     /**
      * Sets banned_ip
      *
-     * @param bool|null $banned_ip The visitor exceeded the identification rate limit.
+     * @param bool|null $banned_ip Current public name of the banned-IP flag.
      *
      * @return self
      */

@@ -187,6 +187,17 @@ final class History
         if (!\is_array($query)) {
             throw new ValidationException('query must be an array of flat filters.');
         }
+        if (\array_key_exists('ids', $query)) {
+            $value = $query['ids'];
+            // Keep an existing single-element form usable without repeating the key.
+            if (\is_array($value) && \count($value) === 1 && array_is_list($value)) {
+                $value = $value[0];
+            }
+            if (!\is_string($value) || $value === '' || \strlen($value) > 512) {
+                throw new ValidationException('ids must be one non-empty user id string.');
+            }
+            $query['ids'] = $value;
+        }
         /** @var array<string, int|string|array<int, string>> $query */
 
         return $query;
